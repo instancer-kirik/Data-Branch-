@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "62932625230",
+    "project_id": "databranch-161c2",
+    "storage_bucket": "databranch-161c2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62932625230:android:140e190a8b42c919e1e01f",
+        "android_client_info": {
+          "package_name": "com.instance.dataxbranch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62932625230-v6shchvcittm17tvvdffv249ip8ljiqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu3Tfi0cv55trhSZg-BPfVPMgtU6xjlLU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62932625230-v6shchvcittm17tvvdffv249ip8ljiqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

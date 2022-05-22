@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">DataXBranch</string>
+    <string name="show_less">Reduce</string>
+    <string name="show_more">Expand</string>
+    <string name="title_error">Error_Title</string>
+    <string name="title_empty">Title Empty</string>
+    <string name="message_empty">empty message</string>
+    <string name="label_back">Return</string>
+    <string name="detail_header">Details</string>
+    <string name="detail_placeholder">placeholder</string>
+    <string name="ingredients">ingredients</string>
+    <string name="ingredients_list">ingredients_list</string>
+</resources>
