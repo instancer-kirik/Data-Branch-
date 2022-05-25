@@ -1,5 +1,5 @@
 package com.instance.dataxbranch
-
+/*
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -28,20 +28,24 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.instance.dataxbranch.firebasepackages.FirestoreDocument
+import com.instance.dataxbranch.firebasepackages.documentStateOf
+import com.instance.dataxbranch.ui.components.LoadingBar
+import com.instance.dataxbranch.ui.components.OnlyText
 import com.instance.dataxbranch.ui.theme.DataXBranchTheme
 import com.instance.dataxbranch.ui.theme.purple200
 import com.instance.dataxbranch.ui.theme.purple500
 import com.instance.dataxbranch.ui.theme.purple700
+
 /*import dev.chrisbanes.accompanist.glide.GlideImage
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import dev.chrisbanes.accompanist.insets//.statusBarsPadding
 */
-import io.github.rosariopfernandes.firebasecompose.firestore.FirestoreDocument
-import io.github.rosariopfernandes.firebasecompose.firestore.documentStateOf
+
 //import io.github.rosariopfernandes.firebasecompose.model.Snack
-import io.github.rosariopfernandes.firebasecompose.ui.components.LoadingBar
-import io.github.rosariopfernandes.firebasecompose.ui.components.OnlyText
+//import io.github.rosariopfernandes.firebasecompose.ui.components.LoadingBar
+//import io.github.rosariopfernandes.firebasecompose.ui.components.OnlyText
 
 import kotlin.math.max
 import kotlin.math.min
@@ -118,7 +122,7 @@ private fun Up(upPress: () -> Unit) {
     IconButton(
         onClick = upPress,
         modifier = Modifier
-            .statusBarsPadding()
+            //.statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 10.dp)
             .size(36.dp)
             .background(
@@ -142,7 +146,7 @@ private fun Body(
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsPadding()
+                //.statusBarsPadding()
                 .height(MinTitleOffset)
         )
         Column(
@@ -190,7 +194,7 @@ private fun Body(
                     Spacer(
                         modifier = Modifier
                             .padding(bottom = BottomBarHeight)
-                            .navigationBarsPadding()
+                            //.navigationBarsPadding()
                             .height(8.dp)
                     )
                 }
@@ -208,7 +212,7 @@ private fun Title(quest: Quest, scroll: Int) {
         verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
             .heightIn(min = TitleHeight)
-            .statusBarsPadding()
+            //.statusBarsPadding()
             .graphicsLayer { translationY = offset }
             .background(color = Color.White)
     ) {
@@ -249,7 +253,7 @@ private fun Image(
 
     CollapsingImageLayout(
         collapseFraction = collapseFraction,
-        modifier = HzPadding.then(Modifier.statusBarsPadding())
+        modifier = HzPadding.then(Modifier//.statusBarsPadding())
     ) {
         Glide(
             data = imageUrl,

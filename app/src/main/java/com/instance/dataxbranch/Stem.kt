@@ -35,11 +35,4 @@ class Stem<T : Any>(
         return result
     }
 
-    @Deprecated("Not accessible; use eq()", ReplaceWith("this.eq(other)"), DeprecationLevel.ERROR)
-    override fun equals(other: Any?): Boolean =
-        throw UnsupportedOperationException("Stem.equals() not supported; call eq() instead")
-
-    @Deprecated("Not accessible; use hc()", ReplaceWith("this.hc(other)"), DeprecationLevel.ERROR)
-    override fun hashCode(): Int =
-        throw UnsupportedOperationException("Stem.hashCode() not supported; call hc() instead")
 }

@@ -3,11 +3,11 @@
 package com.instance.dataxbranch
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -15,14 +15,14 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
+//import androidx.compose.foundation.lazy.grid.GridCells
+//import androidx.compose.foundation.lazy.LazyVerticalGrid
+//import androidx.compose.foundation.lazy.grid.LazyGridScope
+//import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.LazyGridScope
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -44,36 +44,48 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.instance.dataxbranch.ui.QuestListItem
+import com.instance.dataxbranch.ui.QuestsScreen
 
 //import io.github.rosariopfernandes.firebasecompose.R
-import io.github.rosariopfernandes.firebasecompose.firestore.FirestoreCollection
-import io.github.rosariopfernandes.firebasecompose.firestore.collectionStateOf
+//import io.github.rosariopfernandes.firebasecompose.firestore.FirestoreCollection
+//import io.github.rosariopfernandes.firebasecompose.firestore.collectionStateOf
 //import io.github.rosariopfernandes.firebasecompose.model.Snack
-import io.github.rosariopfernandes.firebasecompose.ui.components.LoadingBar
-import io.github.rosariopfernandes.firebasecompose.ui.components.OnlyText
+//import io.github.rosariopfernandes.firebasecompose.ui.components.LoadingBar
+//import io.github.rosariopfernandes.firebasecompose.ui.components.OnlyText
 //import io.github.rosariopfernandes.firebasecompose.ui.theme.FirebaseComposeTheme
-import com.instance.dataxbranch.QuestService
+//import com.instance.dataxbranch.data.FirestoreCollection
+//import com.instance.dataxbranch.firebasepackages.collectionStateOf
+import com.instance.dataxbranch.ui.components.LoadingBar
+import com.instance.dataxbranch.ui.components.OnlyText
+import com.instance.dataxbranch.ui.components.QuestCard
 
 import com.instance.dataxbranch.ui.theme.DataXBranchTheme
+import com.instance.dataxbranch.utils.constants.FIRESTORE_COLLECTION
 import dagger.hilt.android.AndroidEntryPoint
 
-
-const val FIRESTORE_COLLECTION = "quests"
-
+/*
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            QuestsScreen()
+        }
+    }
+}
+*/
 @AndroidEntryPoint()
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            DataXBranchTheme {
+            DataXBranchTheme(darkTheme = true) {
                /* // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -93,9 +105,86 @@ class MainActivity : ComponentActivity() {
                         Column(
                             modifier = Modifier
                                 .padding(padding)
-                        ){Text("YOTE")}
+                        ){Text("Versionated2")
+                        QuestsScreen()}
 
                     
+
+
+
+
+                }
+            )
+            }
+        }
+    }
+}
+
+@Composable
+fun Toolbar(context: Context) {
+    TopAppBar(
+        title = { Text(text = "Quest Selector") },
+        actions = {
+            customButton1("Button")
+        }
+    )
+}
+@Composable
+private fun customButton1(input: String){
+    var value by remember { mutableStateOf(input) }
+    var expanded by remember { mutableStateOf(false) }
+
+    OutlinedButton(
+        onClick = { expanded = !expanded
+        }
+    ) {
+        if (expanded) {
+            Text("Save")
+            TextField(
+
+                value = value,
+                onValueChange = { value = it },
+                label = { Text("Enter text") },
+                maxLines = 2,
+                textStyle = TextStyle(
+                    color = Color.Gray,
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.padding(20.dp)
+            )
+        }else Text("Edit")
+    }
+}
+fun addItems(context: Context) {
+    val firestore = Firebase.firestore
+    val collection = firestore.collection(FIRESTORE_COLLECTION)
+    firestore.runBatch { batch ->
+        for (item in getItems()) {
+            val docRef = collection.document()
+            batch.set(docRef, item)
+        }
+    }.addOnSuccessListener {
+        Toast.makeText(context, "Items added!", Toast.LENGTH_SHORT).show()
+    }.addOnFailureListener { e ->
+        Toast.makeText(context, "Error adding items: ${e.message}", Toast.LENGTH_LONG).show()
+    }
+}
+
+private fun getItems() = listOf(
+    Quest(title = "Quest1"),Quest(title = "Quest2"),Quest(title = "Quest3")
+)
+
+
+     /*
+        content = items(items=items) { snapshot ->
+            val quest = snapshot.toObject<Quest>()!!
+            QuestItem(quest = quest, onQuestClick = {
+                val intent = Intent(context, DetailActivity::class.java)
+                intent.putExtra("questId", snapshot.id)
+                context.startActivity(intent)
+            })
+        }
+    }
 
                         val query = Firebase.firestore.collection(FIRESTORE_COLLECTION)
                         val (result) = remember { collectionStateOf (query, this) }
@@ -117,66 +206,6 @@ class MainActivity : ComponentActivity() {
                                 )
                             } else {
                                 QuestList(context = this@MainActivity, items = result.list)
-                            }
-                        }
-                    }
-                }
-            )
-            }
-        }
-    }
-}
-
-@Composable
-fun Toolbar(context: Context) {
-    TopAppBar(
-        title = { Text(text = "FireSnacks") },
-        actions = {
-            Button(onClick = { addItems(context) }) {
-                Text(text = "Add Items")
-            }
-        }
-    )
-}
-
-fun addItems(context: Context) {
-    val firestore = Firebase.firestore
-    val collection = firestore.collection(FIRESTORE_COLLECTION)
-    firestore.runBatch { batch ->
-        for (item in getItems()) {
-            val docRef = collection.document()
-            batch.set(docRef, item)
-        }
-    }.addOnSuccessListener {
-        Toast.makeText(context, "Items added!", Toast.LENGTH_SHORT).show()
-    }.addOnFailureListener { e ->
-        Toast.makeText(context, "Error adding items: ${e.message}", Toast.LENGTH_LONG).show()
-    }
-}
-
-private fun getItems() = listOf(
-    Quest(title = "Quest1"),Quest(title = "Quest2"),Quest(title = "Quest3")
-)
-
-@ExperimentalFoundationApi
-@Composable
-fun QuestList(
-    context: Context,
-    items: List<DocumentSnapshot>
-
-) {
-    LazyColumnWithSelection()
-}
-     /*
-        content = items(items=items) { snapshot ->
-            val quest = snapshot.toObject<Quest>()!!
-            QuestItem(quest = quest, onQuestClick = {
-                val intent = Intent(context, DetailActivity::class.java)
-                intent.putExtra("questId", snapshot.id)
-                context.startActivity(intent)
-            })
-        }
-    }
 }*/
      @Preview
      @Composable
@@ -288,23 +317,7 @@ fun QuestForm(){
         }
         //Greetings()
 }}
-@Composable
-fun QuestListItem(quest: Quest){
-    Card(modifier = Modifier.padding(end = 8.dp),
-        shape = RoundedCornerShape(4.dp),
-        elevation = 2.dp,
-    ){
-        Column(modifier = Modifier.padding(8.dp)
-        ){
-            Text(text = quest.title)
-            Spacer(modifier = Modifier.padding(8.dp))
-            Text(text = quest.description)
-            Spacer(modifier = Modifier.padding(8.dp))
-            Text(text = quest.author  + " last modified on " + quest.dateUpdated)
-        }
-    }
 
-}
 //private fun showToast
 @Composable
 fun MyApp() {
@@ -321,7 +334,7 @@ fun MyApp() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             QuestHeader(quest)
-            ObjectiveView(quest.getObjectives())
+            //ObjectiveView(quest.getObjectives())
 
             Propertyboxcontainer()
             //Greetings()
@@ -395,61 +408,23 @@ fun QuestSelector(onContinueClicked: () -> Unit) {
 }
 
 
+
 @Composable
-private fun ObjectiveView(objectives: ArrayList<Quest.QuestObjective>) {
+private fun QuestsView(quests: ArrayList<Quest>) {
 
     LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
 
-        items(items = objectives) { objective ->
-            ObjectiveViewEdit(objective = objective)
+        items(items = quests) { quest ->
+            QuestViewEdit(quest = quest)
         }
     }
 }
 
 @Composable
-private fun ObjectiveViewEdit(objective: Quest.QuestObjective) {
-    var value by remember { mutableStateOf("Hello\nWorld\nInvisible") }
-    var expanded by remember { mutableStateOf(false) }
-
-    val extraPadding by animateDpAsState(
-        if (expanded) 48.dp else 0.dp
-    )
-    Surface(
-        color = MaterialTheme.colors.primary,
-        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
-    ) {
-        Row(modifier = Modifier.padding(24.dp)) {
-            Column(modifier = Modifier
-                .weight(1f)
-                .padding(bottom = extraPadding)
-            ) {
-                Text(text = "Objective ")
-                Text(text = objective.toString())
-
-            }
-            OutlinedButton(
-                onClick = { expanded = !expanded
-                }
-            ) {
-                if (expanded) {
-                    Text("Save")
-                    TextField(
-                        value = value,
-                        onValueChange = { value = it },
-                        label = { Text("Enter text") },
-                        maxLines = 2,
-                        textStyle = TextStyle(
-                            color = Color.Gray,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        modifier = Modifier.padding(20.dp)
-                    )
-                }else Text("Edit")
-            }
-
-        }
-    }
+fun QuestViewEdit(quest: Quest) {
+TODO()
 }
+
 @Preview
 @Composable
 fun Propertyboxcontainer(){
@@ -459,7 +434,7 @@ fun Propertyboxcontainer(){
 private fun propertybox(input: String){
     var value by remember { mutableStateOf(input) }
     var expanded by remember { mutableStateOf(false) }
-
+    val other = "other"
     OutlinedButton(
         onClick = { expanded = !expanded
         }
@@ -514,7 +489,7 @@ fun StyledTextField() {
 fun DefaultPreview() {
     DataXBranchTheme {
         QuestHeader(Quest())
-        ObjectiveView(arrayListOf(Quest.QuestObjective(),Quest.QuestObjective()))
+        //ObjectiveView(arrayListOf(Quest.QuestObjective(),Quest.QuestObjective()))
     }
 }
 
@@ -614,7 +589,7 @@ fun MessageCard() {
 @Composable
 fun Conversation(messages: List<Message>) {
     LazyColumn {
-        items(messages) { message ->
+        items(messages) { _ ->
             //MessageCard(message)
         }
     }
@@ -659,6 +634,12 @@ private fun Greeting(name: String) {
         CardContent(name)
     }
 }
+@Preview
+@Composable
+fun previewCardContent(){
+    CardContent("PREVIEW")
+}
+
 
 @Composable
 private fun CardContent(name: String) {

@@ -72,7 +72,7 @@ class User(firstName: String, lastName: String) : BaseObservable() {
         this.lastName = lastName
     }
 }*/
-class Quest(val id: Int=-1,
+class Quest(val qid: String= "-1",
             var title: String = "Title",
             var active: Boolean = true,
             var description: String = "default description",
@@ -82,7 +82,8 @@ class Quest(val id: Int=-1,
             val rating: Int = 0,
             val sourceUrl: String="",
             val ingredients: List<Any> = listOf(),
-            var objectives: ArrayList<QuestObjective> = arrayListOf(QuestObjective())
+            var objectives: ArrayList<QuestObjective> = arrayListOf(QuestObjective(),QuestObjective()),
+            val region: String = "state or region here. goal: sort by region"
 ){
     // Given
    /* val qid: Int = 0
@@ -101,8 +102,7 @@ class Quest(val id: Int=-1,
                  categories.map { it. subCategories }.toTypedArray()
     */
 
-    lateinit var dateAdded: String
-    lateinit var dateUpdated: String
+
     //var _objectives: MutableList<QuestObjective> = mutableListOf()
 
 
@@ -116,7 +116,6 @@ class Quest(val id: Int=-1,
         var requiredAmount: Int? = null;
         var currentAmount: Int = 0;
 
-
         fun IsReached(): Boolean {
             return (currentAmount >= requiredAmount!!)
         }
@@ -129,7 +128,7 @@ class Quest(val id: Int=-1,
 
 
         override fun toString(): String {
-            return obj.toString() + desc.toString()
+            return "$obj $desc"
         }
 
 
@@ -156,14 +155,18 @@ class Quest(val id: Int=-1,
     }*/
     }
 
-    fun onCreate() {
+    lateinit var dateAdded: String
+    lateinit var dateUpdated: String
+    init{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             dateAdded = LocalDateTime.now().toString()
-            dateUpdated = dateAdded
+            update()
         }
-
-
     }
+    private fun update(){
+        dateUpdated = LocalDateTime.now().toString()
+    }
+
     fun getObjective(i: Int): String {
         return objectives[i].getObjective()
     }

@@ -32,5 +32,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "DataXBranch"
 include ':app'
-include ':firestore'
-include ':database'
