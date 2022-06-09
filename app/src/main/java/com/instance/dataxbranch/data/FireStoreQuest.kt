@@ -1,6 +1,6 @@
 package com.instance.dataxbranch.data
 
-import com.instance.dataxbranch.Quest
+import com.instance.dataxbranch.quests.Quest
 
 data class FireStoreQuest (
     val id: Long = 1L,
@@ -15,10 +15,12 @@ data class FireStoreQuest (
     val authors: List<String> = listOf("Kirik"),
     val rating: Int = 5,
     val rating_denominator: Int = 5,
-    val ingredients: List<Any> = listOf(),
+    val ingredients: String="",
     val dateAdded: String= "",
     val dateUpdated: String= "",
-    val objectives: ArrayList<Quest.QuestObjective> = arrayListOf(Quest.QuestObjective()),
+    val objectives: ArrayList<Quest.QuestObjective> = arrayListOf(
+        Quest.QuestObjective()
+    ),
 )
 /*
 For a model class with default values like the `Snack` class above, Firestore can perform automatic

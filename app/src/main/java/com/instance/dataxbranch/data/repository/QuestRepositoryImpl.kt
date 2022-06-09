@@ -1,10 +1,9 @@
 package com.instance.dataxbranch.data.repository
 
+import android.util.Log
 import com.google.firebase.firestore.CollectionReference
-import com.instance.dataxbranch.Quest
+import com.instance.dataxbranch.quests.Quest
 import com.instance.dataxbranch.core.Constants.TITLE
-import com.instance.dataxbranch.di.AppModule.provideFirebaseFirestore
-import com.instance.dataxbranch.di.AppModule.provideQuestCollRef
 
 import com.instance.dataxbranch.domain.Response
 import kotlinx.coroutines.channels.awaitClose
@@ -42,18 +41,30 @@ class QuestRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addQuestToFirestore(title: String, description
-    : String): Flow<Response<Void?>> = flow {
+    override fun addQuestToFirestore(title: String, description
+    : String,author:String): Flow<Response<Void?>> = flow {
         try {
             emit(Response.Loading)
-            val id = questsRef.document().id.toString()
+            val id = questsRef.document().id
             val quest = Quest(
                 qid = id,
                 title = title,
                 description
-                = description
-
+                = description,
+                author = author
             )
+            Log.d("FirestoreADD",quest.toString())
+            val addition = questsRef.document(id).set(quest).await()
+            emit(Response.Success(addition))
+        } catch (e: Exception) {
+            emit(Response.Error(e.message ?: e.toString()))
+        }
+    }
+    override fun addQuestToFirestore(quest: Quest): Flow<Response<Void?>> = flow {
+        try {
+            emit(Response.Loading)
+            val id = quest.qid
+
             val addition = questsRef.document(id).set(quest).await()
             emit(Response.Success(addition))
         } catch (e: Exception) {
@@ -63,7 +74,7 @@ class QuestRepositoryImpl @Inject constructor(
 
 
 
-    override suspend fun deleteQuestFromFirestore(qid: String): Flow<Response<Void?>> = flow {
+    override fun deleteQuestFromFirestore(qid: String): Flow<Response<Void?>> = flow {
         try {
             emit(Response.Loading)
             val deletion = questsRef.document(qid).delete().await()

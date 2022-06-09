@@ -7,11 +7,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -20,11 +18,9 @@ import androidx.compose.foundation.layout.*
 //import androidx.compose.foundation.lazy.grid.LazyGridScope
 //import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.*
@@ -42,14 +38,14 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.instance.dataxbranch.ui.QuestListItem
-import com.instance.dataxbranch.ui.QuestsScreen
+import com.instance.dataxbranch.quests.Quest
+//import com.instance.dataxbranch.destinations.QuestsScreenDestination
+import com.instance.dataxbranch.ui.NavGraphs
+//import com.instance.dataxbranch.ui.NavGraphs
+//import com.instance.dataxbranch.ui.QuestListItem
 
 //import io.github.rosariopfernandes.firebasecompose.R
 //import io.github.rosariopfernandes.firebasecompose.firestore.FirestoreCollection
@@ -60,12 +56,12 @@ import com.instance.dataxbranch.ui.QuestsScreen
 //import io.github.rosariopfernandes.firebasecompose.ui.theme.FirebaseComposeTheme
 //import com.instance.dataxbranch.data.FirestoreCollection
 //import com.instance.dataxbranch.firebasepackages.collectionStateOf
-import com.instance.dataxbranch.ui.components.LoadingBar
-import com.instance.dataxbranch.ui.components.OnlyText
-import com.instance.dataxbranch.ui.components.QuestCard
+//import com.instance.dataxbranch.ui.destinations.MyQuestsScreenDestination
+//import com.instance.dataxbranch.ui.destinations.QuestsScreenDestination
 
 import com.instance.dataxbranch.ui.theme.DataXBranchTheme
 import com.instance.dataxbranch.utils.constants.FIRESTORE_COLLECTION
+import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 /*
@@ -81,66 +77,61 @@ class MainActivity : AppCompatActivity() {
 */
 @AndroidEntryPoint()
 @ExperimentalFoundationApi
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             DataXBranchTheme(darkTheme = true) {
-               /* // A surface container using the 'background' color from the theme
+
+                DestinationsNavHost(
+                    navGraph = NavGraphs.root)
+                Scaffold(
+
+                    //topBar = { Toolbar(this@MainActivity) },
+                    content = {padding ->
+                        Column(
+                            modifier = Modifier
+                                .padding(padding)
+                        ){Text("Versionated2")
+                        }
+                        DestinationsNavHost(navGraph = NavGraphs.root)
+                        // AppModule_ProvideDbFactory.provideDb(DataBranchApp())
+
+
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+
+
+
+/*               // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MyApp()
+                    //MyApp()
                     //PreviewConversation()
                 }
             }
         }
     }
 }*/
-                Scaffold(
-
-                    topBar = { Toolbar(this@MainActivity) },
-                    content = {padding ->
-                        Column(
-                            modifier = Modifier
-                                .padding(padding)
-                        ){Text("Versionated2")
-                        QuestsScreen()}
-
-                    
 
 
-
-
-                }
-            )
-            }
-        }
-    }
-}
-
+/*
 @Composable
-fun Toolbar(context: Context) {
-    TopAppBar(
-        title = { Text(text = "Quest Selector") },
-        actions = {
-            customButton1("Button")
-        }
-    )
-}
-@Composable
-private fun customButton1(input: String){
-    var value by remember { mutableStateOf(input) }
-    var expanded by remember { mutableStateOf(false) }
+private fun customButton1(context: Context, input: String, navigator: DestinationsNavigator) {
 
-    OutlinedButton(
-        onClick = { expanded = !expanded
-        }
-    ) {
-        if (expanded) {
-            Text("Save")
-            TextField(
+
+
+
+        /*TextField(
 
                 value = value,
                 onValueChange = { value = it },
@@ -151,10 +142,9 @@ private fun customButton1(input: String){
                     fontWeight = FontWeight.Bold
                 ),
                 modifier = Modifier.padding(20.dp)
-            )
-        }else Text("Edit")
-    }
-}
+            )*/*/
+
+
 fun addItems(context: Context) {
     val firestore = Firebase.firestore
     val collection = firestore.collection(FIRESTORE_COLLECTION)
@@ -171,7 +161,7 @@ fun addItems(context: Context) {
 }
 
 private fun getItems() = listOf(
-    Quest(title = "Quest1"),Quest(title = "Quest2"),Quest(title = "Quest3")
+    Quest(title = "Quest1"), Quest(title = "Quest2"), Quest(title = "Quest3")
 )
 
 
@@ -224,7 +214,7 @@ private fun getItems() = listOf(
              }
          }
      }
-@Composable
+/*@Composable
 fun QuestItem(
     quest: Quest,
     onQuestClick: () -> Unit,
@@ -263,9 +253,7 @@ fun QuestItem(
         }
     }
 }
-
-
-
+*//*
 @Composable
 fun QuestForm(){
     val context = LocalContext.current
@@ -317,7 +305,7 @@ fun QuestForm(){
         }
         //Greetings()
 }}
-
+*/
 //private fun showToast
 @Composable
 fun MyApp() {
@@ -361,7 +349,8 @@ fun OnboardingScreen(onContinueClicked: () -> Unit) {
         }
     }
 }
-private fun showToast(context: Context, msg: String){
+@Composable
+fun showToast(context: Context, msg: String){
     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 }
 @Composable

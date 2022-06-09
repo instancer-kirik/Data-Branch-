@@ -7,6 +7,7 @@ class AddQuest(
 ) {
     suspend operator fun invoke(
         title: String,
-        description: String
-    ) = repo.addQuestToFirestore(title, description)
+        description: String,
+        author: String
+    ) = repo.addQuestToFirestore(title, description, author)
 }

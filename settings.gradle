@@ -9,12 +9,19 @@ pluginManagement {
             if( requested.id.id == 'dagger.hilt.android.plugin') {
                 useModule("com.google.dagger:hilt-android-gradle-plugin:2.39.1")
             }
+            if (requested.id.id == "kotlin-multiplatform") {
+                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
+            }
+            if (requested.id.id == "kotlinx-serialization") {
+                useModule("org.jetbrains.kotlin:kotlin-serialization:${requested.version}")
+            }
         }
     }
 }
 
 plugins {
     id("com.gradle.enterprise") version("3.10")
+
 }
 gradleEnterprise {
 

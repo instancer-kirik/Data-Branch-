@@ -1,9 +1,9 @@
 package com.instance.dataxbranch.domain
 
-import com.instance.dataxbranch.Quest
-
 
 sealed class Response<out T> {
+
+
     object Loading: Response<Nothing>()
 
     data class Success<out T>(

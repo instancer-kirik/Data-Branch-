@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.instance.dataxbranch.Quest
+import com.instance.dataxbranch.quests.Quest
 import com.instance.dataxbranch.core.Constants.DELETE_QUEST
 import com.instance.dataxbranch.quests.QuestsViewModel
 

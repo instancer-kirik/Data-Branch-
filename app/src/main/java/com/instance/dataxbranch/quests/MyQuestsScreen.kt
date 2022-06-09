@@ -1,0 +1,690 @@
+package com.instance.dataxbranch.ui
+
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.instance.dataxbranch.quests.Quest
+import com.instance.dataxbranch.R
+import com.instance.dataxbranch.data.entities.ObjectiveEntity
+//import com.instance.dataxbranch.quests.RoomQuestViewModel
+import com.instance.dataxbranch.ui.destinations.QuestsScreenDestination
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.instance.dataxbranch.core.Constants
+import com.instance.dataxbranch.data.QuestContainerLocal
+import com.instance.dataxbranch.data.repository.QuestsRepository
+import com.instance.dataxbranch.quests.QuestService.getLocalQuests
+import com.instance.dataxbranch.quests.RoomQuestViewModel
+import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+var showDialog =     mutableStateOf(false)
+
+//viewModel: RoomQuestViewModel = hiltViewModel(),
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalStdlibApi::class)
+
+@Destination
+@Composable
+fun MyQuestsScreen(
+    viewModel: RoomQuestViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator,
+
+
+    ) {
+
+    //val quests= viewModel.qes.collectAsState(initial = emptyList())
+    //var my_quests: StateFlow<List<QuestEntity>> = viewModel.getQuests()
+    Scaffold(
+
+        topBar = { Toolbar(navigator) },
+        floatingActionButton = {
+            AddQuestEntityFloatingActionButton()
+        }
+    ) { padding ->
+        if (viewModel.openDialogState.value) {
+            AddQuestEntityAlertDialog()
+        }
+        Column {
+            Button(
+                onClick = { navigator.navigate(QuestsScreenDestination) },
+                modifier = Modifier.padding(2.dp)
+            ) { Text("to Quests") }
+
+            Button(
+                onClick = { showDialog.value = true },
+                modifier = Modifier.padding(2.dp)
+            ) { Text("DEBUG") }
+
+            //viewModel.addQuestEntity(Quest())
+
+            Text(viewModel.localQuestsRepository.getQuests().forEach { it.toString() }.toString())
+//viewModel.dao.getAll()
+            if (showDialog.value) {
+                alert(viewModel)
+            }
+
+            LocalLazyColumn(viewModel, quests = viewModel.quests, modifier = Modifier.padding(2.dp))
+            Button(
+                onClick = { showDialog.value = true },
+                modifier = Modifier.padding(2.dp)
+            ) { Text("End") }
+
+        }
+    }
+    }
+
+@Composable
+fun alert(viewModel: RoomQuestViewModel) {
+    AlertDialog(
+        title = {
+            Text(text = "Test")
+        },
+        text = {
+            Text(viewModel.getQuestsFromRepo().toString())
+        },
+        onDismissRequest = {
+
+        },
+        buttons = {
+            Button(onClick = { showDialog.value = false
+            viewModel.refresh()}) {
+                Text("Refresh")
+            }
+            Button(onClick = { CoroutineScope(Dispatchers.IO).launch { viewModel.localQuestsRepository.deleteAllRows() }}) {
+                Text("Clear")
+            }
+        }
+
+    )
+}
+
+
+@Composable
+fun AddQuestEntityFloatingActionButton(viewModel: RoomQuestViewModel = hiltViewModel()
+) {
+    FloatingActionButton(
+        onClick = {
+            viewModel.openDialogState.value = true
+        },
+        backgroundColor = MaterialTheme.colors.primary
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = Constants.ADD_QUEST
+        )
+    }
+}
+
+
+@Composable
+fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestContainerLocal>, modifier: Modifier){
+    var selectedIndex by remember { mutableStateOf(0) }
+    val onItemClick = { index: Int -> selectedIndex = index}
+    Text(
+        "placeholder1"//text = "Index $index",
+    )
+    LazyColumn(
+        modifier.fillMaxSize(),
+    ) {//replace count with quest.objectives.size
+
+        itemsIndexed(quests) { index,quest ->
+            Text(
+                quest.toString()//text = "Index $index",
+            )
+            LocalQuestView(
+                viewModel = viewModel,
+                quest = quest,
+                index = index,
+                selected = selectedIndex == index,
+                onClick = onItemClick
+            )
+
+        }
+    }
+    Text(
+        "padding"//text = "Index $index",
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun LocalQuestView(
+    viewModel: RoomQuestViewModel,
+    quest: QuestContainerLocal,
+    index: Int,
+    selected: Boolean,
+    onClick: (Int) -> Unit
+) {
+    Text("DEBUG")
+    Box(modifier = Modifier
+        .clickable {
+            onClick.invoke(index)
+        }
+        .background(if (selected) MaterialTheme.colors.secondary else Color.Transparent)
+        .fillMaxWidth()
+        .padding(12.dp)) {
+        Text(
+            text = "Index $index",
+        )
+
+        LocalQuestCardContent(quest)
+
+    }
+    Text("DEBUG2")
+}
+@Composable//, onClick: (Int) -> Unit
+fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestContainerLocal ) {
+    Box(modifier = Modifier
+
+        //.background(if (selected) MaterialTheme.colors.secondary else Color.Transparent)
+        .fillMaxWidth()
+        .padding(12.dp)) {
+        Text(
+            "placeholder2"//text = "Index $index",
+        )
+        LocalQuestCardContent(quest)
+    }
+
+}
+
+@Composable
+fun LocalQuestCardContent(quest: QuestContainerLocal) {
+
+        var expanded by remember { mutableStateOf(false) }
+
+
+        Row(
+            modifier = Modifier
+                .padding(12.dp)
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(12.dp)
+            ) {
+                Text(text = "Title: ")
+                Text(
+
+                    text = quest.quest.title + "",
+                    style = MaterialTheme.typography.h4.copy(
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                )
+                if (expanded) {
+
+                    //var listofObjectiveEntities: Array<ObjectiveEntity> = arrayOf(ObjectiveEntity(-5,"",-5,"",Quest.ObjectiveType.Default,0,0,""))
+                    //var objective: Quest.QuestObjective
+                    run {
+                        quest.objectives.forEach { oe ->
+                            ObjectiveViewEdit(oe)
+                        }
+                    }
+
+
+                }
+            }
+            IconButton(onClick = {
+                expanded = !expanded
+                if (!expanded) {//saves on click when closing
+                    //viewModel.addQuest(quest)
+                }
+            }) {
+
+                Icon(
+                    imageVector = if (expanded) Icons.Filled.Check else Icons.Filled.ArrowDropDown,
+                    contentDescription = if (expanded) {
+                        stringResource(R.string.show_less)
+                    } else {
+                        stringResource(R.string.show_more)
+                    }
+
+                )
+            }
+        }
+}
+/*
+@Composable
+fun CompleteCheckBox(objective: Quest.QuestObjective) {
+    var status by remember { mutableStateOf(objective.check) }
+    IconButton(onClick = { status = !status
+    }) {
+
+        Icon(
+            imageVector = if (status) Icons.Filled.Check else Icons.Default.PlayArrow,
+            contentDescription = if (status) {
+                stringResource(R.string.show_less)
+            } else {
+                stringResource(R.string.show_more)
+            }
+
+        )
+    }
+
+
+
+
+}*/
+@Composable
+fun ObjectiveViewEdit(oe: ObjectiveEntity) {
+
+
+        var value by remember { mutableStateOf(oe.obj) }
+        var expanded by remember { mutableStateOf(false) }
+        var value2 by remember { mutableStateOf(oe.desc) }
+        val extraPadding by animateDpAsState(
+            if (expanded) 48.dp else 0.dp
+        )
+        Surface(
+            color = MaterialTheme.colors.primaryVariant,
+            modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+        ) {
+            Row(modifier = Modifier.padding(24.dp)) {
+                OutlinedButton(
+                    onClick = {
+                        expanded = !expanded
+                        if (!expanded) {//since save triggers expanded, handle saving here with value: String
+                            //Log.d("saved the objective", "$value")
+                            oe.obj =
+                                value// updates quest. needs method to push back to firebase
+                            oe.desc = value2
+                        }
+                    }
+                ) {
+                    if (expanded) {
+                        Text("Save")
+                        Column {
+                            TextField(
+                                value = "$value",
+                                onValueChange = { value = it },
+                                label = { Text("Edit objective") },
+                                maxLines = 2,
+                                textStyle = TextStyle(
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                modifier = Modifier.padding(8.dp)
+                            )
+                            TextField(
+                                value = "$value2",
+                                onValueChange = { value2 = it },
+                                label = { Text("Edit description") },
+                                maxLines = 2,
+                                textStyle = TextStyle(
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                    } else Text("Edit")
+                }
+                Spacer(modifier = Modifier.padding(8.dp))
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(bottom = extraPadding)
+                ) {
+
+                    Text(text = "Objective ")
+                    Text(text = oe.toString())
+
+                }
+                //CompleteCheckBox(oe)
+
+            }
+        }
+}
+
+//private fun <T> Flow<T>.collectAsLazyPagingItems(): Any {
+
+
+
+
+//inner class QuestObjectiveJson(obj: String, begin_date: String, begin_time: String,desc: String?,check: Boolean, objectiveType: Quest.ObjectiveType,requiredAmount: Int?,currentAmount: Int)
+
+
+//Text("test")
+//val questObjectiveJsonAdapter = QuestObjectiveJsonAdapter()
+/*
+val moshi: Moshi = Moshi.Builder().build()
+val type: Type = Types.newParameterizedType(
+
+Quest.QuestObjective::class.java
+)
+val jsonAdapter: JsonAdapter<Quest.QuestObjective> =
+moshi.adapter(type)
+val entityJsonAdapter: JsonAdapter<ObjectiveEntity> =
+moshi.adapter(ObjectiveEntity::class.java)
+val json = jsonAdapter.toJson(Quest.QuestObjective())
+// ["One", "Two", "Three"]
+
+// ["One", "Two", "Three"]
+
+val result = jsonAdapter.fromJson(json)
+
+*/
+/*
+class QuestObjectiveJsonAdapter {
+@FromJson
+fun fromJson(objective: Char): Quest.QuestObjective {
+
+}
+
+@ToJson
+fun toJson(objective: Quest.QuestObjective): String? {
+return objective.obj + " <" + author.email + ">"
+}
+
+}
+
+@Json
+class QuestObjectiveJson(
+var obj: String,
+var begin_date: String,
+var begin_time: String,
+var desc: String?,
+var check: Boolean,
+var objectiveType: Quest.ObjectiveType,
+var requiredAmount: Int?,
+var currentAmount: Int
+) {
+
+}
+
+class QuestObjectiveJsonAdapter {
+@FromJson
+fun fromJson(questObjectiveJson: QuestObjectiveJson): Quest.QuestObjective {
+    val o = Quest.QuestObjective()
+    o.obj = questObjectiveJson.obj
+    o.beginDateAndTime = questObjectiveJson.begin_time + questObjectiveJson.begin_date
+    o.desc = questObjectiveJson.desc
+    o.check = questObjectiveJson.check
+    o.objectiveType = questObjectiveJson.objectiveType
+    o.requiredAmount = questObjectiveJson.requiredAmount
+    o.currentAmount = questObjectiveJson.currentAmount
+    return o
+}
+
+
+@ToJson
+fun toJson(questObjective: Quest.QuestObjective): QuestObjectiveJson {
+    return QuestObjectiveJson(
+        obj = questObjective.obj,
+        begin_date = questObjective.beginDateAndTime.substring(0, 8),
+        begin_time = questObjective.beginDateAndTime.substring(9, 14),
+        desc = questObjective.desc,
+        check = questObjective.check,
+        objectiveType = questObjective.objectiveType,
+        requiredAmount = questObjective.requiredAmount,
+        currentAmount = questObjective.currentAmount
+    )
+}
+*/
+
+
+/* @Composable
+     fun _LazyColumnWithSelection2( modifier: Modifier) {
+         var selectedIndex by remember { mutableStateOf(0) }
+         val onItemClick = { index: Int -> selectedIndex = index }
+         val listofquests = viewModel.getAllQuestEntity().collectAsState(initial = emptyList())
+         LazyColumn(
+             modifier.fillMaxSize(),
+         ) {//repace count with quest.objectives.size
+             itemsIndexed(listofquests.value) { index, row: QuestEntity ->
+
+                 LocalQuestView(
+
+                     quest = row,
+                     index = index,
+                     selected = selectedIndex == index,
+                     onClick = onItemClick
+                 )
+             }
+         }
+     }
+ }
+}
+
+*/
+
+/*
+   class Card {
+       public final char rank;
+       public final Suit suit;
+
+   }
+
+   /*
+   class CardAdapter {
+       @ToJson fun toJson(card: Card): String {
+           return card.rank + card.suit.name.substring(0, 1)
+       }
+
+       @FromJson fun fromJson(card: String): Card {
+           if (card.length != 2) throw JsonDataException("Unknown card: $card")
+
+           val rank = card[0]
+           return when (card[1]) {
+               'C' -> Card(rank, Suit.CLUBS)
+               'D' -> Card(rank, Suit.DIAMONDS)
+               'H' -> Card(rank, Suit.HEARTS)
+               'S' -> Card(rank, Suit.SPADES)
+               else -> throw JsonDataException("unknown suit: $card")
+           }
+       }
+   }
+   class BlackjackHand {
+       public final Card hidden_card;
+       public final List<Card> visible_cards;
+       ...
+   }
+
+
+*/
+   enum Suit {
+       CLUBS, DIAMONDS, HEARTS, SPADES;
+   }
+   val objective = BlackjackHand(
+       Card('6', SPADES),
+       listOf(Card('4', CLUBS), Card('A', HEARTS))
+   )
+
+
+
+   val moshi = Moshi.Builder()
+       .add(CardAdapter())
+       .build()
+   val json: String = jsonAdapter.toJson(objective)
+   println(json)
+   val json: String = ...
+
+    */
+
+
+//val q_objective = jsonAdapter.fromJson(json)
+// print(q_objective)
+
+
+/*  class QuestObjectiveJsonAdapter {
+    @FromJson
+    fun questObjectiveFromJson(questObjectiveJson: QuestObjectiveJson): QuestObjective {
+        val questObjective = QuestObjective()
+        questObjective.title = questObjectiveJson.title
+        questObjective.beginDateAndTime = questObjectiveJson.begin_date.toString() + " " + questObjectiveJson.begin_time
+        return questObjective
+    }
+    inner class QuestObjective {
+        var title: String? = null
+        var beginDateAndTime: String? = null
+    }
+    @ToJson
+    fun questObjectiveToJson(questObjective: QuestObjective): QuestObjectiveJson {
+        val json = QuestObjectiveJson()
+        json.title = questObjective.title
+        json.begin_date = questObjective.beginDateAndTime?.substring(0, 8)
+        json.begin_time = questObjective.beginDateAndTime?.substring(9, 14)
+        return json
+    }*/
+/*
+class QuestObjectiveJsonAdapter {
+    @FromJson
+    fun questObjectiveFromJson(questObjectiveJson: QuestObjectiveJson): QuestObjective {
+        val questObjective = QuestObjective()
+        questObjective.title = questObjectiveJson.title
+        questObjective.beginDateAndTime = questObjectiveJson.begin_date.toString() + " " + questObjectiveJson.begin_time
+        return questObjective
+    }
+    inner class QuestObjective {
+        var title: String? = null
+        var beginDateAndTime: String? = null
+    }
+    @ToJson
+    fun questObjectiveToJson(questObjective: QuestObjective): QuestObjectiveJson {
+        val json = QuestObjectiveJson()
+        json.title = questObjective.title
+        json.begin_date = questObjective.beginDateAndTime.substring(0, 8)
+        json.begin_time = questObjective.beginDateAndTime.substring(9, 14)
+        return json
+    }
+}*/
+/*
+private fun <T> JsonAdapter<T>.toJson(objective: Any): String? {
+
+}
+*//*
+val jsonAdapter = moshi.adapter<QuestObjective>()
+    val questObjective = jsonAdapter.fromJson(json)
+
+object json {
+
+}
+*/
+
+/*
+    val dateJson = "\"2018-11-26T11:04:19.342668Z\""
+    val nullDateJson = "null"
+
+// Hypothetical IsoDateDapter, doesn't support null by default
+    val adapter: JsonAdapter<Date> = IsoDateDapter()
+
+    val date = adapter.fromJson(dateJson)
+    println(date) // Mon Nov 26 12:04:19 CET 2018
+
+    val nullDate = adapter.fromJson(nullDateJson)
+// Exception, com.squareup.moshi.JsonDataException: Expected a string but was NULL at path $
+
+    val nullDate = adapter.nullSafe().fromJson(nullDateJson)
+    println(nullDate) // null
+    val cardsJsonResponse: String = "LLLL"
+    class BlackjackHand(...) {
+        @Json(ignore = true)
+        var total: Int = 0
+    }
+        // We can just use a reified extension!
+    val adapter = moshi.adapter<List<Card>>()
+    val cards: List<Card>? = adapter.fromJson(cardsJsonResponse)
+*//*
+    @Retention(AnnotationRetention.RUNTIME)
+    @JsonQualifier
+    annotation class HexColor
+    class Rectangle {
+        var width = 0
+        var height = 0
+        @HexColor var color = 0
+    }
+    class Player {
+        val username: String = ""
+
+        @Json(name = "lucky number")
+        val luckyNumber: Int = 0
+    }
+       // @SuppressWarnings("unused") // Moshi uses this!
+        /** Converts strings like #ff0000 to the corresponding color ints.  */
+        inner class ColorAdapter {
+            @ToJson fun toJson(@HexColor rgb: Int): String {
+                return "#%06x".format(rgb)
+            }
+
+            @FromJson @HexColor fun fromJson(rgb: String): Int {
+                return rgb.substring(1).toInt(16)
+            }
+        }
+        class TournamentWithNullsAdapter {
+            @ToJson fun toJson(writer: JsonWriter, tournament: Tournament?,
+                               delegate: JsonAdapter<Tournament?>) {
+                val wasSerializeNulls: Boolean = writer.getSerializeNulls()
+                writer.setSerializeNulls(true)
+                try {
+                    delegate.toJson(writer, tournament)
+                } finally {
+                    writer.setLenient(wasSerializeNulls)
+                }
+            }
+        }
+
+        @AlwaysSerializeNulls
+        class Car(
+            val make: String?,
+            val model: String?,
+            val color: String?
+        )
+        */
+//printError(questsResponse.message)
+/*Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        when (val additionResponse = viewModel.isQuestAddedState.value) {
+            is Response.Loading -> CircularProgressIndicator()
+            is Response.Success -> Unit
+            is Response.Error -> Utils.printError(additionResponse.message)
+        }
+    }
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        when (val deletionResponse = viewModel.isQuestDeletedState.value) {
+            is Response.Loading -> CircularProgressIndicator()
+            is Response.Success -> Unit
+            is Response.Error -> Utils.printError(deletionResponse.message)
+
+        }
+    }*/
+
+/* val moshi = Moshi.Builder()
+    .addLast(KotlinJsonAdapterFactory())
+    .build()
+*/
+
+

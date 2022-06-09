@@ -1,5 +1,6 @@
 package com.instance.dataxbranch.ui.components
 
+import com.instance.dataxbranch.quests.RoomQuestViewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -23,11 +24,12 @@ import kotlinx.coroutines.job
 
 
 @Composable
-fun AddQuestAlertDialog(
-    viewModel: QuestsViewModel = hiltViewModel()
+fun AddQuestEntityAlertDialog(
+    viewModel: RoomQuestViewModel = hiltViewModel()
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var author by remember { mutableStateOf("") }
     val focusRequester = FocusRequester()
 
     if (viewModel.openDialogState.value) {
@@ -76,7 +78,7 @@ fun AddQuestAlertDialog(
                 TextButton(
                     onClick = {
                         viewModel.openDialogState.value = false
-                        viewModel.addQuest(title, description,"author")
+                       viewModel.addNewQuestEntity(title,description, author)
                     }
                 ) {
                     Text(

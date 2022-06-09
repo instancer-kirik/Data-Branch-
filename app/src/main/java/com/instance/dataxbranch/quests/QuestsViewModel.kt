@@ -1,29 +1,20 @@
 package com.instance.dataxbranch.quests
 
 
-import androidx.annotation.UiThread
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.load.HttpException
-import com.instance.dataxbranch.Quest
-import com.instance.dataxbranch.data.repository.QuestsRepository
+import com.instance.dataxbranch.data.entities.QuestEntity
 import com.instance.dataxbranch.domain.Response
 import com.instance.dataxbranch.domain.use_case.UseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class QuestsViewModel @Inject constructor(
-    private val useCases: UseCases
+    val useCases: UseCases
 ): ViewModel() {
     private val _questsState = mutableStateOf<Response<List<Quest>>>(Response.Loading)
     val questsState: State<Response<List<Quest>>> = _questsState
@@ -48,9 +39,17 @@ class QuestsViewModel @Inject constructor(
         }
     }
 
-    fun addQuest(title: String, author: String) {
+    fun addQuest(title: String,description:String, author: String) {
         viewModelScope.launch {
-            useCases.addQuest(title, author).collect { response ->
+            useCases.addQuest.invoke(title, description, author).collect { response ->
+                _isQuestAddedState.value = response
+            }
+        }
+    }
+
+    fun addQuest(quest: Quest) {
+        viewModelScope.launch {
+            useCases.addQuestbyQuest(quest).collect { response ->
                 _isQuestAddedState.value = response
             }
         }
@@ -63,4 +62,16 @@ class QuestsViewModel @Inject constructor(
             }
         }
     }
+
+    fun addQuestToRoom(quest: Quest) {//probably isnt a flow function
+        viewModelScope.launch {
+            useCases.addQuestEntitybyQuest(quest)
+        }
+    }
+    fun addQuestEntityToRoom(quest: QuestEntity) {//probably isnt a flow function
+        viewModelScope.launch {
+            useCases.addQuestEntity(quest)
+        }
+    }
+
 }

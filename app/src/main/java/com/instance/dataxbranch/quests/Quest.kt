@@ -1,6 +1,12 @@
-package com.instance.dataxbranch
+package com.instance.dataxbranch.quests
 
 import android.os.Build
+import com.instance.dataxbranch.data.QuestContainerLocal
+import com.instance.dataxbranch.data.entities.ObjectiveEntity
+import com.instance.dataxbranch.data.entities.QuestEntity
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
 //import androidx.databinding.BaseObservable
 //import androidx.databinding.Bindable
 
@@ -72,19 +78,44 @@ class User(firstName: String, lastName: String) : BaseObservable() {
         this.lastName = lastName
     }
 }*/
+
 class Quest(val qid: String= "-1",
-            var title: String = "Title",
+            var title: String = "QuestTitle",
+            var id: Int = 1,
             var active: Boolean = true,
             var description: String = "default description",
             val publisher: String = "Kirik",
             var author: String = "Kirik",
             val featuredImage: String="",
             val rating: Int = 0,
+            val country: String? = "",
             val sourceUrl: String="",
-            val ingredients: List<Any> = listOf(),
-            var objectives: ArrayList<QuestObjective> = arrayListOf(QuestObjective(),QuestObjective()),
+            val ingredients: String= "",
+            var objectives: ArrayList<QuestObjective> = arrayListOf(
+                QuestObjective(), QuestObjective()
+            ),
             val region: String = "state or region here. goal: sort by region"
 ){
+    fun toRoom(): QuestEntity {
+        if (qid != "-1") {
+            val qe = QuestEntity(
+                qid = this.qid,
+                title = this.title,
+                description = this.description,
+                country = this.country,
+                rating = this.rating,
+                publisher = this.publisher,
+                featuredImage = this.featuredImage,
+                sourceUrl = this.sourceUrl,
+                ingredients = this.ingredients,
+                author = this.author
+            )
+            objectives.forEach { it.convert() }//might need to invoke dao call
+            return qe
+        }
+        return QuestEntity()
+    }
+    //objectivesjson = Json.encodeToString(this.objectives),
     // Given
    /* val qid: Int = 0
     var title: String = "Create Quest"
@@ -107,24 +138,39 @@ class Quest(val qid: String= "-1",
 
 
 
-    class QuestObjective(){
+    lateinit var originalTitle: String
 
-        var obj: String? = "make objective"
+    @JsonClass(generateAdapter=true)
+    open class QuestObjective(obj: String, beginDateAndTime: String, desc: String?, objectiveType: ObjectiveType, requiredAmount: Int?) {
+        constructor() : this("", "",
+            "", ObjectiveType.Default, -1
+
+
+            //"", hashMapOf<Any, Any>(),
+            //-1, LinkedTreeMap<Any, Any>()
+        )
+        fun convert():ObjectiveEntity{
+            return ObjectiveEntity(
+                obj = obj,
+                beginDateAndTime = beginDateAndTime,
+                desc = desc,
+                objectiveType = objectiveType,
+                requiredAmount = requiredAmount,
+                quest = "DEBUG_Quest"
+            )
+
+        }
+
+
+        var obj: String= "title"
+        var beginDateAndTime: String =  "beginDateAndTime: String, title: String?"
         var desc: String? = null
-        var check: Boolean = false
-        public var goalType: GoalType = GoalType.Default
+
+        var objectiveType: ObjectiveType = ObjectiveType.Default
         var requiredAmount: Int? = null;
-        var currentAmount: Int = 0;
 
-        fun IsReached(): Boolean {
-            return (currentAmount >= requiredAmount!!)
-        }
 
-        fun ItemCollected() {
-            if (goalType == GoalType.Gathering) {
-                currentAmount++;
-            }
-        }
+
 
 
         override fun toString(): String {
@@ -133,27 +179,37 @@ class Quest(val qid: String= "-1",
 
 
         //override fun notifyPropertyChanged(fieldId: Int){}
-        //@Bindable
-        fun getObjective(): String {
-            return obj.toString()
-        }
+        //@Bindablevar currentAmount: Int = 0;
+        //
+        //
+        //        fun IsReached(): Boolean {
+        //            return (currentAmount >= requiredAmount!!)
+        //        }
+        //        fun getObjective(): String {
+        //            return obj.toString()
+        //        }//@Bindable
+        //        fun getDescription(): String? {
+        //            return this.desc
+        //        }//@Bindable
+        //        fun getAmount(): String? {
+        //            return desc
+        //        }
+    //        fun ItemCollected() {
+        //            if (objectiveType == ObjectiveType.Gathering) {
+        //                currentAmount++;
+        //            }
+        //        }
 
 
-        //@Bindable
-        fun getDescription(): String? {
-            return this.desc
-        }
 
 
-        //@Bindable
-        fun getAmount(): String? {
-            return desc
-        }
-        /*fun setAmount(desc: String) {
-        this.desc=desc
-        notifyPropertyChanged(BR.desc)
-    }*/
+
+
+
+
     }
+
+
 
     lateinit var dateAdded: String
     lateinit var dateUpdated: String
@@ -161,6 +217,7 @@ class Quest(val qid: String= "-1",
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             dateAdded = LocalDateTime.now().toString()
             update()
+            originalTitle=title
         }
     }
     private fun update(){
@@ -168,7 +225,7 @@ class Quest(val qid: String= "-1",
     }
 
     fun getObjective(i: Int): String {
-        return objectives[i].getObjective()
+        return objectives[i].toString()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -181,15 +238,12 @@ class Quest(val qid: String= "-1",
 
     fun defaultObjective(): QuestObjective {
         val objective = QuestObjective()
-        objective.obj="Make Objective"
+        objective.obj="Make Default Objective"
         return objective
         }
 
 
-    @JvmName("getObjectives1")
-    fun getObjectives(): ArrayList<QuestObjective> {
-        return this.objectives
-    }
+
 
     /*  private fun Quest(): Quest {
         active = true
@@ -220,8 +274,16 @@ class Quest(val qid: String= "-1",
 
     }
 
-
-    public enum class GoalType {
+    enum class ObjectiveType {
+        Default,
+        Kill,
+        Fetch,
+        Escort,
+        Explore,
+        Do,
+        Gathering
+    }
+     enum class GoalType {
         Default,
         Kill,
         Fetch,
@@ -238,6 +300,47 @@ class Quest(val qid: String= "-1",
         }
 
         print("Saved, jk just printing")
+    }
+
+    /*fun toRoom(): QuestEntity {
+        val qe = QuestEntity(
+            //objectivesjson = Json.encodeToString(this.objectives),
+
+            title = this.title,
+            description = this.description,
+            id = 0,
+        )
+        val moshi: Moshi = Moshi.Builder().build()
+        val entityJsonAdapter: JsonAdapter<ObjectiveEntity> =
+            moshi.adapter(ObjectiveEntity::class.java)
+        objectives.forEach {objective ->ObjectiveEntity(
+            oid = objective.oid,
+            obj = objective.obj, beginDateAndTime = objective.beginDateAndTime, desc = objective.desc, objectiveType =objective.objectiveType, requiredAmount =objective.requiredAmount, currentAmount =objective.currentAmount,quest  ="DEBUG_Quest")
+            }
+        return qe
+    }*/
+
+    /*  val moshi: Moshi = Moshi.Builder().build()
+        val entityJsonAdapter: JsonAdapter<ObjectiveEntity> =
+            moshi.adapter(ObjectiveEntity::class.java)*/
+    override fun hashCode(): Int {
+        var result = qid.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + active.hashCode()
+        result = 31 * result + description.hashCode()
+        result = 31 * result + publisher.hashCode()
+        result = 31 * result + author.hashCode()
+        result = 31 * result + featuredImage.hashCode()
+        result = 31 * result + rating
+        result = 31 * result + (country?.hashCode() ?: 0)
+        result = 31 * result + sourceUrl.hashCode()
+        result = 31 * result + ingredients.hashCode()
+        result = 31 * result + objectives.hashCode()
+        result = 31 * result + region.hashCode()
+        result = 31 * result + originalTitle.hashCode()
+        result = 31 * result + dateAdded.hashCode()
+        result = 31 * result + dateUpdated.hashCode()
+        return result
     }
 }
 /*
