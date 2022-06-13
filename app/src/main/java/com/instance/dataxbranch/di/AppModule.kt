@@ -10,7 +10,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.instance.dataxbranch.core.Constants.QUESTS
-import com.instance.dataxbranch.data.QuestContainerLocal
+import com.instance.dataxbranch.data.QuestWithObjectives
 
 import com.instance.dataxbranch.data.local.AppDatabase
 import com.instance.dataxbranch.data.repository.LocalQuestsRepository
@@ -80,7 +80,8 @@ object AppModule {
         getLocalQuests= GetLocalQuests(dao),
         addQuestEntitybyQuest= AddQuestEntitybyQuest(dao),
         addQuestEntity = AddQuestEntity(dao),
-        addNewQuestEntity = AddNewQuestEntity(localrepo)
+        addNewQuestEntity = AddNewQuestEntity(localrepo),
+        addNewObjectiveEntityToQuestEntity=  AddNewObjectiveEntityToQuestEntity(localrepo)
     )
 
 
@@ -102,8 +103,8 @@ object AppModule {
         return db.questDao()
     }
     @Provides
-    fun provideLocalQuests(localrepo: LocalQuestsRepository):Array<QuestContainerLocal>{
-       //val quests: Array<QuestContainerLocal>
+    fun provideLocalQuests(localrepo: LocalQuestsRepository):Array<QuestWithObjectives>{
+       //val quests: Array<QuestWithObjectives>
         return localrepo.getQuests()
     }
 

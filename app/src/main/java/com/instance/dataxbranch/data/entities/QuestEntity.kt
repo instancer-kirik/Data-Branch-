@@ -7,7 +7,8 @@ import com.instance.dataxbranch.utils.Converters
 @Entity(
     tableName = "quests",
     indices = [
-        Index(value = ["id"], unique = true)
+        Index(value = ["id"], unique = true),
+        //Index(value = ["oid"])
         //Index(value = ["trakt_id"], unique = true),
         //Index(value = ["tmdb_id"])
     ],
@@ -26,7 +27,7 @@ import com.instance.dataxbranch.utils.Converters
 @TypeConverters(Converters::class)
 
  data class QuestEntity @JvmOverloads constructor(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int = 0,
+    @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) val id: Long=0,
     @ColumnInfo(name = "qid") var qid: String? = "-1",
 
     @ColumnInfo(name = "title") var title: String? = null,
@@ -46,6 +47,7 @@ import com.instance.dataxbranch.utils.Converters
     @ColumnInfo(name = "ingredients") var ingredients: String = "",
     //@ColumnInfo(name = "objectivesjson") var objectivesjson: List<String> = listOf(""),//this to be json
     @ColumnInfo(name = "region") var region: String = "state or region here. goal: sort by region",
+    //@ColumnInfo(name = "oids") var oids: List<Int> =listOf(),
     //var check: Nothing = TODO()
 /*@ColumnInfo(name = "trakt_id") override val traktId: Int? = null,
     @ColumnInfo(name = "tmdb_id") override val tmdbId: Int? = null,
@@ -53,6 +55,8 @@ import com.instance.dataxbranch.utils.Converters
     @ColumnInfo(name = "overview") val summary: String? = null,
     @ColumnInfo(name = "homepage") val homepage: String? = null,*/
 
-)
+) {
+
+}
 
 /**/

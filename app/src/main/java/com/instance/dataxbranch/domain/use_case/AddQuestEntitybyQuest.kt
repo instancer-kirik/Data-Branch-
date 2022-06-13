@@ -1,9 +1,7 @@
 package com.instance.dataxbranch.domain.use_case
 
-import com.instance.dataxbranch.data.QuestContainerLocal
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.quests.Quest
-import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,11 +22,13 @@ class AddQuestEntitybyQuest(
     val json = jsonAdapter.toJson(Quest.QuestObjective())
 */
 
-    operator fun invoke(//returns questEntity to operand// actually now QuestContainerLocal
+    operator fun invoke(//returns questEntity to operand// actually now QuestWithObjectives
         value: Quest
 
-    ) =CoroutineScope(Dispatchers.IO).launch{dao.save(QuestEntity(
-            id = value.id,
+    ) =CoroutineScope(Dispatchers.IO).launch{
+
+        dao.save(QuestEntity(
+            //id = value.id.toLong() doesn't set here. autogens
             qid = value.qid,
             title=value.title + "",
             originalTitle = value.originalTitle,
@@ -42,8 +42,8 @@ class AddQuestEntitybyQuest(
             sourceUrl = value.sourceUrl,
             ingredients = value.ingredients,
             region = value.region
-        ))}.also {
-        value.objectives.forEach { objective -> CoroutineScope(Dispatchers.IO).launch{dao.save(objective.convert()) }}
+        )).also {
+            value.objectives.forEach { objective -> dao.save(objective.convert(it)) }}
 
 
     }

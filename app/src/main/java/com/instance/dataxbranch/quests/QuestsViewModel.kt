@@ -31,6 +31,7 @@ class QuestsViewModel @Inject constructor(
         getQuests()
     }
 
+
     private fun getQuests() {
         viewModelScope.launch {
             useCases.getQuests().collect { response ->

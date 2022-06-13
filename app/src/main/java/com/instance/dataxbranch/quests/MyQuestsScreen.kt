@@ -1,5 +1,6 @@
 package com.instance.dataxbranch.ui
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -15,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,7 +24,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.instance.dataxbranch.quests.Quest
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.instance.dataxbranch.R
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 //import com.instance.dataxbranch.quests.RoomQuestViewModel
@@ -33,9 +34,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.data.QuestContainerLocal
-import com.instance.dataxbranch.data.repository.QuestsRepository
-import com.instance.dataxbranch.quests.QuestService.getLocalQuests
+import com.instance.dataxbranch.core.Constants.TAG
+import com.instance.dataxbranch.data.QuestWithObjectives
 import com.instance.dataxbranch.quests.RoomQuestViewModel
 import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
 import kotlinx.coroutines.CoroutineScope
@@ -55,6 +55,9 @@ fun MyQuestsScreen(
 
 
     ) {
+    /*viewModel.rowsInserted.observeForever(){
+        Log.d(TAG, "$it rows inserted")
+    }*/
 
     //val quests= viewModel.qes.collectAsState(initial = emptyList())
     //var my_quests: StateFlow<List<QuestEntity>> = viewModel.getQuests()
@@ -65,6 +68,7 @@ fun MyQuestsScreen(
             AddQuestEntityFloatingActionButton()
         }
     ) { padding ->
+
         if (viewModel.openDialogState.value) {
             AddQuestEntityAlertDialog()
         }
@@ -81,7 +85,7 @@ fun MyQuestsScreen(
 
             //viewModel.addQuestEntity(Quest())
 
-            Text(viewModel.localQuestsRepository.getQuests().forEach { it.toString() }.toString())
+            //Text(viewModel.localQuestsRepository.getQuests().forEach { it.toString() }.toString())
 //viewModel.dao.getAll()
             if (showDialog.value) {
                 alert(viewModel)
@@ -140,21 +144,21 @@ fun AddQuestEntityFloatingActionButton(viewModel: RoomQuestViewModel = hiltViewM
 }
 
 
+
 @Composable
-fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestContainerLocal>, modifier: Modifier){
+fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObjectives>, modifier: Modifier){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index}
+
     Text(
         "placeholder1"//text = "Index $index",
     )
     LazyColumn(
         modifier.fillMaxSize(),
     ) {//replace count with quest.objectives.size
-
+        //val mObserver = Observer<List<QuestWithObjectives>> { qwe->
         itemsIndexed(quests) { index,quest ->
-            Text(
-                quest.toString()//text = "Index $index",
-            )
+            //Text(quest.toString())//text = "Index $index",
             LocalQuestView(
                 viewModel = viewModel,
                 quest = quest,
@@ -174,7 +178,7 @@ fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestContainerL
 @Composable
 fun LocalQuestView(
     viewModel: RoomQuestViewModel,
-    quest: QuestContainerLocal,
+    quest: QuestWithObjectives,
     index: Int,
     selected: Boolean,
     onClick: (Int) -> Unit
@@ -191,28 +195,15 @@ fun LocalQuestView(
             text = "Index $index",
         )
 
-        LocalQuestCardContent(quest)
+        LocalQuestCardContent(viewModel,quest)
 
     }
     Text("DEBUG2")
 }
-@Composable//, onClick: (Int) -> Unit
-fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestContainerLocal ) {
-    Box(modifier = Modifier
 
-        //.background(if (selected) MaterialTheme.colors.secondary else Color.Transparent)
-        .fillMaxWidth()
-        .padding(12.dp)) {
-        Text(
-            "placeholder2"//text = "Index $index",
-        )
-        LocalQuestCardContent(quest)
-    }
-
-}
 
 @Composable
-fun LocalQuestCardContent(quest: QuestContainerLocal) {
+fun LocalQuestCardContent(viewModel: RoomQuestViewModel,quest: QuestWithObjectives) {
 
         var expanded by remember { mutableStateOf(false) }
 
@@ -240,14 +231,20 @@ fun LocalQuestCardContent(quest: QuestContainerLocal) {
                         fontWeight = FontWeight.ExtraBold
                     )
                 )
+
+
+                //Text(quest.objectives.toString())
                 if (expanded) {
 
                     //var listofObjectiveEntities: Array<ObjectiveEntity> = arrayOf(ObjectiveEntity(-5,"",-5,"",Quest.ObjectiveType.Default,0,0,""))
                     //var objective: Quest.QuestObjective
                     run {
+                        Text("open")
+
                         quest.objectives.forEach { oe ->
                             ObjectiveViewEdit(oe)
                         }
+                        Button(onClick = { viewModel.addNewObjectiveEntity(quest)}){Text("ADD OBJECTIVE")}
                     }
 
 
@@ -255,7 +252,7 @@ fun LocalQuestCardContent(quest: QuestContainerLocal) {
             }
             IconButton(onClick = {
                 expanded = !expanded
-                if (!expanded) {//saves on click when closing
+                if(!expanded) {//saves on click when closing
                     //viewModel.addQuest(quest)
                 }
             }) {
@@ -290,10 +287,14 @@ fun CompleteCheckBox(objective: Quest.QuestObjective) {
         )
     }
 
-
+@Composable
+    fun startObserving(viewModel: RoomQuestViewModel){viewModel.rowsInserted.observe(this, Observer {
+        Log.d(TAG, "$it rows inserted");
+    }
 
 
 }*/
+
 @Composable
 fun ObjectiveViewEdit(oe: ObjectiveEntity) {
 
@@ -356,7 +357,7 @@ fun ObjectiveViewEdit(oe: ObjectiveEntity) {
                 ) {
 
                     Text(text = "Objective ")
-                    Text(text = oe.toString())
+                    //Text(text = oe.toString())
 
                 }
                 //CompleteCheckBox(oe)
@@ -364,7 +365,20 @@ fun ObjectiveViewEdit(oe: ObjectiveEntity) {
             }
         }
 }
+@Composable//, onClick: (Int) -> Unit
+fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestWithObjectives ) {
+    Box(modifier = Modifier
 
+        //.background(if (selected) MaterialTheme.colors.secondary else Color.Transparent)
+        .fillMaxWidth()
+        .padding(12.dp)) {
+        Text(
+            "placeholder2"//text = "Index $index",
+        )
+        LocalQuestCardContent(viewModel,quest)
+    }
+
+}
 //private fun <T> Flow<T>.collectAsLazyPagingItems(): Any {
 
 

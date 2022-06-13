@@ -3,29 +3,31 @@ package com.instance.dataxbranch.data.repository
 
 
 import android.app.Application
-import com.instance.dataxbranch.data.QuestContainerLocal
-
-
+import com.google.firebase.firestore.auth.User
+import com.instance.dataxbranch.data.QuestWithObjectives
+import com.instance.dataxbranch.data.daos.ObjectiveDao
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
 import com.instance.dataxbranch.data.local.AppDatabase
 import kotlinx.coroutines.*
 import javax.inject.Singleton
+
+
 @Singleton
 class LocalQuestsRepository(application: Application,db:AppDatabase) {
     var questDao: QuestDao
-    private lateinit var mquests: Array<QuestContainerLocal>
+    private lateinit var mquests: Array<QuestWithObjectives>
 
     private fun initRepo(): Job =
-
             CoroutineScope(Dispatchers.IO).launch {
                 mquests =questDao.getItAll()
             }
 
     fun refresh(): Job =
+
         CoroutineScope(Dispatchers.IO).launch {
-            mquests=questDao.getItAll()
+            mquests=questDao.loadAll()
         }
     init {
         questDao = db.questDao()
@@ -34,7 +36,12 @@ class LocalQuestsRepository(application: Application,db:AppDatabase) {
 
     fun insertQuestEntity(quest: QuestEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
-            questDao.insert(quest)
+            questDao.save(quest)
+        }
+    fun newObjectiveEntity(quest: QuestWithObjectives): Job =
+        CoroutineScope(Dispatchers.IO).launch {
+            val oe = ObjectiveEntity(id = quest.quest.id, quest = quest.toString())
+            questDao.save(oe)
         }
 
     fun updateQuestEntity(quest: QuestEntity): Job =
@@ -43,17 +50,17 @@ class LocalQuestsRepository(application: Application,db:AppDatabase) {
 
         }
 
-    fun deleteQuestEntity(quest: QuestEntity): Job =
+    fun deleteQuestEntity(quest: QuestWithObjectives): Job =
         CoroutineScope(Dispatchers.IO).launch {
             questDao.delete(quest)
         }
 
     fun getAllQuestsAsync(): Deferred<Unit> =
         CoroutineScope(Dispatchers.IO).async {
-            questDao.getAll()
+            questDao.loadAll()
         }
 
-    fun getQuests(): Array<QuestContainerLocal> = mquests
+    fun getQuests(): Array<QuestWithObjectives> = mquests
 
     fun deleteAllRows(): Job =
         CoroutineScope(Dispatchers.IO).launch {
@@ -63,7 +70,44 @@ class LocalQuestsRepository(application: Application,db:AppDatabase) {
         CoroutineScope(Dispatchers.IO).launch {
             questDao.save(vararg)
         }
+    /*fun loadObjectivesByqid(qid: String): List<ObjectiveEntity>{//WRONG should use id for locals
+        val quest = mquests.filter {   (key) -> key.qid==qid}.first()
+        CoroutineScope(Dispatchers.IO).launch {
+
+            quest.objectives = questDao.loadObjectivesByqid(qid)
+        }
+        return quest.objectives
+    }*/
+
+    fun insertCollectionItem(questWithObjectives: QuestWithObjectives): Int {
+        CoroutineScope(Dispatchers.IO).launch {
+            questDao.insert(questWithObjectives)
+            questWithObjectives.objectives.forEach{obj->questDao.save(obj) }
+        }
+        return 1
+    }
+    fun insertObjectivesForQuest(quest: QuestEntity, objectives: List<ObjectiveEntity>) {
+        CoroutineScope(Dispatchers.IO).launch {
+
+            objectives.forEach{obj->
+                obj.id=quest.id
+                questDao.save(obj) }
+        }
+
+
+    }
+
+
 }
+
+
+
+
+
+
+
+
+
 /*
 
     suspend fun createNewQuest(title: String) {

@@ -7,5 +7,5 @@ class GetLocalQuests(
     private val dao: QuestDao
 
 ){
-    operator fun invoke() = dao.getAll()
+    operator fun invoke() = dao.getItAll()
 }

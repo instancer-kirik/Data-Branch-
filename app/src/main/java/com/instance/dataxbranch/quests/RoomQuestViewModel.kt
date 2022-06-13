@@ -1,10 +1,13 @@
 package com.instance.dataxbranch.quests
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.instance.dataxbranch.data.QuestContainerLocal
+import androidx.room.Query
+import androidx.room.Transaction
+import com.instance.dataxbranch.data.QuestWithObjectives
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.local.AppDatabase
@@ -14,7 +17,11 @@ import com.instance.dataxbranch.domain.use_case.UseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,8 +31,18 @@ class RoomQuestViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     val localQuestsRepository: LocalQuestsRepository,
     val dao: QuestDao,
-    var quests :Array<QuestContainerLocal>
+    var quests :Array<QuestWithObjectives>,
+
+
     ): ViewModel() {
+    //val _qwe:
+    val _quests: MutableStateFlow<List<QuestWithObjectives>> = MutableStateFlow(listOf<QuestWithObjectives>())
+    val QuestFlow: StateFlow<List<QuestWithObjectives>> get() = _quests
+    private val downloadQueue: MutableMap<Int, Flow<Int>> = mutableMapOf()
+    val handyString: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+
     init {
         quests=getQuestsFromRepo()
         viewModelScope.launch {
@@ -34,6 +51,26 @@ class RoomQuestViewModel @Inject constructor(
         }
     }
 
+    val rowsInserted: MutableLiveData<Int> = MutableLiveData()
+    override fun onCleared() {
+        //rowsInserted.removeObserver(observer)
+        super.onCleared()
+    }
+    private fun getQuests() {
+        viewModelScope.launch(Dispatchers.IO) {
+             val qwe = arrayListOf<QuestWithObjectives>()
+
+            _quests.emit(qwe)
+        }
+    }
+    fun addNewObjectiveEntity(quest:QuestWithObjectives){
+        CoroutineScope(Dispatchers.IO).launch { useCases.addNewObjectiveEntityToQuestEntity(quest)}
+    }
+    //Update your coroutine
+    fun insert(collectionItem: QuestWithObjectives) = viewModelScope.launch {
+        val result = localQuestsRepository.insertCollectionItem(collectionItem)
+        rowsInserted.postValue(result)
+    }
     //private val _isQuestAddedState = mutableStateOf<Response<Void?>>(Response.Success(null))
     //val isQuestAddedState: State<Response<Void?>> = _isQuestAddedState
     var openDialogState = mutableStateOf(false)
@@ -42,8 +79,9 @@ class RoomQuestViewModel @Inject constructor(
     //fun getQuests() :Array<QuestEntity>{
     //return quests
 
-    fun getQuestsFromRepo():Array<QuestContainerLocal>{
+    fun getQuestsFromRepo():Array<QuestWithObjectives>{
         return localQuestsRepository.getQuests()
+
     }
     fun addNewQuestEntity(title: String, description:String,author: String) {
         CoroutineScope(Dispatchers.IO).launch { useCases.addNewQuestEntity(title,description, author) }
@@ -53,8 +91,8 @@ class RoomQuestViewModel @Inject constructor(
 
     fun addQuestEntity(quest: Quest) {
         CoroutineScope(Dispatchers.IO).launch {
-            dao.insert(quest.toRoom())
-            quest.objectives.forEach { Log.d("RQVM","OBJ seen")}//objective->objective.convert()  }
+            quest.toRoom(dao)
+            quest.objectives.forEach { Log.d("RQVM"," OBJ seen $it")}//objective->objective.convert()  }
 
         }
     }
@@ -63,8 +101,45 @@ class RoomQuestViewModel @Inject constructor(
         localQuestsRepository.refresh()
         quests=getQuestsFromRepo()
     }
+    fun loadObjectivesa(quest: QuestWithObjectives):List<ObjectiveEntity> {
 
-}
+        CoroutineScope(Dispatchers.IO).launch {
+            quest.objectives = dao.getObjectiveEntityList(id = quest.quest.id)
+        }
+        return quest.objectives
+    }
+     /*fun loadQuestWithObjectives(id: Int): QuestWithObjectives =withContext(Dispatchers.IO){
+              dao.getQuestWithObjectives(id)//this just get the first one. idk what array wrapper but whatever
+
+        }*/
+   /* fun loadObjectivesb(quest: QuestWithObjectives):QuestWithObjectives {
+
+        CoroutineScope(Dispatchers.IO).launch {
+            quest.objectives = dao.loadObjectivesByqid(qid = quest.quest.qid!!)
+        }
+        return quest
+
+    }*/
+
+    fun getQuestWithObjectives(id:Long): QuestWithObjectives {
+
+        return dao.getQuestWithObjectives(id) }
+
+    }
+
+
+
+
+
+
+    /*fun getQuestWithObjectives(id: Int): List<QuestWithObjectives> {
+      CoroutineScope(Dispatchers.IO).launch{dao.getQuestWithObjectives(id)}
+        return result
+    }
+    */
+
+
+
 
 
 /*

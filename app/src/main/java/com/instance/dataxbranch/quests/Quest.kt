@@ -1,12 +1,11 @@
 package com.instance.dataxbranch.quests
 
 import android.os.Build
-import com.instance.dataxbranch.data.QuestContainerLocal
+import com.instance.dataxbranch.data.QuestWithObjectives
+import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
 //import androidx.databinding.BaseObservable
 //import androidx.databinding.Bindable
 
@@ -96,9 +95,9 @@ class Quest(val qid: String= "-1",
             ),
             val region: String = "state or region here. goal: sort by region"
 ){
-    fun toRoom(): QuestEntity {
-        if (qid != "-1") {
-            val qe = QuestEntity(
+    suspend fun toRoom(dao: QuestDao) {
+
+        val h=dao.save(QuestEntity(
                 qid = this.qid,
                 title = this.title,
                 description = this.description,
@@ -109,12 +108,15 @@ class Quest(val qid: String= "-1",
                 sourceUrl = this.sourceUrl,
                 ingredients = this.ingredients,
                 author = this.author
-            )
-            objectives.forEach { it.convert() }//might need to invoke dao call
-            return qe
+            ))
+        convertobjectives(id=h,dao)
         }
-        return QuestEntity()
-    }
+
+    fun convertobjectives(id:Long,dao: QuestDao){
+        //var objs: List<ObjectiveEntity> = listOf()
+        objectives.forEach { dao.save(it.convert(id))
+
+    }}
     //objectivesjson = Json.encodeToString(this.objectives),
     // Given
    /* val qid: Int = 0
@@ -149,8 +151,9 @@ class Quest(val qid: String= "-1",
             //"", hashMapOf<Any, Any>(),
             //-1, LinkedTreeMap<Any, Any>()
         )
-        fun convert():ObjectiveEntity{
+        fun convert(id:Long):ObjectiveEntity{
             return ObjectiveEntity(
+                id=id,
                 obj = obj,
                 beginDateAndTime = beginDateAndTime,
                 desc = desc,

@@ -174,7 +174,7 @@ private fun QuestCardContent(viewModel: QuestsViewModel,quest: Quest) {
                     fontWeight = FontWeight.ExtraBold
                 )
             )
-            Button(onClick={viewModel.addQuestEntityToRoom(quest.toRoom())}){
+            Button(onClick={viewModel.addQuestToRoom(quest)}){
                 Text("pull from cloud")
             }
             if (expanded) {
@@ -216,29 +216,7 @@ fun ObjectiveViewNoEdit(objective: Quest.QuestObjective) {
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Row(modifier = Modifier.padding(24.dp)) {
-            OutlinedButton(
-                onClick = { expanded = !expanded
-                    if(!expanded){//since save triggers expanded, handle saving here with value: String
-                        //Log.d("saved the objective", "$value")
-                        objective.obj=value// updates quest. needs method to push back to firebase
-                        objective.desc=value2
-                    }
-                }
-            ) {
-                if (expanded) {
-                    Text("Save")
-                    Column {
-                        Text(
-                           value+"",
-                            modifier = Modifier.padding(8.dp)
 
-                        )
-                        Text(value2+"",
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                }else Text("Edit")
-            }
             Spacer(modifier = Modifier.padding(8.dp))
             Column(modifier = Modifier
                 .weight(1f)

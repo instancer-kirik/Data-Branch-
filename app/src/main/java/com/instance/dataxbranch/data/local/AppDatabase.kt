@@ -8,7 +8,7 @@ import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
 
 
-@Database(entities = arrayOf(QuestEntity::class, ObjectiveEntity::class), version = 5)
+@Database(entities = arrayOf(QuestEntity::class, ObjectiveEntity::class), version = 11)
  abstract class AppDatabase() : RoomDatabase(){
     //abstract fun addQuestEntity(title: String, author: String): Any
     //abstract fun getQuestDao(): QuestDao

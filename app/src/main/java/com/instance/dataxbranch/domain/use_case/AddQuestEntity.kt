@@ -11,5 +11,5 @@ class AddQuestEntity(
      {
         suspend operator fun invoke(
              ent: QuestEntity
-        ) = dao.insert(ent)
+        ) = dao.save(ent)
 }

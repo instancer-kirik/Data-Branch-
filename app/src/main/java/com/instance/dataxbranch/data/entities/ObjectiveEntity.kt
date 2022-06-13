@@ -15,7 +15,7 @@ import com.squareup.moshi.JsonClass
         ForeignKey(
             entity = QuestEntity::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("oid"),
+            childColumns = arrayOf("id"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
 
@@ -25,10 +25,10 @@ import com.squareup.moshi.JsonClass
 )
 @JsonClass(generateAdapter=true)
 data class ObjectiveEntity @JvmOverloads constructor(//oid and qid are room's id... the other one is firebase---- it's now rqid
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "oid") val oid: Int=0,
+     @ColumnInfo(name = "oid")@PrimaryKey(autoGenerate = true) val oid: Long=0,
     @ColumnInfo(name = "obj") var obj: String? = null,
-    //@ColumnInfo(name = "qid") var qid: String? = null,
-
+    @ColumnInfo(name = "qid") var qid: String? = null,
+    @ColumnInfo(name = "id") var id: Long=0,
 
     @ColumnInfo(name = "desc") var desc: String? = null,
     @ColumnInfo(name = "objectiveType") var objectiveType: Quest.ObjectiveType = Quest.ObjectiveType.Default,
@@ -37,4 +37,6 @@ data class ObjectiveEntity @JvmOverloads constructor(//oid and qid are room's id
     @ColumnInfo(name = "beginDateAndTime") var beginDateAndTime: String="now",
     @ColumnInfo(index = true)
     val quest:String
-    )
+    ) {
+
+}
