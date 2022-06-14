@@ -8,6 +8,7 @@ import com.instance.dataxbranch.data.repository.LocalQuestsRepository
 import com.instance.dataxbranch.updateList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Singleton
 
@@ -21,8 +22,8 @@ object QuestService {
             quests.updateList(listOf())
         }
     }
-   fun getLocalQuests(questsRepository: LocalQuestsRepository):Array<QuestWithObjectives>{
-       return questsRepository.getQuests()
+   fun getLocalQuests(questsRepository: LocalQuestsRepository): StateFlow<List<QuestWithObjectives>> {
+       return questsRepository.quests
    }
 fun addQuestEntity(questEntity: QuestEntity, localQuestsRepository:LocalQuestsRepository)=
         CoroutineScope(Dispatchers.IO).launch {localQuestsRepository.insertQuestEntity(questEntity) }

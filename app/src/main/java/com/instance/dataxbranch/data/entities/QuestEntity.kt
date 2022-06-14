@@ -39,7 +39,7 @@ import com.instance.dataxbranch.utils.Converters
 
     @ColumnInfo(name = "description") var description: String? = null,
     @ColumnInfo(name = "publisher") var publisher: String? = null,
-
+    @ColumnInfo(name = "completed") var completed: Boolean = false,
     @ColumnInfo(name = "author") var author: String? = null,
     @ColumnInfo(name = "featuredImage") var featuredImage: String="",
     @ColumnInfo(name = "rating") var rating: Int = 0,

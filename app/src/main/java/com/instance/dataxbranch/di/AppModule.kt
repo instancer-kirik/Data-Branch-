@@ -23,6 +23,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -103,9 +105,9 @@ object AppModule {
         return db.questDao()
     }
     @Provides
-    fun provideLocalQuests(localrepo: LocalQuestsRepository):Array<QuestWithObjectives>{
+    fun provideLocalQuests(localrepo: LocalQuestsRepository): StateFlow<List<QuestWithObjectives>> {
        //val quests: Array<QuestWithObjectives>
-        return localrepo.getQuests()
+        return localrepo.quests
     }
 
 

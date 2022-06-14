@@ -1,6 +1,6 @@
 package com.instance.dataxbranch.ui
 
-import android.util.Log
+import androidx.annotation.Nullable
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -24,7 +24,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.instance.dataxbranch.R
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
@@ -34,12 +34,12 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.QuestWithObjectives
 import com.instance.dataxbranch.quests.RoomQuestViewModel
 import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 var showDialog =     mutableStateOf(false)
@@ -57,7 +57,12 @@ fun MyQuestsScreen(
     ) {
     /*viewModel.rowsInserted.observeForever(){
         Log.d(TAG, "$it rows inserted")
-    }*/
+
+    }
+    viewModel.dao.getItAll().observe(this,  Observer<List<QuestWithObjectives>>(){
+        @Override
+        fun onChanged(@Nullable quests: List<QuestWithObjectives> ) {
+        }*/
 
     //val quests= viewModel.qes.collectAsState(initial = emptyList())
     //var my_quests: StateFlow<List<QuestEntity>> = viewModel.getQuests()
@@ -146,18 +151,19 @@ fun AddQuestEntityFloatingActionButton(viewModel: RoomQuestViewModel = hiltViewM
 
 
 @Composable
-fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObjectives>, modifier: Modifier){
+fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: LiveData<List<QuestWithObjectives>>, modifier: Modifier){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index}
 
     Text(
         "placeholder1"//text = "Index $index",
     )
+    val questsstate by viewModel.quests.collectAsState()
     LazyColumn(
         modifier.fillMaxSize(),
     ) {//replace count with quest.objectives.size
         //val mObserver = Observer<List<QuestWithObjectives>> { qwe->
-        itemsIndexed(quests) { index,quest ->
+        itemsIndexed(questsstate) { index,quest ->
             //Text(quest.toString())//text = "Index $index",
             LocalQuestView(
                 viewModel = viewModel,
@@ -183,7 +189,7 @@ fun LocalQuestView(
     selected: Boolean,
     onClick: (Int) -> Unit
 ) {
-    Text("DEBUG")
+
     Box(modifier = Modifier
         .clickable {
             onClick.invoke(index)
@@ -198,7 +204,7 @@ fun LocalQuestView(
         LocalQuestCardContent(viewModel,quest)
 
     }
-    Text("DEBUG2")
+
 }
 
 
@@ -239,10 +245,10 @@ fun LocalQuestCardContent(viewModel: RoomQuestViewModel,quest: QuestWithObjectiv
                     //var listofObjectiveEntities: Array<ObjectiveEntity> = arrayOf(ObjectiveEntity(-5,"",-5,"",Quest.ObjectiveType.Default,0,0,""))
                     //var objective: Quest.QuestObjective
                     run {
-                        Text("open")
+
 
                         quest.objectives.forEach { oe ->
-                            ObjectiveViewEdit(oe)
+                            ObjectiveViewEdit(viewModel,oe)
                         }
                         Button(onClick = { viewModel.addNewObjectiveEntity(quest)}){Text("ADD OBJECTIVE")}
                     }
@@ -253,7 +259,8 @@ fun LocalQuestCardContent(viewModel: RoomQuestViewModel,quest: QuestWithObjectiv
             IconButton(onClick = {
                 expanded = !expanded
                 if(!expanded) {//saves on click when closing
-                    //viewModel.addQuest(quest)
+                    viewModel.update(quest)
+                    viewModel.refresh()
                 }
             }) {
 
@@ -296,7 +303,7 @@ fun CompleteCheckBox(objective: Quest.QuestObjective) {
 }*/
 
 @Composable
-fun ObjectiveViewEdit(oe: ObjectiveEntity) {
+fun ObjectiveViewEdit(viewModel:RoomQuestViewModel, oe: ObjectiveEntity) {
 
 
         var value by remember { mutableStateOf(oe.obj) }
@@ -318,6 +325,7 @@ fun ObjectiveViewEdit(oe: ObjectiveEntity) {
                             oe.obj =
                                 value// updates quest. needs method to push back to firebase
                             oe.desc = value2
+                            viewModel.update(oe)
                         }
                     }
                 ) {
@@ -350,18 +358,23 @@ fun ObjectiveViewEdit(oe: ObjectiveEntity) {
                     } else Text("Edit")
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(bottom = extraPadding)
-                ) {
+                Box {
+                    Column(
+                        modifier = Modifier
+                           // .weight(1f)
+                            .padding(bottom = extraPadding)
+                    ) {
 
-                    Text(text = "Objective ")
-                    //Text(text = oe.toString())
+                        Text(text = "Objective ")
+                        Text(text = oe.obj + "")
 
+                        Text(text = "desc: " + oe.desc)
+                    }
+                    Checkbox(
+                    checked = oe.completed,
+                    onCheckedChange = {viewModel.onObjCheckedChanged(oe,it)}
+                )
                 }
-                //CompleteCheckBox(oe)
-
             }
         }
 }

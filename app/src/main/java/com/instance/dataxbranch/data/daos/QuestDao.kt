@@ -1,10 +1,14 @@
 package com.instance.dataxbranch.data.daos
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import com.instance.dataxbranch.data.QuestWithObjectives
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 
 import com.instance.dataxbranch.data.entities.QuestEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 
 @Dao
@@ -90,7 +94,8 @@ abstract class QuestDao {
     fun geQuestWithObjectivesid: Int):QuestWithObjectives
 */  @Transaction
     @Query("SELECT * FROM quests")
-    abstract fun getItAll(): Array<QuestWithObjectives>//probably includes objectives
+    abstract fun getItAll():
+            LiveData<MutableList<QuestWithObjectives>>//probably includes objectives
 
     @Transaction
     @Insert
@@ -109,7 +114,8 @@ abstract class QuestDao {
 
     @Query("SELECT * FROM objectives WHERE id =:id")
     abstract fun getObjectiveEntityList(id: Long): List<ObjectiveEntity>
-
+    @Query("SELECT * FROM objectives")
+    abstract fun getAllObjectives(): Flow<List<ObjectiveEntity>>
     /*open fun insertQuestObjectives(quest: QuestEntity) {
         val objectives: List<ObjectiveEntity> = quest.getObjectiveEntityList()
         for (i in objectives.indices) {
@@ -157,6 +163,8 @@ abstract class QuestDao {
     abstract fun update(vararg quest:QuestEntity)
     @Update
     abstract fun update(objective: ObjectiveEntity)
+
+
 
 
 

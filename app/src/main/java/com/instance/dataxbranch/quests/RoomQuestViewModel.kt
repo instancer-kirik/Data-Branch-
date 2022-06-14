@@ -31,12 +31,13 @@ class RoomQuestViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     val localQuestsRepository: LocalQuestsRepository,
     val dao: QuestDao,
-    var quests :Array<QuestWithObjectives>,
+   // var quests :Array<QuestWithObjectives>,
 
 
     ): ViewModel() {
     //val _qwe:
     val _quests: MutableStateFlow<List<QuestWithObjectives>> = MutableStateFlow(listOf<QuestWithObjectives>())
+    var quests: StateFlow<List<QuestWithObjectives>> = localQuestsRepository.quests
     val QuestFlow: StateFlow<List<QuestWithObjectives>> get() = _quests
     private val downloadQueue: MutableMap<Int, Flow<Int>> = mutableMapOf()
     val handyString: MutableLiveData<String> by lazy {
@@ -79,8 +80,8 @@ class RoomQuestViewModel @Inject constructor(
     //fun getQuests() :Array<QuestEntity>{
     //return quests
 
-    fun getQuestsFromRepo():Array<QuestWithObjectives>{
-        return localQuestsRepository.getQuests()
+    fun getQuestsFromRepo(): StateFlow<List<QuestWithObjectives>> {
+        return localQuestsRepository.quests
 
     }
     fun addNewQuestEntity(title: String, description:String,author: String) {
@@ -96,17 +97,34 @@ class RoomQuestViewModel @Inject constructor(
 
         }
     }
-
+    fun update(oe: ObjectiveEntity){
+        CoroutineScope(Dispatchers.IO).launch {
+            dao.update(oe)
+        }}
     fun refresh() {
         localQuestsRepository.refresh()
-        quests=getQuestsFromRepo()
+        quests=localQuestsRepository.quests
     }
+    fun update(quest: QuestWithObjectives){
+        CoroutineScope(Dispatchers.IO).launch {
+        dao.update(quest.quest)
+    }}
     fun loadObjectivesa(quest: QuestWithObjectives):List<ObjectiveEntity> {
 
         CoroutineScope(Dispatchers.IO).launch {
             quest.objectives = dao.getObjectiveEntityList(id = quest.quest.id)
         }
         return quest.objectives
+    }
+    fun onObjCheckedChanged(obj:ObjectiveEntity, checked: Boolean) {
+        viewModelScope.launch {
+            localQuestsRepository.update(obj.copy(completed = checked))
+        }
+    }
+    fun onCheckboxChecked(quest: QuestWithObjectives, checked: Boolean) {
+        viewModelScope.launch {
+           localQuestsRepository.update(quest.quest.copy(completed = checked))
+        }
     }
      /*fun loadQuestWithObjectives(id: Int): QuestWithObjectives =withContext(Dispatchers.IO){
               dao.getQuestWithObjectives(id)//this just get the first one. idk what array wrapper but whatever
@@ -124,6 +142,11 @@ class RoomQuestViewModel @Inject constructor(
     fun getQuestWithObjectives(id:Long): QuestWithObjectives {
 
         return dao.getQuestWithObjectives(id) }
+
+
+
+
+
 
     }
 
