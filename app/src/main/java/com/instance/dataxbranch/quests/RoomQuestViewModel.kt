@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Query
 import androidx.room.Transaction
+import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.QuestWithObjectives
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
@@ -88,7 +89,14 @@ class RoomQuestViewModel @Inject constructor(
 
         //dao.insert(QuestEntity(title = title, author = author))
     }
-
+    fun update(oe: ObjectiveEntity){
+        CoroutineScope(Dispatchers.IO).launch {
+            dao.update(oe)
+        }}
+    fun update(quest: QuestWithObjectives){
+        CoroutineScope(Dispatchers.IO).launch {
+            dao.update(quest.quest)
+        }}
     fun addQuestEntity(quest: Quest) {
         CoroutineScope(Dispatchers.IO).launch {
             quest.toRoom(dao)
@@ -107,6 +115,22 @@ class RoomQuestViewModel @Inject constructor(
             quest.objectives = dao.getObjectiveEntityList(id = quest.quest.id)
         }
         return quest.objectives
+    }
+
+    fun onObjCheckedChanged(obj:ObjectiveEntity, checked: Boolean) {//saves and spits log
+        //Log.d(TAG, "$obj is is $checked   "+obj.completed.toString())
+        //obj.completed=checked
+        CoroutineScope(Dispatchers.IO).launch {localQuestsRepository.update(obj)}
+        /*viewModelScope.launch {
+            localQuestsRepository.update(obj.copy(completed = checked))
+        }*/
+    }
+
+    fun onCheckboxChecked(quest: QuestWithObjectives, checked: Boolean) {
+        //Log.d(TAG, "$quest is is $checked   "+quest.quest.completed.toString())
+        viewModelScope.launch {
+            localQuestsRepository.update(quest.quest.copy(completed = checked))
+        }
     }
      /*fun loadQuestWithObjectives(id: Int): QuestWithObjectives =withContext(Dispatchers.IO){
               dao.getQuestWithObjectives(id)//this just get the first one. idk what array wrapper but whatever

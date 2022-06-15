@@ -49,12 +49,25 @@ class LocalQuestsRepository(application: Application,db:AppDatabase) {
             questDao.update(quest)
 
         }
+    fun update(quest: QuestEntity): Job =
+        CoroutineScope(Dispatchers.IO).launch {
+            questDao.update(quest)
 
+        }
+    fun update(obj: ObjectiveEntity): Job =
+        CoroutineScope(Dispatchers.IO).launch {
+            questDao.update(obj)
+
+        }
     fun deleteQuestEntity(quest: QuestWithObjectives): Job =
         CoroutineScope(Dispatchers.IO).launch {
             questDao.delete(quest)
         }
-
+    fun update(qwo: QuestWithObjectives): Job =
+        CoroutineScope(Dispatchers.IO).launch {
+            questDao.update(qwo.quest)
+            qwo.objectives.forEach{obj->questDao.update(obj)}
+        }
     fun getAllQuestsAsync(): Deferred<Unit> =
         CoroutineScope(Dispatchers.IO).async {
             questDao.loadAll()
@@ -86,6 +99,7 @@ class LocalQuestsRepository(application: Application,db:AppDatabase) {
         }
         return 1
     }
+
     fun insertObjectivesForQuest(quest: QuestEntity, objectives: List<ObjectiveEntity>) {
         CoroutineScope(Dispatchers.IO).launch {
 
@@ -96,6 +110,11 @@ class LocalQuestsRepository(application: Application,db:AppDatabase) {
 
 
     }
+    fun questById(id: Long): QuestWithObjectives = questDao.getQuestWithObjectives(id)
+
+    /*fun objForOId(oid: Long): Flow<ObjectiveEntity> { Let's avoid flow+liveData for now, too much headache
+        return _objectives.map { it.first { it.oid == oid } }
+    }*/
 
 
 }

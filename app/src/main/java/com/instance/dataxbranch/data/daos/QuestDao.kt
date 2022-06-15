@@ -147,7 +147,7 @@ abstract class QuestDao {
         //abstract fun insertQuestEntity(recipe: QuestEntity?): Long //return type is the key here.
         @Transaction
         @Delete
-        abstract fun delete(recipe: QuestEntity?, ingredients: List<ObjectiveEntity?>?)
+        abstract fun delete(quest: QuestEntity?, objectives: List<ObjectiveEntity?>?)
         @Transaction
         @Query("SELECT * FROM quests")
         abstract fun loadAll(): Array<QuestWithObjectives>

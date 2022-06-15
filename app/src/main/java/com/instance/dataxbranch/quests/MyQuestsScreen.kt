@@ -242,14 +242,21 @@ fun LocalQuestCardContent(viewModel: RoomQuestViewModel,quest: QuestWithObjectiv
                         Text("open")
 
                         quest.objectives.forEach { oe ->
-                            ObjectiveViewEdit(oe)
+                            ObjectiveViewEdit(viewModel,oe)
                         }
                         Button(onClick = { viewModel.addNewObjectiveEntity(quest)}){Text("ADD OBJECTIVE")}
                     }
 
 
                 }
+
             }
+            val checkedState=remember{ mutableStateOf(quest.quest.completed)}
+            Checkbox(
+                checked = checkedState.value,
+                onCheckedChange = {checkedState.value=it
+                    quest.quest.apply { completed = it }
+                    viewModel.onCheckboxChecked(quest,it)})
             IconButton(onClick = {
                 expanded = !expanded
                 if(!expanded) {//saves on click when closing
@@ -266,7 +273,9 @@ fun LocalQuestCardContent(viewModel: RoomQuestViewModel,quest: QuestWithObjectiv
                     }
 
                 )
+
             }
+
         }
 }
 /*
@@ -296,7 +305,7 @@ fun CompleteCheckBox(objective: Quest.QuestObjective) {
 }*/
 
 @Composable
-fun ObjectiveViewEdit(oe: ObjectiveEntity) {
+fun ObjectiveViewEdit(viewModel:RoomQuestViewModel,oe: ObjectiveEntity) {
 
 
         var value by remember { mutableStateOf(oe.obj) }
@@ -318,6 +327,7 @@ fun ObjectiveViewEdit(oe: ObjectiveEntity) {
                             oe.obj =
                                 value// updates quest. needs method to push back to firebase
                             oe.desc = value2
+                            viewModel.update(oe)
                         }
                     }
                 ) {
@@ -350,7 +360,7 @@ fun ObjectiveViewEdit(oe: ObjectiveEntity) {
                     } else Text("Edit")
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
-                Column(
+                Row(
                     modifier = Modifier
                         .weight(1f)
                         .padding(bottom = extraPadding)
@@ -358,9 +368,17 @@ fun ObjectiveViewEdit(oe: ObjectiveEntity) {
 
                     Text(text = "Objective ")
                     //Text(text = oe.toString())
-
+                    val checkedState=remember{ mutableStateOf(oe.completed)}
+                    Checkbox(
+                        checked = checkedState.value,
+                        onCheckedChange = {checkedState.value=it
+                            oe.apply { completed = it }
+                            viewModel.onObjCheckedChanged(oe,it)})
                 }
-                //CompleteCheckBox(oe)
+
+
+                //CompleteCheckBox(oe) oe.apply { completed = it }
+                //                        viewModel.onObjCheckedChanged(oe,it)
 
             }
         }

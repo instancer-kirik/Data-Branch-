@@ -36,7 +36,7 @@ import com.instance.dataxbranch.utils.Converters
     @ColumnInfo(name = "country") var country: String? = null,
 
     @ColumnInfo(name = "active") var active: Int? = null,
-
+    @ColumnInfo(name = "completed") var completed: Boolean=false,
     @ColumnInfo(name = "description") var description: String? = null,
     @ColumnInfo(name = "publisher") var publisher: String? = null,
 

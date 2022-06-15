@@ -29,7 +29,7 @@ data class ObjectiveEntity @JvmOverloads constructor(//oid and qid are room's id
     @ColumnInfo(name = "obj") var obj: String? = null,
     @ColumnInfo(name = "qid") var qid: String? = null,
     @ColumnInfo(name = "id") var id: Long=0,
-
+    @ColumnInfo(name = "completed") var completed: Boolean=false,
     @ColumnInfo(name = "desc") var desc: String? = null,
     @ColumnInfo(name = "objectiveType") var objectiveType: Quest.ObjectiveType = Quest.ObjectiveType.Default,
     @ColumnInfo(name = "requiredAmount") var requiredAmount: Int?=null,
