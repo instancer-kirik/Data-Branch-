@@ -1,7 +1,8 @@
 package com.instance.dataxbranch.domain.use_case
 
+import com.instance.dataxbranch.data.firestore.QuestsRepository
 import com.instance.dataxbranch.quests.Quest
-import com.instance.dataxbranch.data.repository.QuestsRepository
+
 
 class AddQuestbyQuest(
     private val repo: QuestsRepository

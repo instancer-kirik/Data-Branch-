@@ -1,4 +1,4 @@
-package com.instance.dataxbranch.quests
+package com.instance.dataxbranch.ui.viewModels
 
 
 import androidx.compose.runtime.State
@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.instance.dataxbranch.data.entities.QuestEntity
 import com.instance.dataxbranch.domain.Response
 import com.instance.dataxbranch.domain.use_case.UseCases
+import com.instance.dataxbranch.quests.Quest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

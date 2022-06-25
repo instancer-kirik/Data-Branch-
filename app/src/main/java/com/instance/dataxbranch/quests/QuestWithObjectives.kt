@@ -1,11 +1,12 @@
-package com.instance.dataxbranch.data
+package com.instance.dataxbranch.quests
 
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
+import javax.inject.Inject
 
- data class QuestWithObjectives(
+data class QuestWithObjectives @Inject constructor(
     @Embedded
     var quest: QuestEntity,
 

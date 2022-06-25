@@ -35,8 +35,7 @@ data class ObjectiveEntity @JvmOverloads constructor(//oid and qid are room's id
     @ColumnInfo(name = "requiredAmount") var requiredAmount: Int?=null,
     @ColumnInfo(name = "currentAmount") var currentAmount: Int?=null,
     @ColumnInfo(name = "beginDateAndTime") var beginDateAndTime: String="now",
-    @ColumnInfo(index = true)
-    val quest:String
+
     ) {
 
 }

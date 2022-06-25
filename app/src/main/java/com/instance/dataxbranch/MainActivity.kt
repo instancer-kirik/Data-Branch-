@@ -84,8 +84,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             DataXBranchTheme(darkTheme = true) {
 
-                DestinationsNavHost(
-                    navGraph = NavGraphs.root)
                 Scaffold(
 
                     //topBar = { Toolbar(this@MainActivity) },
@@ -93,9 +91,12 @@ class MainActivity : ComponentActivity() {
                         Column(
                             modifier = Modifier
                                 .padding(padding)
-                        ){Text("Versionated2")
+                        ){Text("top text")
+
+                            DestinationsNavHost(navGraph = NavGraphs.root)
+                            Text("bottom text")
                         }
-                        DestinationsNavHost(navGraph = NavGraphs.root)
+
                         // AppModule_ProvideDbFactory.provideDb(DataBranchApp())
 
 
@@ -349,7 +350,7 @@ fun OnboardingScreen(onContinueClicked: () -> Unit) {
         }
     }
 }
-@Composable
+
 fun showToast(context: Context, msg: String){
     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 }

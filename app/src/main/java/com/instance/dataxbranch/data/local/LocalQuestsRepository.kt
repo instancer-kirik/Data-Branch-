@@ -1,23 +1,23 @@
-package com.instance.dataxbranch.data.repository
+package com.instance.dataxbranch.data.local
 
 
 
 import android.app.Application
-import com.google.firebase.firestore.auth.User
-import com.instance.dataxbranch.data.QuestWithObjectives
-import com.instance.dataxbranch.data.daos.ObjectiveDao
+import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
-import com.instance.dataxbranch.data.local.AppDatabase
+import com.instance.dataxbranch.data.AppDatabase
 import kotlinx.coroutines.*
+import javax.inject.Inject
 import javax.inject.Singleton
 
 
 @Singleton
-class LocalQuestsRepository(application: Application,db:AppDatabase) {
+class LocalQuestsRepository @Inject constructor(application: Application, db: AppDatabase) {
     var questDao: QuestDao
-    private lateinit var mquests: Array<QuestWithObjectives>
+     // lateinit var selectedQuest: QuestWithObjectives
+    private var mquests: Array<QuestWithObjectives> = arrayOf()
 
     private fun initRepo(): Job =
             CoroutineScope(Dispatchers.IO).launch {
@@ -40,7 +40,7 @@ class LocalQuestsRepository(application: Application,db:AppDatabase) {
         }
     fun newObjectiveEntity(quest: QuestWithObjectives): Job =
         CoroutineScope(Dispatchers.IO).launch {
-            val oe = ObjectiveEntity(id = quest.quest.id, quest = quest.toString())
+            val oe = ObjectiveEntity(id = quest.quest.id,)// quest = quest.toString())
             questDao.save(oe)
         }
 

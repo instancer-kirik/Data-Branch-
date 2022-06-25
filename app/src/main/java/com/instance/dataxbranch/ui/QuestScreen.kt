@@ -26,11 +26,9 @@ import com.instance.dataxbranch.R
 import com.instance.dataxbranch.core.Constants.ADD_QUEST
 import com.instance.dataxbranch.core.Utils.Companion.printError
 import com.instance.dataxbranch.domain.Response
-import com.instance.dataxbranch.quests.QuestService.addQuestEntity
-import com.instance.dataxbranch.quests.QuestsViewModel
+import com.instance.dataxbranch.ui.viewModels.QuestsViewModel
 import com.instance.dataxbranch.ui.components.*
-import com.instance.dataxbranch.ui.destinations.MyQuestsScreenDestination
-import com.instance.dataxbranch.ui.destinations.QuestsScreenDestination
+import com.instance.dataxbranch.ui.destinations.*
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -38,14 +36,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@RootNavGraph(start = true)
+
 @Destination
 @Composable
 fun QuestsScreen(
     viewModel: QuestsViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ){
-    Button(onClick = {navigator.navigate(MyQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to my quests")}
+    //Button(onClick = {navigator.navigate(MyQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to my quests")}
     Scaffold(
         topBar = { Toolbar(navigator) },
         floatingActionButton = {
@@ -57,7 +55,7 @@ fun QuestsScreen(
         }
         when (val questsResponse = viewModel.questsState.value) {
             is Response.Loading -> ProgressBar()
-            is Response.Success -> LazyColumn(viewModel, questsResponse.data,modifier = Modifier
+            is Response.Success -> LazyColumn(viewModel, questsResponse.data, modifier = Modifier
                 .fillMaxSize()
                 .padding(padding))
             is Response.Error -> OnlyText("Error",questsResponse.message)
@@ -88,30 +86,7 @@ fun QuestsScreen(
 
 }
 @Composable
-fun Toolbar(navigator: DestinationsNavigator) {
-    TopAppBar(
-        title = { Text(text = "Main Activity") },
-        actions = {
-
-            var expanded by remember { mutableStateOf(false) }
-            OutlinedButton(
-                onClick = {
-                    expanded = !expanded
-                }
-            ) {
-
-                if (expanded) {
-                    Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                    Button(onClick = {navigator.navigate(MyQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to my quests")}
-
-                } else Text("navigate")
-
-            }
-
-        })}
-
-@Composable
-fun LazyColumn(viewModel: QuestsViewModel, questsResponse: List<Quest>, modifier: Modifier){
+fun LazyColumn(viewModel: QuestsViewModel, questsResponse: List<Quest>, modifier: Modifier) {
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index}
     LazyColumn(
@@ -128,6 +103,77 @@ fun LazyColumn(viewModel: QuestsViewModel, questsResponse: List<Quest>, modifier
             )
         }
     }
+}
+
+@Composable
+fun Toolbar(navigator: DestinationsNavigator) {
+    TopAppBar(
+        title = { Text(text = "MAIN") },
+        actions = {
+
+            var expanded by remember { mutableStateOf(false) }
+            var expanded2 by remember { mutableStateOf(false) }
+            OutlinedButton(
+                onClick = {
+                    expanded2 = !expanded2
+                }
+            ) {
+
+                if (expanded2) {
+                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //only room for 3 buttons this way
+                    Row(modifier=Modifier.fillMaxWidth()) {
+                        Button(
+                            onClick = { navigator.navigate(DevScreenDestination) },
+                            modifier = Modifier.padding(2.dp)
+                        ) { Text("DevScreen") }
+                        /*       Button(
+                            onClick = { navigator.navigate(MyQuestsScreenDestination) },
+                            modifier = Modifier.padding(2.dp)
+                        ) { Text("to quests") }
+
+                        Button(
+                            onClick = { navigator.navigate(LoadoutScreenDestination) },
+                            modifier = Modifier.padding(2.dp)
+                        ) { Text("to loadout") }
+                    }*/
+                    }
+
+            }else Text("DEBUG")
+            OutlinedButton(
+                onClick = {
+                    expanded = !expanded
+                }
+            ) {
+
+                if (expanded) {
+                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //only room for 3 buttons this way
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Button(
+                            onClick = { navigator.navigate(UserScreenDestination) },
+                            modifier = Modifier.padding(2.dp)
+                        ) { Text("to user ") }
+                        Button(
+                            onClick = { navigator.navigate(MyQuestsScreenDestination) },
+                            modifier = Modifier.padding(2.dp)
+                        ) { Text("to quests") }
+
+                        Button(
+                            onClick = { navigator.navigate(LoadoutScreenDestination) },
+                            modifier = Modifier.padding(2.dp)
+                        ) { Text("to loadout") }
+                    }
+                } else Text("navigate")}
+
+            }
+            }
+    )
+}
+
+@Composable
+fun LazyColumn(viewModel: QuestsViewModel, questsResponse: List<Quest>, modifier: () -> Unit){
+
 }
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -149,7 +195,7 @@ fun QuestView(viewModel: QuestsViewModel, quest: Quest, index: Int, selected: Bo
 
 
 @Composable
-private fun QuestCardContent(viewModel: QuestsViewModel,quest: Quest) {
+private fun QuestCardContent(viewModel: QuestsViewModel, quest: Quest) {
     var expanded by remember { mutableStateOf(false) }
 
     Row(

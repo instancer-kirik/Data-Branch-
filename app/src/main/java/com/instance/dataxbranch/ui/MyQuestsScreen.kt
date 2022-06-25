@@ -1,5 +1,6 @@
 package com.instance.dataxbranch.ui
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -19,31 +20,34 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
+import com.google.android.gms.tasks.Tasks.await
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.instance.dataxbranch.R
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
-//import com.instance.dataxbranch.quests.RoomQuestViewModel
+//import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.destinations.QuestsScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.core.Constants.TAG
-import com.instance.dataxbranch.data.QuestWithObjectives
-import com.instance.dataxbranch.quests.RoomQuestViewModel
+import com.instance.dataxbranch.quests.QuestWithObjectives
+import com.instance.dataxbranch.showToast
+import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.instance.dataxbranch.ui.destinations.QuestDetailScreenDestination
+import com.instance.dataxbranch.utils.await
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import kotlinx.coroutines.*
+import kotlin.system.measureTimeMillis
 
 var showDialog =     mutableStateOf(false)
-
+var showDialog2 =     mutableStateOf(false)
 //viewModel: RoomQuestViewModel = hiltViewModel(),
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalStdlibApi::class)
 
@@ -76,7 +80,7 @@ fun MyQuestsScreen(
             Button(
                 onClick = { navigator.navigate(QuestsScreenDestination) },
                 modifier = Modifier.padding(2.dp)
-            ) { Text("to Quests") }
+            ) { Text("to Cloud Quests") }
 
             Button(
                 onClick = { showDialog.value = true },
@@ -91,7 +95,7 @@ fun MyQuestsScreen(
                 alert(viewModel)
             }
 
-            LocalLazyColumn(viewModel, quests = viewModel.quests, modifier = Modifier.padding(2.dp))
+            LocalLazyColumn(viewModel, quests = viewModel.quests, modifier = Modifier.padding(2.dp),navigator)
             Button(
                 onClick = { showDialog.value = true },
                 modifier = Modifier.padding(2.dp)
@@ -146,7 +150,7 @@ fun AddQuestEntityFloatingActionButton(viewModel: RoomQuestViewModel = hiltViewM
 
 
 @Composable
-fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObjectives>, modifier: Modifier){
+fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObjectives>, modifier: Modifier,navi: DestinationsNavigator,){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index}
 
@@ -160,11 +164,13 @@ fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObject
         itemsIndexed(quests) { index,quest ->
             //Text(quest.toString())//text = "Index $index",
             LocalQuestView(
+
                 viewModel = viewModel,
                 quest = quest,
                 index = index,
                 selected = selectedIndex == index,
-                onClick = onItemClick
+                onClick = onItemClick,
+                navi = navi
             )
 
         }
@@ -177,13 +183,14 @@ fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObject
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LocalQuestView(
+    navi: DestinationsNavigator,
     viewModel: RoomQuestViewModel,
     quest: QuestWithObjectives,
     index: Int,
     selected: Boolean,
     onClick: (Int) -> Unit
 ) {
-    Text("DEBUG")
+    //Text("DEBUG")
     Box(modifier = Modifier
         .clickable {
             onClick.invoke(index)
@@ -195,33 +202,50 @@ fun LocalQuestView(
             text = "Index $index",
         )
 
-        LocalQuestCardContent(viewModel,quest)
+        LocalQuestCardContent(navi,viewModel,quest)
 
     }
-    Text("DEBUG2")
+    //Text("DEBUG2")
 }
 
+/*private suspend fun waitcomplete(username: String): Boolean {
+    val shouldCreateUser = MaterialAlertDialogBuilder(this)
+        .setTitle("User \"$username\" was not found.")
+        .setMessage("Create new user?")
+        .create()
+        .await(positiveText = "Create", negativeText = "Cancel")
+
+    if (shouldCreateUser) {
+        createNewUser(username)
+        return true
+    }
+
+
+}*/
 
 @Composable
-fun LocalQuestCardContent(viewModel: RoomQuestViewModel,quest: QuestWithObjectives) {
+fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewModel, quest: QuestWithObjectives) {
 
         var expanded by remember { mutableStateOf(false) }
 
 
-        Row(
+        Row(horizontalArrangement = Arrangement.End,
             modifier = Modifier
-                .padding(12.dp)
+                .padding(4.dp)
                 .animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioMediumBouncy,
                         stiffness = Spring.StiffnessLow
                     )
                 )
+                .fillMaxWidth()
         ) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(12.dp)
+                    .padding(14.dp)
+                    .fillMaxWidth()
+                    .background(Color.Black.copy(alpha = 0.5f))
             ) {
                 Text(text = "Title: ")
                 Text(
@@ -230,6 +254,7 @@ fun LocalQuestCardContent(viewModel: RoomQuestViewModel,quest: QuestWithObjectiv
                     style = MaterialTheme.typography.h4.copy(
                         fontWeight = FontWeight.ExtraBold
                     )
+                , modifier = Modifier.background(Color.Black.copy(alpha = 0.3f))
                 )
 
 
@@ -239,44 +264,75 @@ fun LocalQuestCardContent(viewModel: RoomQuestViewModel,quest: QuestWithObjectiv
                     //var listofObjectiveEntities: Array<ObjectiveEntity> = arrayOf(ObjectiveEntity(-5,"",-5,"",Quest.ObjectiveType.Default,0,0,""))
                     //var objective: Quest.QuestObjective
                     run {
-                        Text("open")
+                        //Text("open")
 
                         quest.objectives.forEach { oe ->
-                            ObjectiveViewEdit(viewModel,oe)
+                            ObjectiveViewEdit(viewModel, oe)
                         }
-                        Button(onClick = { viewModel.addNewObjectiveEntity(quest)}){Text("ADD OBJECTIVE")}
+                        Button(onClick = { viewModel.addNewObjectiveEntity(quest) }) { Text("ADD OBJECTIVE") }
                     }
 
 
                 }
 
             }
-            val checkedState=remember{ mutableStateOf(quest.quest.completed)}
-            Checkbox(
-                checked = checkedState.value,
-                onCheckedChange = {checkedState.value=it
-                    quest.quest.apply { completed = it }
-                    viewModel.onCheckboxChecked(quest,it)})
-            IconButton(onClick = {
-                expanded = !expanded
-                if(!expanded) {//saves on click when closing
-                    //viewModel.addQuest(quest)
-                }
-            }) {
+            Column{
+            Row(
+                modifier = Modifier.background(Color.Black.copy(alpha = 0.6f)),
+                horizontalArrangement = Arrangement.End
+            ) {
+                var bouncy by remember { mutableStateOf(false) }
+                val context = LocalContext.current
 
-                Icon(
-                    imageVector = if (expanded) Icons.Filled.Check else Icons.Filled.ArrowDropDown,
-                    contentDescription = if (expanded) {
-                        stringResource(R.string.show_less)
-                    } else {
-                        stringResource(R.string.show_more)
+                val checkedState = remember { mutableStateOf(quest.quest.completed) }
+                Checkbox(
+                    checked = checkedState.value,
+                    onCheckedChange = {
+                        checkedState.value = it
+                        quest.quest.apply { completed = it }
+                        viewModel.onCheckboxChecked(quest, it)
+                    })
+                //if(!checkedState.value){ trying to pop up dialog for confirm or cancel
+                /*val time = measureTimeMillis {
+                                runBlocking {
+                                        try {
+                                            showDialog2.value = true
+                                            Log.d(TAG,"IN ---------------")
+                                            waitcomplete(context, quest, viewModel)
+                                        }finally{
+                                            Log.d(TAG,"END")
+                                        }
+                            }
+                            }
+                            showToast(context,"completed in $time millis")*/
+
+                /*if(bouncy){checkedState.value = it
+                                quest.quest.apply { completed = it }
+                                viewModel.onCheckboxChecked(quest, it)}*/
+                // }else{
+
+
+                IconButton(onClick = {
+                    expanded = !expanded
+                    if (!expanded) {//saves on click when closing
+                        //viewModel.addQuest(quest)
                     }
+                }) {
 
-                )
+                    Icon(
+                        imageVector = if (expanded) Icons.Filled.Check else Icons.Filled.ArrowDropDown,
+                        contentDescription = if (expanded) {
+                            stringResource(R.string.show_less)
+                        } else {
+                            stringResource(R.string.show_more)
+                        }
 
+                    )
+
+                }
             }
-
-        }
+                Button(onClick = { navi.navigate(QuestDetailScreenDestination) }) { Text("EDIT") }
+        }}
 }
 /*
 @Composable
@@ -305,7 +361,7 @@ fun CompleteCheckBox(objective: Quest.QuestObjective) {
 }*/
 
 @Composable
-fun ObjectiveViewEdit(viewModel:RoomQuestViewModel,oe: ObjectiveEntity) {
+fun ObjectiveViewEdit(viewModel: RoomQuestViewModel, oe: ObjectiveEntity) {
 
 
         var value by remember { mutableStateOf(oe.obj) }
@@ -316,9 +372,13 @@ fun ObjectiveViewEdit(viewModel:RoomQuestViewModel,oe: ObjectiveEntity) {
         )
         Surface(
             color = MaterialTheme.colors.primaryVariant,
-            modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp, horizontal = 8.dp)
         ) {
-            Row(modifier = Modifier.padding(24.dp)) {
+            Row(modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()) {
                 OutlinedButton(
                     onClick = {
                         expanded = !expanded
@@ -364,19 +424,24 @@ fun ObjectiveViewEdit(viewModel:RoomQuestViewModel,oe: ObjectiveEntity) {
                     modifier = Modifier
                         .weight(1f)
                         .padding(bottom = extraPadding)
+                        .fillMaxWidth()
+
                 ) {
 
-                    Text(text = "Objective ")
-                    //Text(text = oe.toString())
-                    val checkedState=remember{ mutableStateOf(oe.completed)}
-                    Checkbox(
-                        checked = checkedState.value,
-                        onCheckedChange = {checkedState.value=it
-                            oe.apply { completed = it }
-                            viewModel.onObjCheckedChanged(oe,it)})
+                    //Text(text = "Objective ")
+                    Text(text = oe.obj.toString())
+                    Row(horizontalArrangement = Arrangement.End,) {
+                        val checkedState = remember { mutableStateOf(oe.completed) }
+                        Checkbox(
+                            checked = checkedState.value,
+                            onCheckedChange = {
+                                checkedState.value = it
+                                oe.apply { completed = it }
+                                viewModel.onObjCheckedChanged(oe, it)
+                            })
+                    }
+
                 }
-
-
                 //CompleteCheckBox(oe) oe.apply { completed = it }
                 //                        viewModel.onObjCheckedChanged(oe,it)
 
@@ -384,7 +449,7 @@ fun ObjectiveViewEdit(viewModel:RoomQuestViewModel,oe: ObjectiveEntity) {
         }
 }
 @Composable//, onClick: (Int) -> Unit
-fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestWithObjectives ) {
+fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestWithObjectives,navi: DestinationsNavigator,) {
     Box(modifier = Modifier
 
         //.background(if (selected) MaterialTheme.colors.secondary else Color.Transparent)
@@ -393,9 +458,50 @@ fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestWithObjective
         Text(
             "placeholder2"//text = "Index $index",
         )
-        LocalQuestCardContent(viewModel,quest)
+        LocalQuestCardContent(navi,viewModel,quest)
     }
 
+}
+suspend fun waitcomplete(context: Context, quest: QuestWithObjectives, viewModel: RoomQuestViewModel) :Boolean{
+return MaterialAlertDialogBuilder(context)
+.setTitle("Complete Quest?")
+.create()
+.await(positiveText = "Confirm", negativeText = "Cancel")
+}
+@Composable
+fun complete(quest: QuestWithObjectives ,viewModel: RoomQuestViewModel) :Boolean{
+    if(showDialog2.value){
+
+
+    AlertDialog(
+        title = {
+            Text(text = "Complete Quest?")
+        },
+        text = {
+            Text(quest.quest.title.toString())
+        },
+        onDismissRequest = {
+            showDialog2.value = false
+
+        },
+        buttons = {
+            Button(onClick = {
+                showDialog2.value = false
+                quest.quest.apply { completed = true }
+
+            }) {
+                Text("Yes")
+            }
+            Button(onClick = {  showDialog2.value = false} ) {
+                Text("not yet")
+            }
+            Button(onClick = { CoroutineScope(Dispatchers.IO).launch { viewModel.localQuestsRepository.deleteQuestEntity(quest) } }) {
+                Text("No, remove quest")
+            }
+        }
+
+    )}
+    return quest.quest.completed
 }
 //private fun <T> Flow<T>.collectAsLazyPagingItems(): Any {
 

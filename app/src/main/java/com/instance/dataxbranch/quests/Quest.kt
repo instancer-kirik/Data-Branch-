@@ -1,7 +1,6 @@
 package com.instance.dataxbranch.quests
 
 import android.os.Build
-import com.instance.dataxbranch.data.QuestWithObjectives
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
@@ -112,7 +111,7 @@ class Quest(val qid: String= "-1",
         convertobjectives(id=h,dao)
         }
 
-    fun convertobjectives(id:Long,dao: QuestDao){
+    private fun convertobjectives(id:Long, dao: QuestDao){
         //var objs: List<ObjectiveEntity> = listOf()
         objectives.forEach { dao.save(it.convert(id))
 
@@ -159,7 +158,7 @@ class Quest(val qid: String= "-1",
                 desc = desc,
                 objectiveType = objectiveType,
                 requiredAmount = requiredAmount,
-                quest = "DEBUG_Quest"
+                //quest = "DEBUG_Quest"
             )
 
         }

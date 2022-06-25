@@ -2,7 +2,7 @@ package com.instance.dataxbranch.domain.use_case
 
 import android.util.Log
 import com.instance.dataxbranch.data.entities.QuestEntity
-import com.instance.dataxbranch.data.repository.LocalQuestsRepository
+import com.instance.dataxbranch.data.local.LocalQuestsRepository
 
 
 class AddNewQuestEntity (

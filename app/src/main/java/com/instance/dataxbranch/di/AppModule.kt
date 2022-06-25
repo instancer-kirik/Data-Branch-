@@ -10,12 +10,19 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.instance.dataxbranch.core.Constants.QUESTS
-import com.instance.dataxbranch.data.QuestWithObjectives
+import com.instance.dataxbranch.core.Constants.RESPONSES
+import com.instance.dataxbranch.core.Constants.USERS
+import com.instance.dataxbranch.data.daos.AbilityDao
+import com.instance.dataxbranch.data.daos.UserDao
+import com.instance.dataxbranch.data.entities.User
+import com.instance.dataxbranch.quests.QuestWithObjectives
 
-import com.instance.dataxbranch.data.local.AppDatabase
-import com.instance.dataxbranch.data.repository.LocalQuestsRepository
-import com.instance.dataxbranch.data.repository.QuestRepositoryImpl
-import com.instance.dataxbranch.data.repository.QuestsRepository
+import com.instance.dataxbranch.data.AppDatabase
+import com.instance.dataxbranch.data.firestore.*
+import com.instance.dataxbranch.data.local.UserWithAbilities
+import com.instance.dataxbranch.data.local.GeneralRepository
+import com.instance.dataxbranch.data.local.LocalQuestsRepository
+
 import com.instance.dataxbranch.domain.use_case.*
 import com.instance.dataxbranch.utils.constants.FIRESTORE_COLLECTION
 import com.instance.dataxbranch.utils.constants.NAME_PROPERTY
@@ -46,11 +53,44 @@ object AppModule {
         db: FirebaseFirestore
     ) = db.collection(QUESTS)
 
+   /* @Provides
+    fun provideUsersRef(
+        db: FirebaseFirestore
+    ) = db.collection(USERS)
 
+    @Provides
+    fun provideResponsesRef(
+        db: FirebaseFirestore
+    ) = db.collection(RESPONSES)*/
+
+
+    @Provides
+    @Named("questsRef")
+    fun provideQuestCollRef(db: FirebaseFirestore): CollectionReference {
+        return db.collection("quests")
+    }
+    @Provides
+    @Named("usersRef")
+    fun provideUserCollRef(db: FirebaseFirestore): CollectionReference {
+        return db.collection("quests")
+    }
+    @Provides
+    @Named("responsesRef")
+    fun provideResponsesCollRef(db: FirebaseFirestore): CollectionReference {
+        return db.collection("quests")
+    }
     @Provides
     fun provideQuestsRepository(
         questsRef: CollectionReference
     ): QuestsRepository = QuestRepositoryImpl(questsRef)
+    @Provides
+    fun provideUserRepository(
+        usersRef: CollectionReference
+    ): UsersRepository = UserRepositoryImpl(usersRef)
+    @Provides
+    fun provideResponsesRepository(
+        responsesRef: CollectionReference
+    ): ResponseRepository = ResponseRepositoryImpl(responsesRef)
     @Singleton
     @Provides
     fun provideDb(app: Application): AppDatabase {
@@ -61,15 +101,27 @@ object AppModule {
     }
     @Singleton
     @Provides
-    fun provideLocalQuestsRepository(app:Application,db:AppDatabase):
+    fun provideLocalQuestsRepository(app:Application,db: AppDatabase):
             LocalQuestsRepository {
         return LocalQuestsRepository(app,db)
     }
-
+    @Singleton
+    @Provides
+    fun provideGeneralRepository(app:Application,db: AppDatabase):
+            GeneralRepository {
+        return GeneralRepository(app,db)
+    }
+    /*@Singleton THIS IS FOR ROOM
+    @Provides
+    fun provideResponseRepository(app:Application,db: AppDatabase):
+            ResponseRepository {
+        return ResponseRepository(app,db)
+    }*/
 
     @Provides
     fun provideUseCases(
         repo: QuestsRepository,
+        responseRepo: ResponseRepository,
         localrepo: LocalQuestsRepository,
         dao: QuestDao
     ) = UseCases(
@@ -81,15 +133,13 @@ object AppModule {
         addQuestEntitybyQuest= AddQuestEntitybyQuest(dao),
         addQuestEntity = AddQuestEntity(dao),
         addNewQuestEntity = AddNewQuestEntity(localrepo),
-        addNewObjectiveEntityToQuestEntity=  AddNewObjectiveEntityToQuestEntity(localrepo)
+        addNewObjectiveEntityToQuestEntity=  AddNewObjectiveEntityToQuestEntity(localrepo),
+        addResponse = AddResponse(responseRepo),
+        getResponses = GetResponses(responseRepo)
     )
 
 
-    @Provides
-    @Named("questsRef")
-    fun provideQuestCollRef(db: FirebaseFirestore): CollectionReference {
-        return db.collection("quests")
-    }
+
    /* @Singleton
     @Provides
     fun providesRoomDatabase(): AppDatabase {
@@ -102,12 +152,31 @@ object AppModule {
     fun provideQuestDao(db: AppDatabase): QuestDao {
         return db.questDao()
     }
+
+    @Provides
+    fun provideUserDao(db: AppDatabase): UserDao {
+        return db.userDao()
+    }
+
+    @Provides
+    fun provideAbilityDao(db: AppDatabase): AbilityDao {
+        return db.abilityDao()
+    }
     @Provides
     fun provideLocalQuests(localrepo: LocalQuestsRepository):Array<QuestWithObjectives>{
        //val quests: Array<QuestWithObjectives>
         return localrepo.getQuests()
     }
+    @Provides
+    fun provideMe(localrepo: GeneralRepository): UserWithAbilities {
+         val me= localrepo.getMe()
+        val abilities = localrepo.getAbilities()
+        if(me == null){
+            return UserWithAbilities(User(), abilities = abilities)
+        }else{return me}
 
+
+    }
 
 
 

@@ -1,4 +1,4 @@
-package com.instance.dataxbranch.data
+package com.instance.dataxbranch.quests
 
 import com.instance.dataxbranch.quests.Quest
 

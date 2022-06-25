@@ -18,7 +18,7 @@ import com.instance.dataxbranch.core.Constants.ADD_QUEST
 import com.instance.dataxbranch.core.Constants.DESC
 import com.instance.dataxbranch.core.Constants.DISMISS
 import com.instance.dataxbranch.core.Constants.QUEST_TITLE
-import com.instance.dataxbranch.quests.QuestsViewModel
+import com.instance.dataxbranch.ui.viewModels.QuestsViewModel
 import kotlinx.coroutines.job
 
 

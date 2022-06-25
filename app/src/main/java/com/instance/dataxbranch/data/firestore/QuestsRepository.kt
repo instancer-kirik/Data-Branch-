@@ -1,6 +1,7 @@
-package com.instance.dataxbranch.data.repository
+package com.instance.dataxbranch.data.firestore
 
 import com.google.firebase.firestore.CollectionReference
+import com.instance.dataxbranch.data.firestore.QuestRepositoryImpl
 import com.instance.dataxbranch.quests.Quest
 import com.instance.dataxbranch.domain.Response
 import dagger.Binds

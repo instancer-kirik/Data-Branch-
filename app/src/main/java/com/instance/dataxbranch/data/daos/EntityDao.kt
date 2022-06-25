@@ -1,45 +1,50 @@
+/*
 package com.instance.dataxbranch.data.daos
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Transaction
-import androidx.room.Update
+import androidx.room.*
 import com.instance.dataxbranch.data.entities.QuestEntity
 
-
-interface EntityDao<in E : QuestEntity> {
+@Dao
+interface EntityDao {
     @Insert
-    abstract suspend fun insert(entity: E): String
-
-    @Insert
-    abstract suspend fun insertAll(vararg entity: E)
+    abstract suspend fun insert(entity: Entity): String
 
     @Insert
-    abstract suspend fun insertAll(entities: List<E>)
+    abstract suspend fun insertAll(vararg entity: Entity)
+
+    @Insert
+    abstract suspend fun insertAll(entities: List<Entity>)
 
     @Update
-    abstract suspend fun update(entity: E)
+    abstract suspend fun update(entity: Entity)
 
     @Delete
-    abstract suspend fun deleteEntity(entity: E): Int
+    abstract suspend fun deleteEntity(entity: Entity): Int
 
     @Transaction
     open suspend fun withTransaction(tx: suspend () -> Unit) = tx()
 
-    suspend fun insertOrUpdate(entity: E): String {
-        return if (entity.qid == "-1") {
+    suspend fun insertOrUpdate(entity: Entity) {
+        try{
+            update(entity)
+
+        }catch(e: Exception){insert(entity)}
+        */
+/*return if (entity.) {
             insert(entity)
         } else {
             update(entity)
-            entity.qid!!
-        }
+            entity.id!!
+        }*//*
+
     }
 
     @Transaction
-    open suspend fun insertOrUpdate(entities: List<E>) {
+    open suspend fun insertOrUpdate(entities: List<Entity>) {
         entities.forEach {
             insertOrUpdate(it)
         }
     }
 
 }
+*/

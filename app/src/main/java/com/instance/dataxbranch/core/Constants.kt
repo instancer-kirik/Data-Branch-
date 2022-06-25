@@ -1,12 +1,20 @@
 package com.instance.dataxbranch.core
 
 object Constants {
+    const val SAVE= "Save"
+    const val EDIT="Edit"
+    const val EDIT_ABILITY= "Edit selected ability"
+    const val ADD_ABILITY= "Add an ability"
+    const val EDIT_LOADOUT= "Edit ability slots"
     //App
     const val TAG = "Debugilator"
 
     //Firestore
     const val QUESTS = "quests"
     const val TITLE = "title"
+    const val USERS = "users"
+    const val ABILITIES = "abilities"
+    const val RESPONSES = "responses"
 
     //Actions
     const val ADD_QUEST = "Add a quest."

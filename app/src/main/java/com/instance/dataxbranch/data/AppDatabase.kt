@@ -1,20 +1,27 @@
-package com.instance.dataxbranch.data.local
+package com.instance.dataxbranch.data
 
 import android.content.Context
 import androidx.room.*
-import com.instance.dataxbranch.data.daos.EntityDao
+import com.instance.dataxbranch.data.daos.AbilityDao
+//import com.instance.dataxbranch.data.daos.EntityDao
 import com.instance.dataxbranch.data.daos.QuestDao
+import com.instance.dataxbranch.data.daos.UserDao
+import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
+import com.instance.dataxbranch.data.entities.User
+import com.instance.dataxbranch.utils.Converters
 
 
-@Database(entities = arrayOf(QuestEntity::class, ObjectiveEntity::class), version = 12)
+@Database(entities = arrayOf(QuestEntity::class, ObjectiveEntity::class, AbilityEntity::class, User::class), version = 24)
+@TypeConverters(Converters::class)
  abstract class AppDatabase() : RoomDatabase(){
     //abstract fun addQuestEntity(title: String, author: String): Any
     //abstract fun getQuestDao(): QuestDao
     abstract fun questDao(): QuestDao
-
-    //abstract fun entityDao(): EntityDao
+    abstract fun abilityDao(): AbilityDao
+    abstract fun userDao(): UserDao
+    //\abstract fun entityDao(): EntityDao
 
     //fun addQuestEntity(quest:Quest): Any
     //abstract fun addNewQuestEntity(title: String, author: String): Any

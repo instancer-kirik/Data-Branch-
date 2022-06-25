@@ -1,9 +1,10 @@
-package com.instance.dataxbranch.data.repository
+package com.instance.dataxbranch.data.firestore
 
 import android.util.Log
 import com.google.firebase.firestore.CollectionReference
 import com.instance.dataxbranch.quests.Quest
 import com.instance.dataxbranch.core.Constants.TITLE
+
 
 import com.instance.dataxbranch.domain.Response
 import kotlinx.coroutines.channels.awaitClose

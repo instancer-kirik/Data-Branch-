@@ -1,20 +1,19 @@
-package com.instance.dataxbranch.quests
+package com.instance.dataxbranch.ui.viewModels
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Query
-import androidx.room.Transaction
-import com.instance.dataxbranch.core.Constants.TAG
-import com.instance.dataxbranch.data.QuestWithObjectives
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
-import com.instance.dataxbranch.data.local.AppDatabase
-import com.instance.dataxbranch.data.repository.LocalQuestsRepository
+import com.instance.dataxbranch.data.AppDatabase
+import com.instance.dataxbranch.data.entities.QuestEntity
+import com.instance.dataxbranch.data.local.LocalQuestsRepository
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
+import com.instance.dataxbranch.quests.Quest
+import com.instance.dataxbranch.quests.QuestWithObjectives
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,10 +21,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
+
 class RoomQuestViewModel @Inject constructor(
     val appDatabase: AppDatabase,
     private val useCases: UseCases,
@@ -36,8 +35,11 @@ class RoomQuestViewModel @Inject constructor(
 
 
     ): ViewModel() {
+    lateinit var selectedQuest: QuestWithObjectives
     //val _qwe:
+    val h = localQuestsRepository.refresh()
     val _quests: MutableStateFlow<List<QuestWithObjectives>> = MutableStateFlow(listOf<QuestWithObjectives>())
+
     val QuestFlow: StateFlow<List<QuestWithObjectives>> get() = _quests
     private val downloadQueue: MutableMap<Int, Flow<Int>> = mutableMapOf()
     val handyString: MutableLiveData<String> by lazy {
@@ -45,18 +47,33 @@ class RoomQuestViewModel @Inject constructor(
     }
 
     init {
+
+        selectedQuest= QuestWithObjectives(QuestEntity(),listOf())
         quests=getQuestsFromRepo()
+        if(quests.isNotEmpty()){
+            selectedQuest=quests[1]
+        }else {
+            selectedQuest = QuestWithObjectives(QuestEntity(), listOf())
+        }
         viewModelScope.launch {
 
             // Coroutine that will be canceled when the ViewModel is cleared.
         }
     }
 
-    val rowsInserted: MutableLiveData<Int> = MutableLiveData()
-    override fun onCleared() {
-        //rowsInserted.removeObserver(observer)
-        super.onCleared()
+
+    /*fun getSelect() {
+        selectedQuest= localQuestsRepository.selectedQuest
     }
+    private fun setSelect() {
+        localQuestsRepository.selectedQuest= selectedQuest
+    }*/
+    /*val rowsInserted: MutableLiveData<Int> = MutableLiveData()
+    override fun onCleared() {
+        val observer= Observer<MutableLiveData>
+        rowsInserted.removeObserver(observer)
+        super.onCleared()
+    }*/
     private fun getQuests() {
         viewModelScope.launch(Dispatchers.IO) {
              val qwe = arrayListOf<QuestWithObjectives>()
@@ -64,14 +81,14 @@ class RoomQuestViewModel @Inject constructor(
             _quests.emit(qwe)
         }
     }
-    fun addNewObjectiveEntity(quest:QuestWithObjectives){
+    fun addNewObjectiveEntity(quest: QuestWithObjectives){
         CoroutineScope(Dispatchers.IO).launch { useCases.addNewObjectiveEntityToQuestEntity(quest)}
     }
     //Update your coroutine
-    fun insert(collectionItem: QuestWithObjectives) = viewModelScope.launch {
+    /*fun insert(collectionItem: QuestWithObjectives) = viewModelScope.launch {
         val result = localQuestsRepository.insertCollectionItem(collectionItem)
         rowsInserted.postValue(result)
-    }
+    }*/
     //private val _isQuestAddedState = mutableStateOf<Response<Void?>>(Response.Success(null))
     //val isQuestAddedState: State<Response<Void?>> = _isQuestAddedState
     var openDialogState = mutableStateOf(false)
@@ -149,9 +166,20 @@ class RoomQuestViewModel @Inject constructor(
 
         return dao.getQuestWithObjectives(id) }
 
+    fun update(it: QuestEntity) {
+            CoroutineScope(Dispatchers.IO).launch { dao.update(it)
+            }
+    }
+
+    fun sync() {
+        update(selectedQuest)
+       // setSelect()
+        //generalRepository.sync()
+        refresh()
     }
 
 
+}
 
 
 

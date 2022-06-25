@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.data.daos
 
 import androidx.room.*
-import com.instance.dataxbranch.data.QuestWithObjectives
+import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 
 import com.instance.dataxbranch.data.entities.QuestEntity
@@ -9,6 +9,67 @@ import com.instance.dataxbranch.data.entities.QuestEntity
 
 @Dao
 abstract class QuestDao {
+    @Transaction
+    @Query("SELECT * FROM quests")
+    abstract fun getItAll(): Array<QuestWithObjectives>//probably includes objectives
+
+    @Transaction
+    @Insert
+    abstract fun save(objective: ObjectiveEntity)
+
+    @Insert
+    abstract fun save(quest:QuestEntity):Long
+    @Insert
+    abstract fun insertQuestEntity(quest: QuestEntity?):Long
+
+    @Insert
+    abstract fun insertObjectiveEntityList(objectives: List<ObjectiveEntity>?)
+
+    @Query("SELECT * FROM quests WHERE id =:id")
+    abstract fun getQuestEntity(id: Long): QuestEntity
+
+    @Query("SELECT * FROM objectives WHERE id =:id")
+    abstract fun getObjectiveEntityList(id: Long): List<ObjectiveEntity>
+    @Query("DELETE FROM quests")
+    abstract fun deleteAll()
+    @Query("DELETE FROM quests")
+    abstract fun deleteAllRows()
+    open fun getQuestWithObjectives(id: Long): QuestWithObjectives {
+        val quest = getQuestEntity(id)
+        val objectives: List<ObjectiveEntity> = getObjectiveEntityList(id)
+        val qwo = QuestWithObjectives(quest,objectives)
+        return qwo
+    }
+
+
+
+    fun insert(QuestWithObjectives: QuestWithObjectives) {
+        val id = insertQuestEntity(QuestWithObjectives.quest)
+        QuestWithObjectives.objectives.forEach { i -> i.id= id }
+        insertAll(QuestWithObjectives.objectives)
+    }
+
+    fun delete(QuestWithObjectives: QuestWithObjectives) {
+        delete(QuestWithObjectives.quest, QuestWithObjectives.objectives)
+    }
+
+    @Insert
+    abstract fun insertAll(objectives: List<ObjectiveEntity?>?)
+    //
+    //abstract fun insertQuestEntity(recipe: QuestEntity?): Long //return type is the key here.
+    @Transaction
+    @Delete
+    abstract fun delete(quest: QuestEntity?, objectives: List<ObjectiveEntity?>?)
+    @Transaction
+    @Query("SELECT * FROM quests")
+    abstract fun loadAll(): Array<QuestWithObjectives>
+
+
+    @Update
+    abstract fun update(vararg quest:QuestEntity)
+    @Update
+    abstract fun update(objective: ObjectiveEntity)
+
     /*@Query("SELECT * FROM quests WHERE active != 0")
     //alter this on active select in lazycolumnwithselection
     fun observeActive(): FlowQuestWithObjectives>
@@ -88,27 +149,7 @@ abstract class QuestDao {
     @Transaction
     @Query("SELECT * FROM quests WHERE id = :id")
     fun geQuestWithObjectivesid: Int):QuestWithObjectives
-*/  @Transaction
-    @Query("SELECT * FROM quests")
-    abstract fun getItAll(): Array<QuestWithObjectives>//probably includes objectives
-
-    @Transaction
-    @Insert
-    abstract fun save(objective: ObjectiveEntity)
-
-    @Insert
-    abstract fun save(quest:QuestEntity):Long
-    @Insert
-    abstract fun insertQuestEntity(quest: QuestEntity?):Long
-
-    @Insert
-    abstract fun insertObjectiveEntityList(objectives: List<ObjectiveEntity>?)
-
-    @Query("SELECT * FROM quests WHERE id =:id")
-    abstract fun getQuestEntity(id: Long): QuestEntity
-
-    @Query("SELECT * FROM objectives WHERE id =:id")
-    abstract fun getObjectiveEntityList(id: Long): List<ObjectiveEntity>
+*/
 
     /*open fun insertQuestObjectives(quest: QuestEntity) {
         val objectives: List<ObjectiveEntity> = quest.getObjectiveEntityList()
@@ -118,46 +159,6 @@ abstract class QuestDao {
         insertObjectiveEntityList(objectives)
         insertQuestEntity(quest)
     }*/
-    @Query("DELETE FROM quests")
-    abstract fun deleteAll()
-    @Query("DELETE FROM quests")
-    abstract fun deleteAllRows()
-    open fun getQuestWithObjectives(id: Long):QuestWithObjectives {
-        val quest = getQuestEntity(id)
-        val objectives: List<ObjectiveEntity> = getObjectiveEntityList(id)
-        val qwo =QuestWithObjectives(quest,objectives)
-        return qwo
-    }
-
-
-
-        fun insert(QuestWithObjectives: QuestWithObjectives) {
-            val id = insertQuestEntity(QuestWithObjectives.quest)
-            QuestWithObjectives.objectives.forEach { i -> i.id= id }
-            insertAll(QuestWithObjectives.objectives)
-        }
-
-        fun delete(QuestWithObjectives: QuestWithObjectives) {
-            delete(QuestWithObjectives.quest, QuestWithObjectives.objectives)
-        }
-
-        @Insert
-        abstract fun insertAll(objectives: List<ObjectiveEntity?>?)
-        //
-        //abstract fun insertQuestEntity(recipe: QuestEntity?): Long //return type is the key here.
-        @Transaction
-        @Delete
-        abstract fun delete(quest: QuestEntity?, objectives: List<ObjectiveEntity?>?)
-        @Transaction
-        @Query("SELECT * FROM quests")
-        abstract fun loadAll(): Array<QuestWithObjectives>
-
-
-    @Update
-    abstract fun update(vararg quest:QuestEntity)
-    @Update
-    abstract fun update(objective: ObjectiveEntity)
-
 
 
 /*@Query("SELECT id, title FROM quests")
@@ -186,7 +187,7 @@ companion object{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(questEntity: QuestEntity) {}
     fun isActive(id: String): Boolean {
-TODO("maybe needs a query idk")
+
     }
 
 
