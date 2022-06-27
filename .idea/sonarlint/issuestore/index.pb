@@ -21,14 +21,10 @@ l
 <app/src/main/java/com/instance/dataxbranch/ui/theme/Theme.kt,4\0\40888936052256d1c20847eca4df097bc0711006
 @
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
-p
-@app/src/main/java/com/instance/dataxbranch/ui/AbilitiesScreen.kt,e\1\e1506c007b959ac9c9126b7b83ef3061412698ea
 r
 Bapp/src/main/java/com/instance/dataxbranch/data/daos/AbilityDao.kt,a\8\a80d05b3d270810c65154fcb857e8393d530c036
 y
 Iapp/src/main/java/com/instance/dataxbranch/data/entities/AbilityEntity.kt,8\d\8d4deed6cc86d40a97234ba818390ce5fd4766d5
-‡
-Wapp/src/main/java/com/instance/dataxbranch/ui/components/AddAbilityEntityAlertDialog.kt,2\7\2776cd5925833e55dbea1ae824e806fcd72c8613
 
 `app/src/main/java/com/instance/dataxbranch/domain/use_case/AddNewObjectiveEntityToQuestEntity.kt,4\a\4a448769c536b54b20b36253b9d16fb9ded6f58b
 
@@ -63,8 +59,6 @@ w
 Gapp/src/main/java/com/instance/dataxbranch/domain/use_case/GetQuests.kt,f\9\f9c928b198055241d1c5feb6e3890721c68687f2
 z
 Japp/src/main/java/com/instance/dataxbranch/domain/use_case/GetResponses.kt,0\c\0cc6ff847039bc7a2f96fd766963327891ebfb00
-k
-;app/src/main/java/com/instance/dataxbranch/ui/HelpScreen.kt,4\0\4052c96c2bf3f347daee70f0b0f34bfbff4a6e27
 p
 @app/src/main/java/com/instance/dataxbranch/data/entities/Item.kt,4\4\4428f910dfad9f41691b15f7ea90ec8343182159
 ~
@@ -83,8 +77,6 @@ u
 Eapp/src/main/java/com/instance/dataxbranch/ui/components/QuestCard.kt,e\d\ed841f8cddbaca0e32032638057f6c5d378389db
 p
 @app/src/main/java/com/instance/dataxbranch/data/daos/QuestDao.kt,4\a\4af72cc08dcd6f31d2aec917feeeae1fa88e242e
-r
-Bapp/src/main/java/com/instance/dataxbranch/ui/QuestDetailScreen.kt,4\5\45abb60e34500adf393b8f2aea1b629afc80e062
 w
 Gapp/src/main/java/com/instance/dataxbranch/data/entities/QuestEntity.kt,6\b\6ba2cf95ec6f6968dbaae5c7a9eaf1518de4ade3
 q
@@ -97,7 +89,3 @@ k
 ;app/src/main/java/com/instance/dataxbranch/di/RoomModule.kt,f\8\f8df6992175e5525a31706c361e11e7f3fb0da49
 q
 Aapp/src/main/java/com/instance/dataxbranch/data/entities/Skill.kt,f\a\fab29ee09307b535d204f32b708859bda4b65805
-{
-Kapp/src/main/java/com/instance/dataxbranch/data/firestore/UserRepository.kt,4\a\4afad9647943d16c344f32ed1a784f3f0969e15d
-
-Oapp/src/main/java/com/instance/dataxbranch/data/firestore/UserRepositoryImpl.kt,a\c\ac425518ed299b09eb39313460724b7f64aecf65

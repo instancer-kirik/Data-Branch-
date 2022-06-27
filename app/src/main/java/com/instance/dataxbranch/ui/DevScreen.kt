@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.ui
 
 import android.content.Context
-import android.util.Log
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,19 +58,25 @@ val db = FirebaseFirestore.getInstance()
 
 @Composable
 fun PayMeBlock() {
-    Column{Text("Future PayToWin features: +ability slots (planned to earn in update)" )
+    var text = remember {
+        mutableStateOf("https://www.patreon.com/instance_select?fan_landing=true")
+    }
+    Text("Support the Developer")
+    Text("I'll set up IAP for tokens or something when USER profiles aren't volatile")
+    Text("cashapp \$Instancer")
+    stringBlock(s = "Patreon: ", text)
+    /*Column{Text("Future PayToWin features: +ability slots (planned to earn in update)" )
         Text("Wiki tokens")
         Text("special abilites")
         Text("special quests")
         Text("future user qualifier eg Long Star Ranger")///(Rascal, Knight of Guild,)
         Text("So submit bug reports and special features requests or something")
-
-    }
+    }*/
 }
 
 
 @Composable
-fun ResponseBlock(context: Context, devViewModel:DevViewModel, me: UserWithAbilities,db: FirebaseFirestore) {
+fun ResponseBlock(context: Context, me: UserWithAbilities,db: FirebaseFirestore) {
 
     var text = remember { mutableStateOf("") }
     var subjecttext = remember { mutableStateOf("") }
@@ -90,16 +96,16 @@ fun ResponseBlock(context: Context, devViewModel:DevViewModel, me: UserWithAbili
                 author = me.user.uname,
                 authorid = me.user.fsid + ""
             ))
-            .addOnSuccessListener { Log.d(TAG, " Response submited!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+            .addOnSuccessListener { showToast(context,"Response submited! c;") }
+            .addOnFailureListener { e -> showToast(context, "Error writing document $e") }
         isVisible.value=false
-        showToast(context,"c;")
+        //showToast(context,"c;")
     }) {
         Text("Submit Response")
     }}
 }}
 
-fun firestorePlayground(db: FirebaseFirestore){
+fun firestorePlayground(context:Context,db: FirebaseFirestore){
     val docData = hashMapOf(
         "stringExample" to "Hello world!",
         "booleanExample" to true,
@@ -118,8 +124,8 @@ fun firestorePlayground(db: FirebaseFirestore){
 
     db.collection("data").document("one")
         .set(docData)
-        .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
-        .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+        .addOnSuccessListener { showToast(context,"DocumentSnapshot successfully written!") }
+        .addOnFailureListener { e -> showToast(context,"Error writing document $e") }
 
 
     val city = hashMapOf(
@@ -130,8 +136,8 @@ fun firestorePlayground(db: FirebaseFirestore){
 
     db.collection("responses").document("LA")
         .set(city)
-        .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
-        .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+        .addOnSuccessListener { showToast(context, "DocumentSnapshot successfully written!") }
+        .addOnFailureListener { e -> showToast(context,"Error writing document $e") }
 }
 
 @Composable

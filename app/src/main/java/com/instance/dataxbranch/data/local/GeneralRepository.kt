@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.data.local
 
 import android.app.Application
-import android.util.Log
+
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.daos.AbilityDao
 
@@ -34,7 +34,7 @@ class GeneralRepository(application: Application, db: AppDatabase) {
     }
     private fun getMeWithAbilities(){
         CoroutineScope(Dispatchers.IO).launch {
-            Log.d(TAG, "in GENERALREPO with $me")
+            //.d(TAG, "in GENERALREPO with $me")
             me_container =
                 if (me!=null) {me.initflag=true
                     UserWithAbilities(me, mabilities)

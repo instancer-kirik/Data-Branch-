@@ -46,6 +46,8 @@ class RoomQuestViewModel @Inject constructor(
         MutableLiveData<String>()
     }
 
+
+
     init {
 
         selectedQuest= QuestWithObjectives(QuestEntity(),listOf())
@@ -75,7 +77,7 @@ class RoomQuestViewModel @Inject constructor(
         super.onCleared()
     }*/
     private fun getQuests() {
-        viewModelScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
              val qwe = arrayListOf<QuestWithObjectives>()
 
             _quests.emit(qwe)

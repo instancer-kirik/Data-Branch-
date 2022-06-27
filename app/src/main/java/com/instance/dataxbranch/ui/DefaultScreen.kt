@@ -2,7 +2,7 @@ package com.instance.dataxbranch.ui
 
 
 import android.content.Context
-import android.util.Log
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -48,7 +48,7 @@ fun DefaultScreen(viewModel: UserViewModel = hiltViewModel(),
         }
         var me = viewModel.getMeWithAbilities()
         if (me.user.uname ==DEFAULT_UNAME && !me.user.initflag){viewModel.generalRepository.refresh()
-            Log.d(TAG,"REPEATER")
+            //Log.d(TAG,"REPEATER")
             navigator.navigate(
                 DefaultScreenDestination)}
         me = viewModel.getMeWithAbilities()
@@ -78,7 +78,7 @@ fun DefaultScreen(viewModel: UserViewModel = hiltViewModel(),
 
 
 @Composable
-fun defaultCard(me: UserWithAbilities, context: Context, index:Int, screen: TypedDestination<*>, navigator: DestinationsNavigator){
+fun defaultCard(me: UserWithAbilities, index:Int, screen: TypedDestination<*>, navigator: DestinationsNavigator){
     Row(modifier= Modifier.clickable{
         me.user.defaultScreen=index
         navigator.navigate(screen.route)
@@ -93,7 +93,7 @@ fun defaultCard(me: UserWithAbilities, context: Context, index:Int, screen: Type
 @Composable
 fun DefaultLazyColumn(
     navigator:DestinationsNavigator, context:Context,
-    viewModel: UserViewModel, Screens: List<TypedDestination<*>>, modifier: Modifier){
+    viewModel: UserViewModel,screens: List<TypedDestination<*>>, modifier: Modifier){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index}
 /*
@@ -104,12 +104,12 @@ fun DefaultLazyColumn(
     androidx.compose.foundation.lazy.LazyColumn(state = state,
         modifier = modifier.fillMaxSize(),
     ) {
-        itemsIndexed(Screens) {ix, screen ->
+        itemsIndexed(screens) {ix, screen ->
 
             DefaultDestinationViewShort(
                 navigator = navigator,
                 screen =screen,
-                context = context,
+
                 viewModel = viewModel,
                 me =viewModel.getMeWithAbilities(),
                 index = ix,
@@ -137,7 +137,6 @@ fun DefaultLazyColumn(
 fun DefaultDestinationViewShort(
     navigator: DestinationsNavigator,
     screen: TypedDestination<*>,
-    context: Context,
     viewModel: UserViewModel,
     me: UserWithAbilities,
     index: Int,
@@ -162,7 +161,7 @@ fun DefaultDestinationViewShort(
         defaultCard(
             me =viewModel.getMeWithAbilities(),
             screen =screen,
-            index =index, context = context, navigator = navigator)
+            index =index,  navigator = navigator)
 
     }
     //Text("DEBUG2")

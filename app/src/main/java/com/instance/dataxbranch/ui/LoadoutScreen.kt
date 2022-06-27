@@ -2,7 +2,7 @@ package com.instance.dataxbranch.ui
 
 import android.content.Context
 import android.content.res.Configuration
-import android.util.Log
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -67,7 +67,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
     }
 
     @Composable
-    fun LoadoutToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator) {
+    fun LoadoutToolbar( navigator: DestinationsNavigator) {
 
         TopAppBar(
             title = { Text(text = "Armed Abilities") },

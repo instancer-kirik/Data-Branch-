@@ -4,7 +4,7 @@ package com.instance.dataxbranch.ui
 
 import android.content.Context
 import android.nfc.Tag
-import android.util.Log
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -34,31 +34,33 @@ fun QuestDetailScreen (viewModel: RoomQuestViewModel=hiltViewModel(),
                          navigator: DestinationsNavigator,
 
                          ){
+    var desc = remember { mutableStateOf(viewModel.selectedQuest.quest.description + "") }
+
+    var title = remember { mutableStateOf(viewModel.selectedQuest.quest.title + "") }
+    var ingredients = remember { mutableStateOf(viewModel.selectedQuest.quest.ingredients) }
+    var region = remember { mutableStateOf(viewModel.selectedQuest.quest.region) }
+    var sourceUrl = remember { mutableStateOf(viewModel.selectedQuest.quest.sourceUrl) }
+    var featuredImage = remember { mutableStateOf(viewModel.selectedQuest.quest.featuredImage) }
+    var reward = remember { mutableStateOf(viewModel.selectedQuest.quest.reward) }
+    var rewardxp= remember {mutableStateOf(viewModel.selectedQuest.quest.rewardxp) }
+    val checkedState = remember { mutableStateOf(viewModel.selectedQuest.quest.completed) }
+    val them =listOf(title,desc,checkedState,ingredients,reward,rewardxp,region,sourceUrl, featuredImage)
     val context = LocalContext.current
     Scaffold(
 
-        topBar = { QuestDetailToolbar(context,viewModel,navigator) },
+        topBar = { QuestDetailToolbar(context,viewModel,navigator,them) },
         floatingActionButton = {
             //AddQuestEntityFloatingActionButton()
             // EditQuestEntityFloatingActionButton()
         }
     ) { padding ->
 
-        //viewModel.getSelect()
-            var desc = remember { mutableStateOf(viewModel.selectedQuest.quest.description + "") }
-
-            var title = remember { mutableStateOf(viewModel.selectedQuest.quest.title + "") }
-            var ingredients = remember { mutableStateOf(viewModel.selectedQuest.quest.ingredients) }
-            var region = remember { mutableStateOf(viewModel.selectedQuest.quest.region) }
-            var sourceUrl = remember { mutableStateOf(viewModel.selectedQuest.quest.sourceUrl) }
-            var featuredImage =
-                remember { mutableStateOf(viewModel.selectedQuest.quest.featuredImage) }
-            var reward = remember { mutableStateOf(viewModel.selectedQuest.quest.reward) }
+       //viewModel.getSelect()
 
         //var Mcompleted = remember { mutableStateOf(viewModel.selectedQuest.quest.completed) }
 
         //INTS
-        var rewardxp= remember {mutableStateOf(viewModel.selectedQuest.quest.rewardxp) }
+
         //var requiredEnergy = remember { mutableStateOf(viewModel.selectedQuest.quest.requiredEnergy ) }
         /*val m = mapOf("desc" to desc,
 
@@ -69,7 +71,7 @@ fun QuestDetailScreen (viewModel: RoomQuestViewModel=hiltViewModel(),
         "levels"  to levels,
         "levelup"  to levelup,
         "requiredEnergy" to requiredEnergy,)*/
-        val checkedState = remember { mutableStateOf(viewModel.selectedQuest.quest.completed) }
+
 
         //Questblock("")
         Row{
@@ -94,22 +96,7 @@ fun QuestDetailScreen (viewModel: RoomQuestViewModel=hiltViewModel(),
                         //viewModel.onCheckboxChecked(it)
                     })
 
-                Button(onClick = {viewModel.selectedQuest.quest.description=desc.value//this isn't changing even though I clearly change it.
-                    viewModel.selectedQuest.quest.title =title.value
-                    viewModel.selectedQuest.quest.featuredImage=featuredImage.value
-                    viewModel.selectedQuest.quest.ingredients = ingredients.value
-                    viewModel.selectedQuest.quest.reward = reward.value
-                    viewModel.selectedQuest.quest.rewardxp = rewardxp.value
-                    viewModel.selectedQuest.quest.sourceUrl = sourceUrl.value
-                    /*viewModel.selectedQuest.quest.
-                    viewModel.selectedQuest.quest.levels=levels*/
-                    viewModel.selectedQuest.quest.let { viewModel.update(it) }
-
-                    viewModel.sync()
-                    //viewModel.generalRepository.save(me.user)
-
-                    navigator.navigate(MyQuestsScreenDestination)
-                    showToast(context,"Saved " +desc.value)}){
+                Button(onClick = {save(context,navigator,viewModel,them)}){
                     Icon(
                         imageVector = Icons.Default.Done,
                         contentDescription = Constants.SAVE
@@ -118,8 +105,10 @@ fun QuestDetailScreen (viewModel: RoomQuestViewModel=hiltViewModel(),
                 //blvlupblock(levelups = levelup, levels = levels)
             }}}}
 
+
+
 @Composable
-fun QuestDetailToolbar(context: Context, viewModel: RoomQuestViewModel, navigator: DestinationsNavigator) {
+fun QuestDetailToolbar(context: Context, viewModel: RoomQuestViewModel, navigator: DestinationsNavigator,them: List<MutableState<out Any>>) {
     TopAppBar(
         title = { Text(text = "Edit Quest") },
         actions = {ConfigChangeExample()
@@ -143,7 +132,7 @@ fun QuestDetailToolbar(context: Context, viewModel: RoomQuestViewModel, navigato
 
                     Button(onClick = {navigator.navigate( DevScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("DevScreen")}
                     Button(onClick = {navigator.navigate(MyQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("My Quests")}
-                    Button(onClick = { Log.d(TAG,"Save here")}, modifier=Modifier.padding(2.dp)){Text("save any changes")}
+                    Button(onClick = {save(context,navigator,viewModel,them)}, modifier=Modifier.padding(2.dp)){Text("save any changes")}
                 } else Text("DEBUG")
 
             }
@@ -189,6 +178,29 @@ fun bintBlock(s: String = "", i: MutableState<Int>){
             }
         )}
 }
+//val them =listOf(title,desc,checkedState,ingredients,reward,rewardxp,region,sourceUrl, featuredImage)
+fun save(context: Context,navigator: DestinationsNavigator,viewModel:RoomQuestViewModel,them: List<MutableState<out Any>>){
+    viewModel.selectedQuest.quest.title = them[0].value.toString()
+    viewModel.selectedQuest.quest.description =
+        them[1].value.toString()//this isn't changing even though I clearly change it.
+    viewModel.selectedQuest.quest.completed = them[2].value as Boolean
+
+    viewModel.selectedQuest.quest.ingredients = them[3].value as String
+    viewModel.selectedQuest.quest.reward =them[4].value as String
+    viewModel.selectedQuest.quest.rewardxp = them[5].value as Int
+    viewModel.selectedQuest.quest.sourceUrl =  them[6].value as String
+    viewModel.selectedQuest.quest.featuredImage = them[7].value as String
+    /*viewModel.selectedQuest.quest.
+    viewModel.selectedQuest.quest.levels=levels*/
+    viewModel.selectedQuest.quest.let { viewModel.update(it) }
+
+    viewModel.sync()
+    //viewModel.generalRepository.save(me.user)
+
+    navigator.navigate(MyQuestsScreenDestination)
+    showToast(context, "Saved " + them[1].value.toString())
+}
+
 @Composable
 fun blvlupblock(levels:MutableList<String>?, levelups: MutableList<Int>?){
 

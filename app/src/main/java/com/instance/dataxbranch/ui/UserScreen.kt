@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.ui
 
 import android.content.res.Configuration
-import android.util.Log
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,7 +31,7 @@ import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.destinations.UserScreenDestination
-import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
+
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -53,7 +53,7 @@ fun UserScreen(
         }
     ) { padding ->
         val configuration= LocalConfiguration.current
-
+        val context = LocalContext.current
         val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         var expanded by remember { mutableStateOf(true) }
         val backgroundColor = if (isLandscape){
@@ -66,7 +66,7 @@ fun UserScreen(
         Spacer(Modifier.requiredHeight(20.dp))
        Row(modifier = Modifier
            .clickable {
-               Log.d(TAG,  "Clicked c; in userscreen")
+               showToast(context,"Clicked c; in userscreen")
            }
            .background(backgroundColor)//if (selected) MaterialTheme.user.colors.secondary else Color.Transparent)
            .fillMaxWidth()
@@ -155,7 +155,7 @@ fun UserSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, me: Use
                     me.user.dexterity = mapped["DEX "]!!
                     me.user.speed = mapped["SPD "]!!
                     me.user.constitution = mapped["CON "]!!
-                    Log.d(TAG, "energy is now " + mapped["energy "])
+                   // Log.d(TAG, "energy is now " + mapped["energy "])
                     me.user.tagline = tg
                     me.user.uname = un
                     me.user.name = nm

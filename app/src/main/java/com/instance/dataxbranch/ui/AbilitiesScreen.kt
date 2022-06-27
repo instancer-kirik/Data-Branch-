@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.ui
 
 import android.content.Context
-import android.util.Log
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -31,7 +31,7 @@ import com.instance.dataxbranch.ui.destinations.AbilitiesScreenDestination
 import com.instance.dataxbranch.ui.destinations.LoadoutScreenDestination
 import com.instance.dataxbranch.ui.destinations.MyQuestsScreenDestination
 import com.instance.dataxbranch.ui.destinations.UserScreenDestination
-import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
+
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -151,7 +151,7 @@ fun AbilitiesToolbar(context: Context,viewModel:UserViewModel, navigator: Destin
 }
 
 @Composable
-fun abilityCard(context: Context, ae: AbilityEntity){
+fun abilityCard( ae: AbilityEntity){
     Row(modifier= Modifier.background(if (ae.inloadout) Color.Blue else Color.Transparent   )/*{
         showToast(context,"casted")*/
     ){
