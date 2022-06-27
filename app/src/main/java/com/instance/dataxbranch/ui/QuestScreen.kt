@@ -113,7 +113,9 @@ fun Toolbar(navigator: DestinationsNavigator) {
 
             var expanded by remember { mutableStateOf(false) }
             var expanded2 by remember { mutableStateOf(false) }
+            Row{
             OutlinedButton(
+                modifier = Modifier.fillMaxSize(),
                 onClick = {
                     expanded2 = !expanded2
                 }
@@ -122,7 +124,7 @@ fun Toolbar(navigator: DestinationsNavigator) {
                 if (expanded2) {
                     //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
-                    Row(modifier=Modifier.fillMaxWidth()) {
+                    Row(modifier = Modifier.fillMaxSize()) {
                         Button(
                             onClick = { navigator.navigate(DevScreenDestination) },
                             modifier = Modifier.padding(2.dp)
@@ -139,7 +141,8 @@ fun Toolbar(navigator: DestinationsNavigator) {
                     }*/
                     }
 
-            }else Text("DEBUG")
+                } else Text("DEBUG")
+            }
             OutlinedButton(
                 onClick = {
                     expanded = !expanded
@@ -149,7 +152,7 @@ fun Toolbar(navigator: DestinationsNavigator) {
                 if (expanded) {
                     //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
-                    Row(modifier = Modifier.fillMaxWidth()) {
+                    Row() {
                         Button(
                             onClick = { navigator.navigate(UserScreenDestination) },
                             modifier = Modifier.padding(2.dp)
@@ -166,8 +169,8 @@ fun Toolbar(navigator: DestinationsNavigator) {
                     }
                 } else Text("navigate")}
 
-            }
-            }
+
+            }}
     )
 }
 

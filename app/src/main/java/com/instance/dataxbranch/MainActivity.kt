@@ -4,6 +4,8 @@ package com.instance.dataxbranch
 
 import android.content.Context
 import android.os.Bundle
+import android.widget.Button
+import android.widget.CheckBox
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -42,8 +44,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.instance.dataxbranch.quests.Quest
-//import com.instance.dataxbranch.destinations.QuestsScreenDestination
 import com.instance.dataxbranch.ui.NavGraphs
+//import com.instance.dataxbranch.destinations.QuestsScreenDestination
+
 //import com.instance.dataxbranch.ui.NavGraphs
 //import com.instance.dataxbranch.ui.QuestListItem
 
@@ -92,9 +95,11 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .padding(padding)
                         ){Text("top text")
-
+                            //val consentBox: CheckBox =findViewById(R.id.checkBox)
+                            //val button: Button =findViewById(R.id.checkBox)
                             DestinationsNavHost(navGraph = NavGraphs.root)
                             Text("bottom text")
+
                         }
 
                         // AppModule_ProvideDbFactory.provideDb(DataBranchApp())

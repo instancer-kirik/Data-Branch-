@@ -95,6 +95,15 @@ class GeneralRepository(application: Application, db: AppDatabase) {
         return me
     }
     fun getMe(): UserWithAbilities =me_container
+    fun setMe(new_me: UserWithAbilities) {
+        me_container= new_me
+
+        CoroutineScope(Dispatchers.IO).launch {
+
+           uDao.setMe(me_container.user)
+        }
+
+    }
    /* withContext(Dispatchers.IO){
         uDao.getMeAbilities()
     }*/

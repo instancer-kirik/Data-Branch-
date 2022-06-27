@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.local.UserWithAbilities
+import com.instance.dataxbranch.ui.components.AddResponseAlertDialog
+import com.instance.dataxbranch.ui.components.TermsPopupAlertDialog
 import com.instance.dataxbranch.ui.destinations.DefaultScreenDestination
 import com.instance.dataxbranch.ui.destinations.TypedDestination
 
@@ -41,7 +43,9 @@ fun DefaultScreen(viewModel: UserViewModel = hiltViewModel(),
 
 
     ) { padding ->
-
+        if (viewModel.termsDialogState.value) {
+            TermsPopupAlertDialog(viewModel,navigator)
+        }
         var me = viewModel.getMeWithAbilities()
         if (me.user.uname ==DEFAULT_UNAME && !me.user.initflag){viewModel.generalRepository.refresh()
             Log.d(TAG,"REPEATER")
@@ -51,10 +55,15 @@ fun DefaultScreen(viewModel: UserViewModel = hiltViewModel(),
 
         val which = me.user.defaultScreen
         val dests = NavGraphs.root.destinations
-        if (which>=0){
-        navigator.navigate(
-            dests[which].route)}
-
+        if (me.user.terms_status==""){//if user has not accepted terms
+            viewModel.termsDialogState.value=true
+        }else {
+            if (which >= 0) {
+                navigator.navigate(
+                    dests[which].route
+                )
+            }
+        }
         Column{Text(me.user.uname)
             Text("GO TO USER SCREEN -> save")
             DefaultLazyColumn(navigator,context,viewModel, Screens = dests, modifier = Modifier.padding(2.dp))

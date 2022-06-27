@@ -9,7 +9,7 @@ data class FirestoreResponse(var id: Int = -11,
                 val authorid: String = "",
                 var author: String = "Kirik",
                 var rating: Int = 0,
-                val sourceUrl: String="url goes here if you send me a link or a screenshot",
+                val linkUrl: String="url goes here if you send me a link or a screenshot",
 
 
                 var subject: String = "subject"

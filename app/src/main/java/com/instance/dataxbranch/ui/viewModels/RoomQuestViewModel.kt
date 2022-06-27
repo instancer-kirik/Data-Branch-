@@ -51,7 +51,7 @@ class RoomQuestViewModel @Inject constructor(
         selectedQuest= QuestWithObjectives(QuestEntity(),listOf())
         quests=getQuestsFromRepo()
         if(quests.isNotEmpty()){
-            selectedQuest=quests[1]
+            selectedQuest=quests[0]
         }else {
             selectedQuest = QuestWithObjectives(QuestEntity(), listOf())
         }

@@ -71,7 +71,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
         TopAppBar(
             title = { Text(text = "Armed Abilities") },
-            actions = {ConfigChangeExample()
+            actions = {
 
                 var expanded by remember { mutableStateOf(false) }
                 var expanded2 by remember { mutableStateOf(false) }
@@ -89,8 +89,11 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
                         //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
                         //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
                         //Button(onClick = {viewModel.openDialogState3.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit loadout") }
+                        Button(
+                            onClick = { navigator.navigate(DevScreenDestination) },
+                            modifier = Modifier.padding(2.dp)
+                        ) { Text("DevScreen") }
 
-                        Text("LoadoutScreen")
                         Button(onClick = {navigator.navigate(AbilitiesScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("All Abilities")}
                     } else Text("DEBUG")
 

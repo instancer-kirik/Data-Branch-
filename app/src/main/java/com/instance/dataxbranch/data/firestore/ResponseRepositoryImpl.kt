@@ -96,9 +96,10 @@ class ResponseRepositoryImpl @Inject constructor(
         override fun addResponseToFirestore(response: FirestoreResponse): Flow<Response<Void?>> = flow {
             try {
                 emit(Response.Loading)
-                val id = response.fsid
 
-                val addition = id?.let { responsesRef.document(it).set(response).await() }
+                val id = if(response.fsid==""){responsesRef.document().id}else{response.fsid}
+
+                val addition = id.let { responsesRef.document(it).set(response).await() }
                 emit(Response.Success(addition))
             } catch (e: Exception) {
                 emit(Response.Error(e.message ?: e.toString()))

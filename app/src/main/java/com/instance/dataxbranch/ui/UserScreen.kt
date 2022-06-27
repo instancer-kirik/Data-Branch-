@@ -26,10 +26,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.destinations.UserScreenDestination
+import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -59,24 +61,8 @@ fun UserScreen(
         } else {
             MaterialTheme.colors.background
         }
-        FloatingActionButton(
-            onClick = { expanded = !expanded },
 
-        ) {
-            Row(Modifier.padding(start = 12.dp, end = 12.dp)) {
-                Icon(
-                    Icons.Default.Favorite,
-                    contentDescription = "Favorite",
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-                AnimatedVisibility(
-                    expanded,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) {
-                    Text(modifier = Modifier.padding(start = 12.dp), text = "Favorite")
-                }
-            }
-        }
+
         Spacer(Modifier.requiredHeight(20.dp))
        Row(modifier = Modifier
            .clickable {
@@ -111,7 +97,8 @@ fun UserScreen(
 
                    Box(modifier = Modifier.background(MaterialTheme.colors.surface).weight(.4f).align(Alignment.CenterVertically)){
 
-                       UserStats(m)
+                       Row{UserStats(m)
+                       }
                    }
                }
 
@@ -121,6 +108,7 @@ fun UserScreen(
         }
     }
 }
+
 fun statState(m:Map<String, MutableState<Int>>):Map<String, Int> {
         return mapOf("energy " to m["energy "]!!.value,
         "hearts " to  m["hearts "]!!.value,
@@ -246,10 +234,24 @@ fun UserSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, me: Use
         stringblock("rating: " ,me.user.rating.toString() +"/"+ me.user.rating_denominator.toString())
         stringblock("id:  " ,me.user.me_id.toString())
         stringblock("uid: " ,me.user.uid.toString())
-        stringblock("level: " ,me.user.level.toString())
-}
-    }
 
+        stringblock("level: " ,me.user.level.toString())
+
+    }
+}
+/*fun loadCompleted(    db: FirebaseFirestore
+){
+    var completed = []
+    db.collection("users").doc(_auth.currentUser.fsid)
+        .get()
+        .then((snapshot){
+            for (quest in snapshot.data()["qCompleted"]){
+                setState(() {
+                completed.add(quest)
+                )}
+            }
+        })
+}*/
 
     @Composable
     fun LazyColumn(viewModel: UserViewModel, modifier: Modifier){// questsResponse: List<Quest>

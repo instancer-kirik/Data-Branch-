@@ -72,12 +72,12 @@ object AppModule {
     @Provides
     @Named("usersRef")
     fun provideUserCollRef(db: FirebaseFirestore): CollectionReference {
-        return db.collection("quests")
+        return db.collection("users")
     }
     @Provides
     @Named("responsesRef")
     fun provideResponsesCollRef(db: FirebaseFirestore): CollectionReference {
-        return db.collection("quests")
+        return db.collection("responses")
     }
     @Provides
     fun provideQuestsRepository(

@@ -3,10 +3,9 @@ package com.instance.dataxbranch.data.daos
 import android.util.Log
 import androidx.room.*
 import com.instance.dataxbranch.core.Constants.TAG
-import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.data.entities.User
-
+import com.instance.dataxbranch.data.local.UserWithAbilities
 import kotlinx.coroutines.flow.Flow
 
 
@@ -32,6 +31,16 @@ abstract class UserDao {
     @Transaction
     @Query("SELECT * FROM my_resources_attributes_stats")
     abstract fun getMe(): User
+
+    @Query("DELETE FROM my_resources_attributes_stats")
+    abstract fun nukeTable()
+
+    @Transaction
+    @Query("SELECT * FROM my_resources_attributes_stats")
+     fun setMe(user: User){
+        nukeTable()
+        insert(user)
+     }
 
     @Transaction
    @Insert(onConflict = OnConflictStrategy.REPLACE)

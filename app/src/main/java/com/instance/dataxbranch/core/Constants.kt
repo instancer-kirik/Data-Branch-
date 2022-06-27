@@ -8,7 +8,7 @@ object Constants {
     const val EDIT_LOADOUT= "Edit ability slots"
     //App
     const val TAG = "Debugilator"
-
+    const val TERMS = "Terms and Conditions"
     //Firestore
     const val QUESTS = "quests"
     const val TITLE = "title"

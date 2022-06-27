@@ -65,7 +65,8 @@ data class User @JvmOverloads constructor(
     @ColumnInfo(name = "abilities")var abilities: List<Int> =listOf(),
     @ColumnInfo(name = "activeQuest")var activeQuest: Long =1L,
     @ColumnInfo(name = "dockedQuests")val dockedQuests: List<Int> =listOf(),
-    @ColumnInfo(name = "status")var status: String = "intrepid.. curious"
+    @ColumnInfo(name = "status")var status: String = "intrepid.. curious",
+    @ColumnInfo(name = "terms_status")var terms_status: String = ""//update this on accepting terms
 
 //authored quests, nuggets,
     ) {

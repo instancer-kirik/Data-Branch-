@@ -40,7 +40,7 @@ class UserViewModel @Inject constructor(
 
     ): ViewModel() {
     lateinit var selectedAE: AbilityEntity
-
+    var currentSite: String= "https://sites.google.com/view/instance-select/home"
 
     //val _qwe:
     //val _quests: MutableStateFlow<List<QuestWithObjectives>> = MutableStateFlow(listOf<QuestWithObjectives>())
@@ -51,6 +51,9 @@ class UserViewModel @Inject constructor(
     var openDialogState = mutableStateOf(false)
     var openDialogState2 = mutableStateOf(false)
     var openDialogState3 = mutableStateOf(false)
+    var termsDialogState = mutableStateOf(false)
+    var refreshWebview = mutableStateOf(false)
+
     val handyString: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
