@@ -254,7 +254,7 @@ fun AbilityView(
             text = "Index $index",
         )*/
          //if (selected){viewModel.selectedAE = ability}
-        abilityCard(context,ability)
+        abilityCard(ability)
 
     }
     //Text("DEBUG2")
@@ -282,7 +282,7 @@ fun AbilityViewShort(
             text = "Index $index",
         )*/
         //if (selected){viewModel.selectedAE = ability}
-        abilityCard(context,ability)
+        abilityCard(ability)
 
     }
     //Text("DEBUG2")

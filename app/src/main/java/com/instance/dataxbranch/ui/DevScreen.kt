@@ -51,7 +51,7 @@ val db = FirebaseFirestore.getInstance()
             }
             Column{
             PayMeBlock()
-            ResponseBlock(context=context,devViewModel = devViewModel, me = me, db=db)
+            ResponseBlock(context=context, me = me, db=db)
                 Button(onClick = {navigator.navigate(DefaultScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Default screen")}
 }
 }}

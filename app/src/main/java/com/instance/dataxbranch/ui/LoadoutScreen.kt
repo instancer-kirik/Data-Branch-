@@ -42,7 +42,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
         val context = LocalContext.current
         Scaffold(
 
-            topBar = { LoadoutToolbar(viewModel,navigator) },
+            topBar = { LoadoutToolbar(navigator) },
             floatingActionButton = {
 
                 // EditAbilityEntityFloatingActionButton()

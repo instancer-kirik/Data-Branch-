@@ -66,7 +66,7 @@ fun DefaultScreen(viewModel: UserViewModel = hiltViewModel(),
         }
         Column{Text(me.user.uname)
             Text("GO TO USER SCREEN -> save")
-            DefaultLazyColumn(navigator,context,viewModel, Screens = dests, modifier = Modifier.padding(2.dp))
+            DefaultLazyColumn(navigator,context,viewModel, screens = dests, modifier = Modifier.padding(2.dp))
         }
 
         /*me.Default.forEach {\
