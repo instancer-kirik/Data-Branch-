@@ -22,7 +22,7 @@ fun HelpScreen (viewModel: UserViewModel = hiltViewModel(),
         val context = LocalContext.current
         Scaffold(
 
-            topBar = { LoadoutToolbar(viewModel,navigator) },
+            topBar = { LoadoutToolbar(navigator) },
             floatingActionButton = {
 
                 // EditAbilityEntityFloatingActionButton()
