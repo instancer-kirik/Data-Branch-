@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.instance.dataxbranch.quests.Quest
@@ -84,6 +85,8 @@ class MainActivity : AppCompatActivity() {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+      //  FirebaseAuth.getInstance().createUserWithEmailAndPassword(email)
         setContent {
             DataXBranchTheme(darkTheme = true) {
 

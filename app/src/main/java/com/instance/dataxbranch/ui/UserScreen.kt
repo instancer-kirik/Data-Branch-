@@ -28,9 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.core.Constants.TAG
+import com.instance.dataxbranch.data.firestore.QuestsRepository
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.destinations.UserScreenDestination
+import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -40,8 +42,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun UserScreen(
-    viewModel: UserViewModel = hiltViewModel(),
+    viewModel: UserViewModel,
     navigator: DestinationsNavigator,
+    roomQuestViewModel: RoomQuestViewModel
 
 
     ) {
@@ -92,7 +95,7 @@ fun UserScreen(
                )
                Row{
                    Box(modifier = Modifier.background(MaterialTheme.colors.surface).weight(.6f).align(Alignment.CenterVertically)){
-                       UserSpiel(navigator,viewModel, me, m)
+                       UserSpiel(navigator,viewModel, me, roomQuestViewModel = roomQuestViewModel, m = m)
                    }
 
                    Box(modifier = Modifier.background(MaterialTheme.colors.surface).weight(.4f).align(Alignment.CenterVertically)){
@@ -126,7 +129,7 @@ fun statState(m:Map<String, MutableState<Int>>):Map<String, Int> {
 }
 @Composable
 fun UserSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, me: UserWithAbilities,
-              m:Map<String, MutableState<Int>>){
+              m:Map<String, MutableState<Int>>, roomQuestViewModel: RoomQuestViewModel){
     var tg by remember { mutableStateOf(me.user.tagline)}
     var un by remember { mutableStateOf(me.user.uname)}
     var nm by remember { mutableStateOf(me.user.name)}
@@ -230,7 +233,7 @@ fun UserSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, me: Use
             modifier = Modifier.padding(8.dp)
         )
         stringblock("fsid: " ,me.user.fsid +"")
-        stringblock("active quest: " ,me.user.activeQuest.toString())
+        stringblock("active/selected quest: " ,   roomQuestViewModel.selectedQuest(me.user.getActiveQuest()))
         stringblock("rating: " ,me.user.rating.toString() +"/"+ me.user.rating_denominator.toString())
         stringblock("id:  " ,me.user.me_id.toString())
         stringblock("uid: " ,me.user.uid.toString())

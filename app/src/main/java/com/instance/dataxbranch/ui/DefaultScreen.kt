@@ -46,7 +46,9 @@ fun DefaultScreen(viewModel: UserViewModel = hiltViewModel(),
         if (viewModel.termsDialogState.value) {
             TermsPopupAlertDialog(viewModel,navigator)
         }
+
         var me = viewModel.getMeWithAbilities()
+        if (me.user.fsid=="-1")
         if (me.user.uname ==DEFAULT_UNAME && !me.user.initflag){viewModel.generalRepository.refresh()
             //Log.d(TAG,"REPEATER")
             navigator.navigate(

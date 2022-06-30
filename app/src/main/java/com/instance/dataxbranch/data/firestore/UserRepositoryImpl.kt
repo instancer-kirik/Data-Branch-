@@ -8,6 +8,7 @@ import com.instance.dataxbranch.data.entities.User
 
 
 import com.instance.dataxbranch.domain.Response
+import com.instance.dataxbranch.quests.Quest
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -23,10 +24,38 @@ class UserRepositoryImpl @Inject constructor(
 ): UsersRepository {
 
 
-    override fun getUserById(fsid: String) {
-        TODO("Not yet implemented")
-    }
+    override fun getFirestoreUserById(fsid: String) : Flow<Response<FirestoreUser>> = callbackFlow {
+        val snapshotListener =usersRef.document(fsid).addSnapshotListener { snapshot, e ->
+            val response = if (snapshot != null) {
+                val user = snapshot.toObject(FirestoreUser::class.java)
+                Response.Success(user)
+            } else {
+                Response.Error(e?.message ?: e.toString())
+            }
+            trySend(response as Response<FirestoreUser>).isSuccess
+        }
+        awaitClose {
+            snapshotListener.remove()
+        }
 
+
+    }
+    override fun getUserById(fsid: String) : Flow<Response<User>> = callbackFlow {
+        val snapshotListener =usersRef.document(fsid).addSnapshotListener { snapshot, e ->
+            val response = if (snapshot != null) {
+                val user = snapshot.toObject(User::class.java)
+                Response.Success(user)
+            } else {
+                Response.Error(e?.message ?: e.toString())
+            }
+            trySend(response as Response<User>).isSuccess
+        }
+        awaitClose {
+            snapshotListener.remove()
+        }
+
+
+    }
     override fun getUsersFromFirestore(): Flow<Response<List<User>>> = callbackFlow {
         val snapshotListener = usersRef.orderBy(TITLE).addSnapshotListener { snapshot, e ->
             val response = if (snapshot != null) {

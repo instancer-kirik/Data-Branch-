@@ -23,8 +23,21 @@ class QuestRepositoryImpl @Inject constructor(
 
 
 
-    override fun getQuestById(qid: String) {
-        TODO("Not yet implemented")
+    override fun getQuestById(qid: String) : Flow<Response<Quest>> = callbackFlow {
+        val snapshotListener =questsRef.document(qid).addSnapshotListener { snapshot, e ->
+            val response = if (snapshot != null) {
+                val quest = snapshot.toObject(Quest::class.java)
+                Response.Success(quest)
+            } else {
+                Response.Error(e?.message ?: e.toString())
+            }
+            trySend(response as Response<Quest>).isSuccess
+        }
+        awaitClose {
+            snapshotListener.remove()
+        }
+
+
     }
 
     override fun getQuestsFromFirestore(): Flow<Response<List<Quest>>> = callbackFlow {

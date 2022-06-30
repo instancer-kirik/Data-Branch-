@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface QuestsRepository{
     var questsRef: CollectionReference
-    fun getQuestById(qid: String){TODO()}
+    fun getQuestById(qid: String):Flow<Response<Quest>>
     fun getQuestsFromFirestore(): Flow<Response<List<Quest>>>
 
    //ORIGINALLY HAD SUSPEND FUN

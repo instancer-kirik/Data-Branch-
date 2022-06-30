@@ -180,6 +180,10 @@ class RoomQuestViewModel @Inject constructor(
         refresh()
     }
 
+    fun selectedQuest(activeQuest: Long): String {
+    return selectedQuest.quest.title.toString()
+    }
+
 
 }
 

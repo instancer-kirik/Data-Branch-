@@ -15,7 +15,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface UsersRepository{
     var usersRef: CollectionReference
-    fun getUserById(fsid: String){TODO()}
+    fun getUserById(fsid: String):Flow<Response<User>>
+    fun getFirestoreUserById(fsid: String):Flow<Response<FirestoreUser>>
     fun getUsersFromFirestore(): Flow<Response<List<User>>>
 
     //ORIGINALLY HAD SUSPEND FUN

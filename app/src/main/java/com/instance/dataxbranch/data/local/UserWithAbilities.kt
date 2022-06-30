@@ -5,6 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.data.entities.User
+import com.instance.dataxbranch.data.firestore.FirestoreUser
 
 
 data class UserWithAbilities (
@@ -36,6 +37,55 @@ data class UserWithAbilities (
             return true
     }
         return false}
+    fun combine(tangent: UserWithAbilities){
+        user.combine(tangent.user)
+        abilities+=tangent.abilities
+    }
+    fun toFireStoreUser():FirestoreUser{
+        return FirestoreUser(//notice how these are all cloud data
+            activeCloudQuests =user.activeCloudQuests,
+            cloudAbilities =user.cloudAbilities,
+            completedCloudQuests = user.completedCloudQuests,
+            dockedCloudQuests = user.dockedCloudQuests,
+            rating = user.rating,
+            rating_denominator = user.rating_denominator,
+            fsid =user.fsid,
+            uid=user.uid,
+            uname = user.uname,
+            name = user.name,
+            imageUrl = user.imageUrl,
+            tagline = user.tagline,
+            bio = user.bio,
+            traits= user.traits,
+            dateAdded=user.dateAdded, dateUpdated=user.dateUpdated,
+            dob=user.dob,
+            status=user.status,
+            terms_status=user.terms_status,
+            energy=user.energy,
+            strength=user.strength,
+            vitality=user.vitality,
+            stamina=user.stamina,
+            wisdom=user.wisdom,
+            charisma=user.charisma,
+            intellect=user.intellect,
+            magic=user.magic,
+            dexterity=user.dexterity,
+            agility=user.agility,
+            speed=user.speed,
+            height=user.height,
+            allignment=user.allignment,
+            life=user.life,
+            mana=user.mana,
+            money=user.money,
+            level=user.level,
+            hearts=user.hearts,
+            attunement=user.attunement,
+            defaultScreen=user.defaultScreen,
+            history=user.history,
+
+            )
+    }
+}
    /* fun setStats(m:Map<String,Int>){
         user.hearts= m["hearts "]!!
 
@@ -53,7 +103,7 @@ data class UserWithAbilities (
              user.speed=m["SPD "]!!
              user.constitution=m["CON "]!!
     }*/
-}
+
 
 
 

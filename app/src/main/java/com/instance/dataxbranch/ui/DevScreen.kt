@@ -58,12 +58,14 @@ val db = FirebaseFirestore.getInstance()
 
 @Composable
 fun PayMeBlock() {
+    Text("Merch and livestreams and such")
     var text = remember {
-        mutableStateOf("https://www.patreon.com/instance_select?fan_landing=true")
+        mutableStateOf("https://www.__patreon.com/instance_select?fan_landing=true")
     }
-    Text("Support the Developer")
-    Text("I'll set up IAP for tokens or something when USER profiles aren't volatile")
-    Text("cashapp \$Instancer")
+    Text("Grant me money. Support the Developer ")
+    Text("I'll set up IAP and ads soon. and I'll grant you exclusive goodies.  " )
+    Text("Does this count as a game?")
+    //Text("cashapp \$Instancer")
     stringBlock(s = "Patreon: ", text)
     /*Column{Text("Future PayToWin features: +ability slots (planned to earn in update)" )
         Text("Wiki tokens")
@@ -96,7 +98,7 @@ fun ResponseBlock(context: Context, me: UserWithAbilities,db: FirebaseFirestore)
                 author = me.user.uname,
                 authorid = me.user.fsid + ""
             ))
-            .addOnSuccessListener { showToast(context,"Response submited! c;") }
+            .addOnSuccessListener { showToast(context,"Response submitted! c;") }
             .addOnFailureListener { e -> showToast(context, "Error writing document $e") }
         isVisible.value=false
         //showToast(context,"c;")
@@ -164,7 +166,7 @@ fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator) {
                     //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
                     //Button(onClick = {viewModel.openDialogState3.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit loadout") }
 
-                    Text("DevScreen")
+                    Button(onClick = {navigator.navigate(LoginScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Auth")}
                     Button(onClick = {navigator.navigate(AbilitiesScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("All Abilities")}
                     Button(onClick = {viewModel.generalRepository.setMe(UserWithAbilities(User(),listOf()))}, modifier=Modifier.padding(2.dp)){Text("clear local")}
                 } else Text("DEBUG")

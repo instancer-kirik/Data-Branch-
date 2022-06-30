@@ -94,6 +94,11 @@ class GeneralRepository(application: Application, db: AppDatabase) {
         }
         return me
     }
+
+
+    fun pullMeFromCloud(fsid:String){
+
+    }
     fun getMe(): UserWithAbilities =me_container
     fun setMe(new_me: UserWithAbilities) {
         me_container= new_me

@@ -1,6 +1,8 @@
 package com.instance.dataxbranch.ui.viewModels
 
 
+import android.content.Context
+
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.UserDao
 import com.instance.dataxbranch.data.entities.AbilityEntity
@@ -13,11 +15,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.AppDatabase
+import com.instance.dataxbranch.data.firestore.FirestoreUser
+import com.instance.dataxbranch.data.firestore.UserRepositoryImpl
 import com.instance.dataxbranch.data.local.UserWithAbilities
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
+import com.instance.dataxbranch.showToast
+
+import com.instance.dataxbranch.utils.constants
 
 
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +43,7 @@ class UserViewModel @Inject constructor(
     private val useCases: UseCases,
     savedStateHandle: SavedStateHandle,
     val generalRepository: GeneralRepository,
+
     val udao: UserDao,
     val qdao: QuestDao,
     val adao: AbilityDao,
@@ -71,6 +82,7 @@ refresh()
         }
         return meWithAbilities.user.uname
     }
+
 
     fun addNewAbilityEntity(ae: AbilityEntity){
         CoroutineScope(Dispatchers.IO).launch { adao.insert(ae)}
@@ -115,6 +127,66 @@ refresh()
         generalRepository.selectedAE= selectedAE
     }
 
+    fun logMeIn(context:Context,db:FirebaseFirestore) {//happens after a valid login uses auth
+
+        val auth = FirebaseAuth.getInstance()
+
+        val currentUser = auth.currentUser
+        // if(currentUser != null){ reload(); }
+        if (currentUser != null) {
+            readUserData(context,db=db,fsid=currentUser.uid)
+
+            }
+
+        }
+    fun logMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//happens after a valid login with fsid
+        if(meWithAbilities.user.isreal){//merge with cloud one if cloud one is newer
+            val oldme=meWithAbilities.copy()
+            readUserData(context,db,fsid)
+            if(oldme.user.dateUpdated>meWithAbilities.user.dateUpdated){
+                showToast(context,oldme.user.dateUpdated +"\n >meWithAbilities.user.dateUpdated \n"+meWithAbilities.user.dateUpdated)
+
+            }else{meWithAbilities = oldme  }
+
+
+        }else{//clear data
+            readUserData(context,db,fsid)}
+
+    }
+
+
+    fun readUserData(context:Context,db: FirebaseFirestore,fsid:String):UserWithAbilities{
+        val me = db.collection("users").document(fsid).get().addOnSuccessListener {
+            //userRepository
+
+                it.toObject(FirestoreUser::class.java)?.let { it1 -> meWithAbilities=UserWithAbilities(it1.toLocalUser(),listOf()) }!!//does not support cloud abilities as I do not have cloud abilities
+           //If this works, awesome. otherwise, I use FirestoreUser.toLocalUser
+            meWithAbilities.user.cloud = true
+            //meWithAbilities.user.initflag = true
+            meWithAbilities.user.isreal = true }
+            .addOnFailureListener({e->
+                generalRepository.getMe()
+                showToast(context,e.toString())
+            })
+
+        generalRepository.setMe(meWithAbilities)
+        return meWithAbilities
+    }
+  /*
+    db.ref('users/' + user.uid).set(user).catch(error => {
+        console.log(error.message)
+    });*/
+    fun writeUserData(context: Context, db:FirebaseFirestore){
+
+        db.collection("users")
+            .add(
+            meWithAbilities.toFireStoreUser()
+            )
+            .addOnSuccessListener { showToast(context,"Response submited! c;") }
+            .addOnFailureListener { e -> showToast(context, "Error writing document $e") }
+
+    }}
+
     /*val rowsInserted: MutableLiveData<Int> = MutableLiveData()
     override fun onCleared() {
         rowsInserted.removeObserver(observer)
@@ -123,6 +195,7 @@ refresh()
    /* private fun getQuests() {
         viewModelScope.launch(Dispatchers.IO) {
             val qwe = arrayListOf<QuestWithObjectives>()
+
 
             _quests.emit(qwe)
         }
@@ -191,7 +264,7 @@ refresh()
 
         return dao.getQuestWithObjectives(id) }*/
 
-}
+
 
 
 
