@@ -153,7 +153,15 @@ refresh()
             readUserData(context,db,fsid)}
 
     }
+    fun createAndLogMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//happens after a valid login with fsid
+        writeUserData(context,db,fsid)
+        /*if(meWithAbilities.user.isreal){//merge with cloud one if cloud one is newer
 
+
+        }else{//clear data
+            readUserData(context,db,fsid)}
+*/
+    }
 
     fun readUserData(context:Context,db: FirebaseFirestore,fsid:String):UserWithAbilities{
         val me = db.collection("users").document(fsid).get().addOnSuccessListener {
@@ -176,13 +184,13 @@ refresh()
     db.ref('users/' + user.uid).set(user).catch(error => {
         console.log(error.message)
     });*/
-    fun writeUserData(context: Context, db:FirebaseFirestore){
+    fun writeUserData(context: Context, db:FirebaseFirestore,fsid: String = meWithAbilities.user.fsid){
 
         db.collection("users")
             .add(
             meWithAbilities.toFireStoreUser()
             )
-            .addOnSuccessListener { showToast(context,"Response submited! c;") }
+            .addOnSuccessListener { showToast(context,"Response submitted! c;") }
             .addOnFailureListener { e -> showToast(context, "Error writing document $e") }
 
     }}

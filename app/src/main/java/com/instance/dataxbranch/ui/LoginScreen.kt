@@ -99,7 +99,7 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
                 if (!it.isSuccessful) return@addOnCompleteListener
                     //else if successful
                     showToast(context, "logged in successfully ${it.result.user?.uid}")
-                it.result.user?.uid?.let { it1 -> viewModel.logMeIn(context,db,fsid= it1) }//sets user from cloud
+                it.result.user?.uid?.let { it1 -> viewModel.createAndLogMeIn(context,db,fsid= it1) }//probably doesn't need this on create
                 }
             .addOnFailureListener{
                 showToast(context,"Failed to create user: ${it.message}")
