@@ -9,10 +9,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType.Companion.Text
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.showToast
+import com.instance.dataxbranch.ui.components.AddResponseAlertDialog
+import com.instance.dataxbranch.ui.destinations.DefaultScreenDestination
 import com.instance.dataxbranch.ui.destinations.UserScreenDestination
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
@@ -41,12 +44,16 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
             // EditAbilityEntityFloatingActionButton()
         }
     ) { padding ->
+        if (viewModel.downloadCloudDialog.value) {
+            AddResponseAlertDialog()
+        }
         Column {
             Text("Email")
-            TextField(value = email.value, onValueChange = { email.value = it }, maxLines = 1)
+            TextField(value = email.value, onValueChange = { email.value = it }, singleLine = true)
             Text("Password")
             TextField(value = password.value,
-                onValueChange = { password.value = it }, maxLines = 1)
+                onValueChange = { password.value = it }, singleLine = true, visualTransformation = PasswordVisualTransformation()
+            )
             val checkedState = remember { mutableStateOf(false) }
             Row{Text("check if creating account")
             Checkbox(
@@ -60,7 +67,7 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
             if (!(email.value.isEmpty() || password.value.isEmpty())) {
                 if (checkedState.value){
                     TextField(value = matchpassword.value,
-                    onValueChange = { matchpassword.value = it }, maxLines = 1)
+                    onValueChange = { matchpassword.value = it }, singleLine = true, visualTransformation = PasswordVisualTransformation())
                     if (password.value == matchpassword.value){
                     Button(onClick = {
 
@@ -69,8 +76,11 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
                             context,
                             email.value,
                             password.value,
-                            viewModel
-                        )
+                            viewModel)
+
+                        navigator.navigate(UserScreenDestination)
+
+
                     }) { Text("create") }}
                 }else {
                     Button(onClick = {
@@ -81,6 +91,7 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
                             password.value,
                             viewModel
                         )
+                        navigator.navigate(UserScreenDestination)
                     }) { Text("synchronize") }
                 }
 
@@ -99,8 +110,9 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
                 if (!it.isSuccessful) return@addOnCompleteListener
                     //else if successful
                     showToast(context, "logged in successfully ${it.result.user?.uid}")
-                it.result.user?.uid?.let { it1 -> viewModel.createAndLogMeIn(context,db,fsid= it1) }//probably doesn't need this on create
-                }
+                it.result.user?.uid?.let { it1 -> viewModel.createAndLogMeIn(context,db,fsid= it1) }//pushes any local user or default to cloud
+
+            }
             .addOnFailureListener{
                 showToast(context,"Failed to create user: ${it.message}")
             }

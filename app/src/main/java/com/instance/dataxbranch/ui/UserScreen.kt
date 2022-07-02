@@ -2,15 +2,12 @@ package com.instance.dataxbranch.ui
 
 import android.content.res.Configuration
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.SnackbarDefaults.backgroundColor
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.*
 
 import androidx.compose.ui.Alignment
@@ -27,8 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.firestore.FirebaseFirestore
-import com.instance.dataxbranch.core.Constants.TAG
-import com.instance.dataxbranch.data.firestore.QuestsRepository
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.destinations.UserScreenDestination
@@ -42,9 +37,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun UserScreen(
-    viewModel: UserViewModel,
+    viewModel: UserViewModel= hiltViewModel(),
     navigator: DestinationsNavigator,
-    roomQuestViewModel: RoomQuestViewModel
+    roomQuestViewModel: RoomQuestViewModel= hiltViewModel()
 
 
     ) {
@@ -164,11 +159,19 @@ fun UserSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, me: Use
                     me.user.name = nm
                     me.user.bio = b
                     me.user.status = status
-
+                    me.user.dateUpdated=me.user.getNow()
                     viewModel.generalRepository.save(me.user)
                     showToast(context = context, msg = " updated in user " + me.user)
                     var name = "init"
-                    name = viewModel.refresh().toString()
+                    name = viewModel.refresh()
+                    val prefix = ""
+                    if(me.user.fsid!="-1"){
+                        if(me.user.fsid=="-2"){
+                            showToast(context = context, msg = "fsid= -2. unusual, report this to dev.")
+                        }else{
+                        viewModel.writeUserData(context,db= FirebaseFirestore.getInstance(),me.user.fsid)
+                        }
+                    }
                     showToast(context = context, msg = " USER IS NOW $name")
                 },
                 modifier = Modifier.padding(2.dp)

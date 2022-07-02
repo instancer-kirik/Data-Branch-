@@ -23,6 +23,7 @@ object Constants {
     //Buttons
     const val ADD = "Add"
     const val DISMISS = "Dismiss"
+    const val OVERWRITE = "Overwrite"
 
     //Placeholders
     const val QUEST_TITLE = "Title"

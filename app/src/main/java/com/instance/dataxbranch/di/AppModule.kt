@@ -10,8 +10,6 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.instance.dataxbranch.core.Constants.QUESTS
-import com.instance.dataxbranch.core.Constants.RESPONSES
-import com.instance.dataxbranch.core.Constants.USERS
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.UserDao
 import com.instance.dataxbranch.data.entities.User

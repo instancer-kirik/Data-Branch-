@@ -1,33 +1,17 @@
 package com.instance.dataxbranch.ui.components
 
-import android.view.ViewGroup
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.Navigator
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.ui.MyContent
-import com.instance.dataxbranch.ui.destinations.AbilitiesScreenDestination
 import com.instance.dataxbranch.ui.destinations.WebviewScreenDestination
-import com.instance.dataxbranch.ui.viewModels.DevViewModel
-import com.instance.dataxbranch.ui.viewModels.QuestsViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.job
-import java.time.Instant.now
-import java.time.LocalDateTime.now
-import java.time.OffsetDateTime.now
 import java.util.*
 
 
@@ -89,7 +73,7 @@ fun TermsPopupAlertDialog (
                 TextButton(
                     onClick = {
                         UviewModel.termsDialogState.value = false
-                        me.user.terms_status= Calendar.getInstance().time.toString();
+                        me.user.terms_status = Calendar.getInstance().time.toString();
                     }
                 ) {
                     Text(

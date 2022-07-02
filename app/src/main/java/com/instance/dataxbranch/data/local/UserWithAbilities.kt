@@ -41,7 +41,10 @@ data class UserWithAbilities (
         user.combine(tangent.user)
         abilities+=tangent.abilities
     }
-    fun toFireStoreUser():FirestoreUser{
+    fun toFireStoreUser(fsid:String?=null):FirestoreUser{
+        if(fsid != null){
+            user.fsid=fsid
+        }
         return FirestoreUser(//notice how these are all cloud data
             activeCloudQuests =user.activeCloudQuests,
             cloudAbilities =user.cloudAbilities,

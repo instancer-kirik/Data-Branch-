@@ -15,9 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.local.UserWithAbilities
-import com.instance.dataxbranch.ui.components.AddResponseAlertDialog
 import com.instance.dataxbranch.ui.components.TermsPopupAlertDialog
 import com.instance.dataxbranch.ui.destinations.DefaultScreenDestination
 import com.instance.dataxbranch.ui.destinations.TypedDestination
@@ -57,7 +55,7 @@ fun DefaultScreen(viewModel: UserViewModel = hiltViewModel(),
 
         val which = me.user.defaultScreen
         val dests = NavGraphs.root.destinations
-        if (me.user.terms_status==""){//if user has not accepted terms
+        if (me.user.terms_status ==""){//if user has not accepted terms
             viewModel.termsDialogState.value=true
         }else {
             if (which >= 0) {
@@ -82,7 +80,7 @@ fun DefaultScreen(viewModel: UserViewModel = hiltViewModel(),
 @Composable
 fun defaultCard(me: UserWithAbilities, index:Int, screen: TypedDestination<*>, navigator: DestinationsNavigator){
     Row(modifier= Modifier.clickable{
-        me.user.defaultScreen=index
+        me.user.defaultScreen =index
         navigator.navigate(screen.route)
     }){
         Column{
@@ -148,7 +146,7 @@ fun DefaultDestinationViewShort(
     //Text("DEBUG")
     Box(modifier = Modifier
         .clickable {
-            me.user.defaultScreen=index
+            me.user.defaultScreen =index
             onClick.invoke(index)
 
         }

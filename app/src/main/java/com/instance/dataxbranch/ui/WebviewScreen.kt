@@ -3,7 +3,6 @@ package com.instance.dataxbranch.ui
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log.w
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -20,7 +19,6 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.local.UserWithAbilities
-import com.instance.dataxbranch.ui.components.TermsPopupAlertDialog
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
@@ -113,7 +111,7 @@ fun WebToolbar(
                     //only room for 3 buttons this way
                     Row(modifier= Modifier.fillMaxWidth()) {
                         Button(
-                            onClick = { viewModel.getMeWithAbilities().user.terms_status= Calendar.getInstance().time.toString() },
+                            onClick = { viewModel.getMeWithAbilities().user.terms_status = Calendar.getInstance().time.toString() },
                             modifier = Modifier.padding(2.dp)
                         ) { Text("YES") }
 

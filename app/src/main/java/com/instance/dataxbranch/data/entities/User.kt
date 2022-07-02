@@ -1,13 +1,15 @@
 package com.instance.dataxbranch.data.entities
 
+import android.util.Log
 import androidx.room.*
+import com.instance.dataxbranch.core.Constants.TAG
 
 import com.instance.dataxbranch.utils.Converters
 import com.instance.dataxbranch.utils.constants.DEFAULT_UNAME
 import com.squareup.moshi.JsonClass
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Entity(
@@ -24,6 +26,7 @@ data class User @JvmOverloads constructor(
     @ColumnInfo(name = "firestore_id") var fsid: String = "-1",
    // @ColumnInfo(name = "title") var title: String? = null,
     @ColumnInfo(name = "uid")val uid: Long = 1L,
+
     @ColumnInfo(name = "uname")var uname: String = DEFAULT_UNAME,
     @ColumnInfo(name = "name")var name: String = "name",
     @ColumnInfo(name = "imageUrl") var imageUrl: String = "",
@@ -33,7 +36,7 @@ data class User @JvmOverloads constructor(
     @ColumnInfo(name = "rating")var rating: Int = 1,
     @ColumnInfo(name = "rating_denominator") var rating_denominator: Int = 1,
     @ColumnInfo(name = "traits") var traits: List<String> =listOf("remarkable"),
-    @ColumnInfo(name = "dateAdded")val dateAdded: String= "June 14,2022",
+    @ColumnInfo(name = "dateAdded")val dateAdded: String= "07-01-2022",//"June 14,2022",
     //val sourceUrl: String = ""
     //@field:JvmField // use this annotation if your Boolean field is prefixed with 'is'
 
@@ -57,7 +60,7 @@ data class User @JvmOverloads constructor(
     var level: Int = 1,
     var hearts: Int = 1,
     var attunement: Int = 1,
-
+    var playerAvatarjson: String = "",
     var defaultScreen:Int = -1,
     var constitution: Int = 5,
 
@@ -68,8 +71,10 @@ data class User @JvmOverloads constructor(
     var history: String ="successfully survived previous encounters",
     var cloud: Boolean = false,
 
-
-
+    var hasKilled: Boolean = false,
+    var hasDied: Boolean = false,
+    var numKills: Int = 0,
+    var numDeaths: Int = 0,
     @ColumnInfo(name = "dob") var dob: String= "",
     @ColumnInfo(name = "dateUpdated") var dateUpdated: String= "",
     @ColumnInfo(name = "completedQuests")var completedQuests: List<Int> =listOf(),
@@ -99,7 +104,8 @@ data class User @JvmOverloads constructor(
         }
     }
     fun isDateValid(myDate: String) : Boolean {
-         val formatter = SimpleDateFormat("MM-dd-yyyy")
+
+         val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
         try {
 
             val date = formatter.parse(myDate)
@@ -111,10 +117,98 @@ data class User @JvmOverloads constructor(
             return false
         }
     }
+    fun whichNewer(myDate: String=dateUpdated, qDate: String): Int {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+        try {
+
+            val date = formatter.parse(myDate)
+            val qdate = formatter.parse(qDate)
+            //date.toString()
+            if (date != null) {
+                if (qdate != null) {
+                    return if(date.before(qdate)){
+                        1
+                    }else{
+                        0
+                    }
+                }
+            } else{return -1}
+        } catch(ignored: java.text.ParseException) {
+            Log.d(TAG, "returning -1 with $ignored")
+            return -1
+        }
+        return -1
+    }
+    fun getNow():String{
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+        val formatted = current.format(formatter)
+        println("Current Date and Time is: $formatted")
+        return formatted
+    }
+
     fun combine(tangent: User){
+        val newer = whichNewer(dateUpdated,tangent.dateUpdated)
+        if (newer ==1) {
+            //newer is tangent
+            activeCloudQuests +=tangent.activeCloudQuests
+            cloudAbilities +=tangent.cloudAbilities
+            completedCloudQuests += tangent.completedCloudQuests
+            dockedCloudQuests += tangent.dockedCloudQuests
+            rating = tangent.rating
+            rating_denominator = tangent.rating_denominator
+            fsid =tangent.fsid
+            //uid=tangent.uid
+            uname = tangent.uname
+            name = tangent.name
+            imageUrl = tangent.imageUrl
+            tagline = tangent.tagline
+            bio = tangent.bio
+            traits= tangent.traits
+            //dateAdded=tangent.dateAdded
+            dateUpdated=tangent.dateUpdated
+            dob=tangent.dob
+            status=tangent.status
+            terms_status=tangent.terms_status
+            energy=tangent.energy
+            strength=tangent.strength
+            vitality=tangent.vitality
+            stamina=tangent.stamina
+            wisdom=tangent.wisdom
+            charisma=tangent.charisma
+            intellect=tangent.intellect
+            magic=tangent.magic
+            dexterity=tangent.dexterity
+            agility=tangent.agility
+            speed=tangent.speed
+            height=tangent.height
+            allignment=tangent.allignment
+            life=tangent.life
+            mana=tangent.mana
+            money=tangent.money
+            level=tangent.level
+            hearts=tangent.hearts
+            attunement=tangent.attunement
+            defaultScreen=tangent.defaultScreen
+            history=tangent.history
+            hasKilled = tangent.hasKilled
+            hasDied = tangent.hasDied
+            numKills = tangent.numKills
+            numDeaths = tangent.numDeaths
+            }
+        else if(newer ==0) {
+            //newer is user
+            //do nothing
+            //update maybe?
+            Log.d(TAG, "LOCAL IS NEWEST NO ACTION IN USER")
+        }
+        else if(newer ==-1) {
+            Log.d(TAG, "BAD DATE COMPARE RETURN IN USER")
+        }
+
+        }
 
 
-        //if (dateUpdated>  tangent.dateUpdated){
         /*activeCloudQuests +=tangent.activeCloudQuests
         cloudAbilities +=tangent.cloudAbilities
         completedCloudQuests += tangent.completedCloudQuests
@@ -154,7 +248,12 @@ data class User @JvmOverloads constructor(
         hearts=tangent.hearts
         attunement=tangent.attunement
         defaultScreen=tangent.defaultScreen
-        history=tangent.history*/
+        history=tangent.history
+        hasKilled = tangent.hasKilled
+        hasDied = tangent.hasDied
+        numKills = tangent.numKills
+        numDeaths = tangent.numDeaths
+        */
 
-    }
+
 }

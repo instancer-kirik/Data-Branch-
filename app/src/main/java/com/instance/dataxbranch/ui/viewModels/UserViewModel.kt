@@ -2,6 +2,7 @@ package com.instance.dataxbranch.ui.viewModels
 
 
 import android.content.Context
+import android.util.Log
 
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.UserDao
@@ -17,17 +18,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
+import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.AppDatabase
 import com.instance.dataxbranch.data.firestore.FirestoreUser
-import com.instance.dataxbranch.data.firestore.UserRepositoryImpl
 import com.instance.dataxbranch.data.local.UserWithAbilities
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
 import com.instance.dataxbranch.showToast
-
-import com.instance.dataxbranch.utils.constants
 
 
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -64,7 +62,8 @@ class UserViewModel @Inject constructor(
     var openDialogState3 = mutableStateOf(false)
     var termsDialogState = mutableStateOf(false)
     var refreshWebview = mutableStateOf(false)
-
+    var downloadCloudDialog = mutableStateOf(false)
+    var mfsid:String = "-2"
     val handyString: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
@@ -139,23 +138,31 @@ refresh()
             }
 
         }
-    fun logMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//happens after a valid login with fsid
+    fun logMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//ALready has account happens after a valid login with fsid
         if(meWithAbilities.user.isreal){//merge with cloud one if cloud one is newer
             val oldme=meWithAbilities.copy()
             readUserData(context,db,fsid)
-            if(oldme.user.dateUpdated>meWithAbilities.user.dateUpdated){
+            val newer=oldme.user.whichNewer(qDate=meWithAbilities.user.dateUpdated)
+            if (newer==1){
                 showToast(context,oldme.user.dateUpdated +"\n >meWithAbilities.user.dateUpdated \n"+meWithAbilities.user.dateUpdated)
 
-            }else{meWithAbilities = oldme  }
-
-
+            }else if (newer ==0){
+                meWithAbilities = oldme
+                Log.d(TAG,"This may eat 2 reads per overwrite, reduce to 1")
+                showToast(context, "almost overwrote but cloud is older")
+                downloadCloudDialog.value =true
+            }else if (newer ==-1){
+                Log.d(TAG,"TIME COMPARE GOT TO LOGMEIN")}
         }else{//clear data
             readUserData(context,db,fsid)}
 
     }
+    fun overwriteLogIn(context:Context,db:FirebaseFirestore,fsid: String) {//ALready has account happens after a valid login with fsid
+            readUserData(context,db,fsid)
+    }
     fun createAndLogMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//happens after a valid login with fsid
         writeUserData(context,db,fsid)
-        /*if(meWithAbilities.user.isreal){//merge with cloud one if cloud one is newer
+ /*if(meWithAbilities.user.isreal){//merge with cloud one if cloud one is newer
 
 
         }else{//clear data
@@ -167,9 +174,14 @@ refresh()
         val me = db.collection("users").document(fsid).get().addOnSuccessListener {
             //userRepository
 
-                it.toObject(FirestoreUser::class.java)?.let { it1 -> meWithAbilities=UserWithAbilities(it1.toLocalUser(),listOf()) }!!//does not support cloud abilities as I do not have cloud abilities
-           //If this works, awesome. otherwise, I use FirestoreUser.toLocalUser
-            meWithAbilities.user.cloud = true
+            if (it != null) {
+
+                it.toObject(FirestoreUser::class.java)?.let { it1 ->
+                    meWithAbilities.user.combine(it1.toLocalUser())
+                }//does not yet support cloud abilities as I do not have cloud abilities
+                meWithAbilities.user.cloud = true
+            }//If this works, awesome. otherwise, I use FirestoreUser.toLocalUser
+
             //meWithAbilities.user.initflag = true
             meWithAbilities.user.isreal = true }
             .addOnFailureListener({e->
@@ -184,13 +196,13 @@ refresh()
     db.ref('users/' + user.uid).set(user).catch(error => {
         console.log(error.message)
     });*/
-    fun writeUserData(context: Context, db:FirebaseFirestore,fsid: String = meWithAbilities.user.fsid){
+    fun writeUserData(context: Context, db:FirebaseFirestore,fsid: String = meWithAbilities.user.fsid){//to firestore
 
         db.collection("users")
             .add(
-            meWithAbilities.toFireStoreUser()
+            meWithAbilities.toFireStoreUser(fsid)
             )
-            .addOnSuccessListener { showToast(context,"Response submitted! c;") }
+            .addOnSuccessListener { showToast(context,"wrote to firestore! c;") }
             .addOnFailureListener { e -> showToast(context, "Error writing document $e") }
 
     }}
