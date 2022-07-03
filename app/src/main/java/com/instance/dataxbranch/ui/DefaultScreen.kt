@@ -53,19 +53,19 @@ fun DefaultScreen(viewModel: UserViewModel = hiltViewModel(),
                 DefaultScreenDestination)}
         me = viewModel.getMeWithAbilities()
 
-        val which = me.user.defaultScreen
+       // val which = me.user.defaultScreen
         val dests = NavGraphs.root.destinations
         if (me.user.terms_status ==""){//if user has not accepted terms
             viewModel.termsDialogState.value=true
         }else {
-            if (which >= 0) {
+            /*if (which >= 0) {
                 navigator.navigate(
                     dests[which].route
                 )
-            }
+            }*/
         }
         Column{Text(me.user.uname)
-            Text("GO TO USER SCREEN -> save")
+            //Text("GO TO USER SCREEN -> save")
             DefaultLazyColumn(navigator,context,viewModel, screens = dests, modifier = Modifier.padding(2.dp))
         }
 

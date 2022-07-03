@@ -45,7 +45,7 @@ fun QuestsScreen(
 ){
     //Button(onClick = {navigator.navigate(MyQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to my quests")}
     Scaffold(
-        topBar = { Toolbar(navigator) },
+        topBar = { QuestToolbar(navigator) },
         floatingActionButton = {
             AddQuestFloatingActionButton()
         }
@@ -106,7 +106,7 @@ fun LazyColumn(viewModel: QuestsViewModel, questsResponse: List<Quest>, modifier
 }
 
 @Composable
-fun Toolbar(navigator: DestinationsNavigator) {
+fun QuestToolbar(navigator: DestinationsNavigator) {
     TopAppBar(
         title = { Text(text = "MAIN") },
         actions = {
@@ -126,9 +126,18 @@ fun Toolbar(navigator: DestinationsNavigator) {
                     //only room for 3 buttons this way
                     Row(modifier = Modifier.fillMaxSize()) {
                         Button(
+                            onClick = { navigator.navigate(QuestsScreenDestination) },
+                            modifier = Modifier.padding(2.dp)
+                        ) { Text("to Cloud Quests") }
+                        Button(
+                            onClick = { navigator.navigate(MyQuestsScreenDestination) },
+                            modifier = Modifier.padding(2.dp)
+                        ) { Text("to My Quests") }
+                        Button(
                             onClick = { navigator.navigate(DevScreenDestination) },
                             modifier = Modifier.padding(2.dp)
                         ) { Text("DevScreen") }
+                        //Button(onClick = {viewModel.read})
                         /*       Button(
                             onClick = { navigator.navigate(MyQuestsScreenDestination) },
                             modifier = Modifier.padding(2.dp)

@@ -63,11 +63,13 @@ class UserViewModel @Inject constructor(
     var termsDialogState = mutableStateOf(false)
     var refreshWebview = mutableStateOf(false)
     var downloadCloudDialog = mutableStateOf(false)
+
     var mfsid:String = "-2"
     val handyString: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
     private var meWithAbilities=generalRepository.getMe()
+    var userContainer: User?=null
     init {
 refresh()
         selectedAE=AbilityEntity()
@@ -125,7 +127,12 @@ refresh()
     private fun setSelect() {
         generalRepository.selectedAE= selectedAE
     }
+    fun whoAmI(): String? {
+        val auth = FirebaseAuth.getInstance()
 
+       return ( auth.currentUser?.uid )
+
+    }
     fun logMeIn(context:Context,db:FirebaseFirestore) {//happens after a valid login uses auth
 
         val auth = FirebaseAuth.getInstance()
@@ -140,16 +147,18 @@ refresh()
         }
     fun logMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//ALready has account happens after a valid login with fsid
         if(meWithAbilities.user.isreal){//merge with cloud one if cloud one is newer
-            val oldme=meWithAbilities.copy()
+            userContainer=meWithAbilities.copy().user
             readUserData(context,db,fsid)
-            val newer=oldme.user.whichNewer(qDate=meWithAbilities.user.dateUpdated)
+
+            val newer= userContainer!!.whichNewer(qDate=meWithAbilities.user.dateUpdated)
             if (newer==1){
-                showToast(context,oldme.user.dateUpdated +"\n >meWithAbilities.user.dateUpdated \n"+meWithAbilities.user.dateUpdated)
+                showToast(context, userContainer!!.dateUpdated +"\n >meWithAbilities.user.dateUpdated \n"+meWithAbilities.user.dateUpdated)
 
             }else if (newer ==0){
-                meWithAbilities = oldme
+               // meWithAbilities = oldme
                 Log.d(TAG,"This may eat 2 reads per overwrite, reduce to 1")
-                showToast(context, "almost overwrote but cloud is older")
+                showToast(context, "cloud is in local, old local in container")
+
                 downloadCloudDialog.value =true
             }else if (newer ==-1){
                 Log.d(TAG,"TIME COMPARE GOT TO LOGMEIN")}
@@ -158,7 +167,8 @@ refresh()
 
     }
     fun overwriteLogIn(context:Context,db:FirebaseFirestore,fsid: String) {//ALready has account happens after a valid login with fsid
-            readUserData(context,db,fsid)
+            //readUserData(context,db,fsid) this is too many reads. already have data
+        showToast(context, "disregards container, keeps cloud user in local")
     }
     fun createAndLogMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//happens after a valid login with fsid
         writeUserData(context,db,fsid)
@@ -188,7 +198,7 @@ refresh()
                 generalRepository.getMe()
                 showToast(context,e.toString())
             })
-
+        meWithAbilities.user.fsid = fsid
         generalRepository.setMe(meWithAbilities)
         return meWithAbilities
     }

@@ -1,5 +1,6 @@
 package com.instance.dataxbranch.ui.viewModels
 
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class DevViewModel @Inject constructor(
     val useCases: UseCases
 ): ViewModel()  {
+
     private val _rState = mutableStateOf<Response<List<FirestoreResponse>>>(Response.Loading)
     val responseState: State<Response<List<FirestoreResponse>>> = _rState
 
@@ -24,12 +26,13 @@ class DevViewModel @Inject constructor(
 
     private val _isResponseDeletedState = mutableStateOf<Response<Void?>>(Response.Success(null))
     val isResponseDeletedState: State<Response<Void?>> = _isResponseDeletedState
-
+    lateinit var oldContext: Context
     var openDialogState = mutableStateOf(false)
 
     init {
         getResponses()
     }
+
 
 
     private fun getResponses() {

@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddResponseAlertDialog
+import com.instance.dataxbranch.ui.components.OverwriteLocalDialog
 import com.instance.dataxbranch.ui.destinations.DefaultScreenDestination
 import com.instance.dataxbranch.ui.destinations.UserScreenDestination
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
@@ -30,7 +31,7 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
 ) {
     val db = FirebaseFirestore.getInstance()
 
-    val me = viewModel.getMeWithAbilities()
+    //val me = viewModel.getMeWithAbilities()
     val context = LocalContext.current
     val email = remember{ mutableStateOf("")}
     val password = remember{ mutableStateOf("")}
@@ -45,44 +46,74 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
         }
     ) { padding ->
         if (viewModel.downloadCloudDialog.value) {
-            AddResponseAlertDialog()
+            OverwriteLocalDialog(viewModel, navigator)
         }
         Column {
+            val fsid = viewModel.whoAmI()
+            val myfsid = viewModel.getMeWithAbilities().user.fsid
+            Text("These should match if logged in: $fsid ...from Auth")
+            Text(myfsid + "  ...from local")
+            if (fsid == myfsid) {
+                if (fsid != "-1") {
+                    Button(onClick = {
+                        navigator.navigate(UserScreenDestination)
+                    }) { Text("Proceed; already logged in") }
+                }
+            } else if (fsid != null) {//if not equal
+                Button(onClick = {
+                    viewModel.readUserData(context, db, fsid)
+                    navigator.navigate(UserScreenDestination)
+                }) { Text("Pull from Cloud on AuthID") }
+            }
+
+
+            //Text("Above line pulls from FirestoreAuth, if valid, you are already logged in, may skip")
             Text("Email")
             TextField(value = email.value, onValueChange = { email.value = it }, singleLine = true)
             Text("Password")
-            TextField(value = password.value,
-                onValueChange = { password.value = it }, singleLine = true, visualTransformation = PasswordVisualTransformation()
+            TextField(
+                value = password.value,
+                onValueChange = { password.value = it },
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation()
             )
             val checkedState = remember { mutableStateOf(false) }
-            Row{Text("check if creating account")
-            Checkbox(
-                checked = checkedState.value,
-                onCheckedChange = {
-                    checkedState.value = it
-                    //quest.quest.apply { completed = it }
-                    //viewModel.onCheckboxChecked(quest, it)
-                })}
+            Row {
+                Text("check if creating account")
+                Checkbox(
+                    checked = checkedState.value,
+                    onCheckedChange = {
+                        checkedState.value = it
+                        //quest.quest.apply { completed = it }
+                        //viewModel.onCheckboxChecked(quest, it)
+                    })
+            }
 
             if (!(email.value.isEmpty() || password.value.isEmpty())) {
-                if (checkedState.value){
+                if (checkedState.value) {
+                    Text("Match Password")
                     TextField(value = matchpassword.value,
-                    onValueChange = { matchpassword.value = it }, singleLine = true, visualTransformation = PasswordVisualTransformation())
-                    if (password.value == matchpassword.value){
-                    Button(onClick = {
+                        onValueChange = { matchpassword.value = it },
+                        singleLine = true,
+                        visualTransformation = PasswordVisualTransformation()
+                    )
+                    if (password.value == matchpassword.value) {
+                        Button(onClick = {
 
-                        create(
-                            db = db,
-                            context,
-                            email.value,
-                            password.value,
-                            viewModel)
+                            create(
+                                db = db,
+                                context,
+                                email.value,
+                                password.value,
+                                viewModel
+                            )
 
-                        navigator.navigate(UserScreenDestination)
+                            navigator.navigate(UserScreenDestination)
 
 
-                    }) { Text("create") }}
-                }else {
+                        }) { Text("create") }
+                    }
+                } else {
                     Button(onClick = {
                         synchronize(
                             db = db,
@@ -92,17 +123,17 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
                             viewModel
                         )
                         navigator.navigate(UserScreenDestination)
-                    }) { Text("synchronize") }
+                    }) { Text("synchronize to account") }
                 }
 
-                    // Button(onClick = { save(db=db,context,email.value,password.value,viewModel)}){Text("save")}
+                // Button(onClick = { save(db=db,context,email.value,password.value,viewModel)}){Text("save")}
             }
             Button(onClick = {
                 navigator.navigate(UserScreenDestination)
-            }) { Text("skip")}
+            }) { Text("skip") }
         }
-    }
-}
+    }}
+
     fun create(db:FirebaseFirestore,context: Context, email:String, password:String,viewModel: UserViewModel) {
 
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)

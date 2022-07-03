@@ -1,5 +1,6 @@
 package com.instance.dataxbranch.ui
 
+import android.content.Context
 import android.content.res.Configuration
 
 import androidx.compose.foundation.background
@@ -26,6 +27,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
+import com.instance.dataxbranch.ui.destinations.DevScreenDestination
+import com.instance.dataxbranch.ui.destinations.LoadoutScreenDestination
+import com.instance.dataxbranch.ui.destinations.MyQuestsScreenDestination
 import com.instance.dataxbranch.ui.destinations.UserScreenDestination
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 
@@ -43,15 +47,16 @@ fun UserScreen(
 
 
     ) {
+    val context = LocalContext.current
     Scaffold(
 
-        topBar = { Toolbar(navigator) },
+        topBar = { UserToolbar(navigator,viewModel,context) },
         floatingActionButton = {
             //AddQuestEntityFloatingActionButton()
         }
     ) { padding ->
         val configuration= LocalConfiguration.current
-        val context = LocalContext.current
+
         val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         var expanded by remember { mutableStateOf(true) }
         val backgroundColor = if (isLandscape){
@@ -106,6 +111,85 @@ fun UserScreen(
         }
     }
 }
+
+
+@Composable
+fun UserToolbar(navigator: DestinationsNavigator,viewModel:UserViewModel,context: Context) {
+    TopAppBar(
+        title = { Text(text = "MAIN") },
+        actions = {
+
+            var expanded by remember { mutableStateOf(false) }
+            var expanded2 by remember { mutableStateOf(false) }
+            Row{
+                OutlinedButton(
+                    modifier = Modifier.fillMaxSize(),
+                    onClick = {
+                        expanded2 = !expanded2
+                    }
+                ) {
+
+                    if (expanded2) {
+                        //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                        //only room for 3 buttons this way
+                        Row(modifier = Modifier.fillMaxSize()) {
+                            val myfsid = viewModel.getMeWithAbilities().user.fsid
+                            if( myfsid!="-1"){
+                            Button(
+                                onClick = {viewModel.readUserData(context, FirebaseFirestore.getInstance(),myfsid)
+                                    navigator.navigate(DevScreenDestination) },
+                                modifier = Modifier.padding(2.dp)
+                            ) { Text("sync with valid fsid") }}
+                            Button(
+                                onClick = { navigator.navigate(DevScreenDestination) },
+                                modifier = Modifier.padding(2.dp)
+                            ) { Text("DevScreen") }
+                            //Button(onClick = {
+                            /*       Button(
+                                onClick = { navigator.navigate(MyQuestsScreenDestination) },
+                                modifier = Modifier.padding(2.dp)
+                            ) { Text("to quests") }
+
+                            Button(
+                                onClick = { navigator.navigate(LoadoutScreenDestination) },
+                                modifier = Modifier.padding(2.dp)
+                            ) { Text("to loadout") }
+                        }*/
+                        }
+
+                    } else Text("DEBUG")
+                }
+                OutlinedButton(
+                    onClick = {
+                        expanded = !expanded
+                    }
+                ) {
+
+                    if (expanded) {
+                        //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                        //only room for 3 buttons this way
+                        Row() {
+                            Button(
+                                onClick = { navigator.navigate(UserScreenDestination) },
+                                modifier = Modifier.padding(2.dp)
+                            ) { Text("to user ") }
+                            Button(
+                                onClick = { navigator.navigate(MyQuestsScreenDestination) },
+                                modifier = Modifier.padding(2.dp)
+                            ) { Text("to quests") }
+
+                            Button(
+                                onClick = { navigator.navigate(LoadoutScreenDestination) },
+                                modifier = Modifier.padding(2.dp)
+                            ) { Text("to loadout") }
+                        }
+                    } else Text("navigate")}
+
+
+            }}
+    )
+}
+
 
 fun statState(m:Map<String, MutableState<Int>>):Map<String, Int> {
         return mapOf("energy " to m["energy "]!!.value,

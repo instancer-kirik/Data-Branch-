@@ -185,9 +185,9 @@ fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator) {
                             modifier = Modifier.padding(2.dp)
                         ) { Text("to user") }
                         Button(
-                            onClick = { navigator.navigate(MyQuestsScreenDestination) },
+                            onClick = { navigator.navigate(DefaultScreenDestination) },
                             modifier = Modifier.padding(2.dp)
-                        ) { Text("to quests") }
+                        ) { Text("to hub") }
                         Button(
                             onClick = { navigator.navigate(HelpScreenDestination) },
                             modifier = Modifier.padding(2.dp)
@@ -199,4 +199,14 @@ fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator) {
 
         })
 
+}
+@Composable
+fun notification(context: Context){
+
+    test(context)
+}
+fun test(context: Context) : Context {
+
+    showToast(context, "DGFSGSGGFSGJ")
+    return context
 }

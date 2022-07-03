@@ -85,8 +85,9 @@ fun  OverwriteLocalDialog(//QviewModel: QuestsViewModel = hiltViewModel(),
                 TextButton(
                     onClick = {
                         viewModel.overwriteLogIn(context=context, db = FirebaseFirestore.getInstance(),fsid=currentUser.uid)
-                        viewModel.downloadCloudDialog.value = false
                         me.user.dateUpdated = me.user.getNow()//Calendar.getInstance().time.toString();
+                        viewModel.downloadCloudDialog.value = false
+
                     }
                 ) {
                     Text(

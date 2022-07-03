@@ -1,6 +1,6 @@
 package com.instance.dataxbranch.data.entities
 
-import android.util.Log
+//import android.util.Log
 import androidx.room.*
 import com.instance.dataxbranch.core.Constants.TAG
 
@@ -134,7 +134,7 @@ data class User @JvmOverloads constructor(
                 }
             } else{return -1}
         } catch(ignored: java.text.ParseException) {
-            Log.d(TAG, "returning -1 with $ignored")
+            //Log.d(TAG, "returning -1 with $ignored")
             return -1
         }
         return -1
@@ -147,7 +147,7 @@ data class User @JvmOverloads constructor(
         return formatted
     }
 
-    fun combine(tangent: User){
+    fun combine(tangent: User): Int{
         val newer = whichNewer(dateUpdated,tangent.dateUpdated)
         if (newer ==1) {
             //newer is tangent
@@ -200,12 +200,12 @@ data class User @JvmOverloads constructor(
             //newer is user
             //do nothing
             //update maybe?
-            Log.d(TAG, "LOCAL IS NEWEST NO ACTION IN USER")
+            //Log.d(TAG, "LOCAL IS NEWEST NO ACTION IN USER")
         }
         else if(newer ==-1) {
-            Log.d(TAG, "BAD DATE COMPARE RETURN IN USER")
+            //Log.d(TAG, "BAD DATE COMPARE RETURN IN USER")
         }
-
+return newer
         }
 
 

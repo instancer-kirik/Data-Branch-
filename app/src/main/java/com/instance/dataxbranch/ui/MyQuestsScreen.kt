@@ -67,7 +67,7 @@ fun MyQuestsScreen(
     //var my_quests: StateFlow<List<QuestEntity>> = viewModel.getQuests()
     Scaffold(
 
-        topBar = { Toolbar(navigator) },
+        topBar = { QuestToolbar(navigator) },
         floatingActionButton = {
             AddQuestEntityFloatingActionButton()
         }
@@ -77,11 +77,11 @@ fun MyQuestsScreen(
             AddQuestEntityAlertDialog()
         }
         Column {
-            Button(
+           /* Button(
                 onClick = { navigator.navigate(QuestsScreenDestination) },
                 modifier = Modifier.padding(2.dp)
             ) { Text("to Cloud Quests") }
-
+*/
             Button(
                 onClick = { showDialog.value = true },
                 modifier = Modifier.padding(2.dp)
