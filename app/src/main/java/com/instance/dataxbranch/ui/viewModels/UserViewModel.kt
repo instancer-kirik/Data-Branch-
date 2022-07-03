@@ -2,7 +2,7 @@ package com.instance.dataxbranch.ui.viewModels
 
 
 import android.content.Context
-import android.util.Log
+
 
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.UserDao
@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.AppDatabase
@@ -156,12 +157,12 @@ refresh()
 
             }else if (newer ==0){
                // meWithAbilities = oldme
-                Log.d(TAG,"This may eat 2 reads per overwrite, reduce to 1")
+               // Log.d(TAG,"This may eat 2 reads per overwrite, reduce to 1")
                 showToast(context, "cloud is in local, old local in container")
 
                 downloadCloudDialog.value =true
             }else if (newer ==-1){
-                Log.d(TAG,"TIME COMPARE GOT TO LOGMEIN")}
+                showToast(context,"TIME COMPARE EXCEPTION GOT TO LOGMEIN")}
         }else{//clear data
             readUserData(context,db,fsid)}
 
@@ -209,9 +210,8 @@ refresh()
     fun writeUserData(context: Context, db:FirebaseFirestore,fsid: String = meWithAbilities.user.fsid){//to firestore
 
         db.collection("users")
-            .add(
-            meWithAbilities.toFireStoreUser(fsid)
-            )
+            .document(fsid)
+            .set(meWithAbilities.toFireStoreUser(fsid))//, SetOptions.merge()
             .addOnSuccessListener { showToast(context,"wrote to firestore! c;") }
             .addOnFailureListener { e -> showToast(context, "Error writing document $e") }
 

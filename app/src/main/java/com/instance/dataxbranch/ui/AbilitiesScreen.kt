@@ -18,16 +18,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.core.Constants.TAG
+
 import com.instance.dataxbranch.data.entities.AbilityEntity
 
-import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddAbilityEntityAlertDialog
-import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
+
 import com.instance.dataxbranch.ui.components.EditAbilityEntityAlertDialog
 import com.instance.dataxbranch.ui.components.EditLoadoutAlertDialog
-import com.instance.dataxbranch.ui.destinations.AbilitiesScreenDestination
+
 import com.instance.dataxbranch.ui.destinations.LoadoutScreenDestination
 import com.instance.dataxbranch.ui.destinations.MyQuestsScreenDestination
 import com.instance.dataxbranch.ui.destinations.UserScreenDestination

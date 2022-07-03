@@ -249,11 +249,13 @@ fun UserSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, me: Use
                     var name = "init"
                     name = viewModel.refresh()
                     val prefix = ""
+
                     if(me.user.fsid!="-1"){
+
                         if(me.user.fsid=="-2"){
                             showToast(context = context, msg = "fsid= -2. unusual, report this to dev.")
                         }else{
-                        viewModel.writeUserData(context,db= FirebaseFirestore.getInstance(),me.user.fsid)
+                            if(me.user.cloud){viewModel.writeUserData(context,db= FirebaseFirestore.getInstance(),me.user.fsid)}
                         }
                     }
                     showToast(context = context, msg = " USER IS NOW $name")

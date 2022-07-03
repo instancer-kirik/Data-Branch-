@@ -3,10 +3,6 @@ X
 (gradle/wrapper/gradle-wrapper.properties,f\b\fbe448ebfc3eb2d4e308f6b8b043666f5b57235e
 h
 8app/src/main/java/com/instance/dataxbranch/SampleData.kt,2\a\2ae2a54977810edfaf1a66d4a8f5becb106e29ea
-<
-build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
-?
-settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
 ‰
 Yapp/src/main/java/com/instance/dataxbranch/data/repository/AlwaysSerializeNullsFactory.kt,0\b\0b7914107a3693383edca612879ff89069e74e21
 n
@@ -61,8 +57,6 @@ w
 Gapp/src/main/java/com/instance/dataxbranch/data/entities/MathProblem.kt,1\0\101925b7de30e01fa8cdb41687cf3aae77261afc
 r
 Bapp/src/main/java/com/instance/dataxbranch/data/entities/Nugget.kt,2\f\2f340456a5a5edd8ea2e8b867c4a7b53358172ee
-{
-Kapp/src/main/java/com/instance/dataxbranch/data/entities/ObjectiveEntity.kt,3\6\36f7d747800ef7b220cfb721db913f9f0a335dfb
 u
 Eapp/src/main/java/com/instance/dataxbranch/ui/components/QuestCard.kt,e\d\ed841f8cddbaca0e32032638057f6c5d378389db
 w
@@ -81,14 +75,6 @@ Bapp/src/main/java/com/instance/dataxbranch/data/DataOrException.kt,f\1\f1c1842
 Napp/src/main/java/com/instance/dataxbranch/data/firestore/FirestoreResponse.kt,9\0\9035618d9a2a64db62d09c8f8a63e64f4ea55528
 }
 Mapp/src/main/java/com/instance/dataxbranch/composables/CircularProgressBar.kt,c\f\cfa85f0818f73799ea102ceecd9bd85aa5b79e25
-t
-Dapp/src/main/java/com/instance/dataxbranch/ui/AbilityDetailScreen.kt,0\9\09639f50cae19fc0036af293ad50edb97ec329bc
-p
-@app/src/main/java/com/instance/dataxbranch/ui/AbilitiesScreen.kt,e\1\e1506c007b959ac9c9126b7b83ef3061412698ea
-k
-;app/src/main/java/com/instance/dataxbranch/ui/HelpScreen.kt,4\0\4052c96c2bf3f347daee70f0b0f34bfbff4a6e27
-n
->app/src/main/java/com/instance/dataxbranch/ui/LoadoutScreen.kt,7\f\7f86137dbfd9816f822b1aec9625892c89cc7058
 m
 =app/src/main/java/com/instance/dataxbranch/domain/Response.kt,2\8\282717c0890d8640bc30cf27019d4f071aa08946
 v
@@ -107,8 +93,6 @@ v
 Fapp/src/main/java/com/instance/dataxbranch/domain/use_case/UseCases.kt,6\a\6a9f2bbdb69309b04562820776deb31e09e24cf4
 w
 Gapp/src/main/java/com/instance/dataxbranch/domain/use_case/GetQuests.kt,f\9\f9c928b198055241d1c5feb6e3890721c68687f2
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 j
 :app/src/main/java/com/instance/dataxbranch/MainActivity.kt,5\4\54e4fca92e8a9990650ad1227cbd46a5465d6b46
 €
@@ -121,8 +105,6 @@ Kapp/src/main/java/com/instance/dataxbranch/data/firestore/UserRepository.kt,4\
 Oapp/src/main/java/com/instance/dataxbranch/data/firestore/UserRepositoryImpl.kt,a\c\ac425518ed299b09eb39313460724b7f64aecf65
 h
 8app/src/main/java/com/instance/dataxbranch/utils/auth.kt,5\1\51862650a4472b681d2e88c582e841ede2d169c5
-r
-Bapp/src/main/java/com/instance/dataxbranch/ui/QuestDetailScreen.kt,4\5\45abb60e34500adf393b8f2aea1b629afc80e062
 {
 Kapp/src/main/java/com/instance/dataxbranch/ui/viewModels/QuestsViewModel.kt,a\0\a0ff13ab15f8cae0fd641953a2a6f92b1f761f82
 j
@@ -131,8 +113,6 @@ z
 Japp/src/main/java/com/instance/dataxbranch/data/firestore/FirestoreUser.kt,8\a\8a3c2ddebfdf23d50c4f83002d1dfd5fb1c65165
 z
 Japp/src/main/java/com/instance/dataxbranch/data/local/GeneralRepository.kt,3\9\39f2394a1676995e04ff19404026e9d73b757230
-n
->app/src/main/java/com/instance/dataxbranch/ui/WebviewScreen.kt,5\f\5f9efcfe30e45991cb10b787d5abee36692e2033
 ‚
 Rapp/src/main/java/com/instance/dataxbranch/ui/components/AddResponseAlertDialog.kt,3\d\3d63c1f95056eb224f4930b3a02987a91d6d63bc
 l
@@ -141,3 +121,7 @@ l
 Qapp/src/main/java/com/instance/dataxbranch/ui/components/TermsPopupAlertDialog.kt,e\8\e878ab92068bf0b95e7143487a4daa230b148f27
 ‡
 Wapp/src/main/java/com/instance/dataxbranch/ui/components/AddAbilityEntityAlertDialog.kt,2\7\2776cd5925833e55dbea1ae824e806fcd72c8613
+~
+Napp/src/main/java/com/instance/dataxbranch/ui/viewModels/RoomQuestViewModel.kt,a\8\a805d13805975d3a2ad62b10a6f7ba2d0e301846
+x
+Happ/src/main/java/com/instance/dataxbranch/ui/viewModels/DevViewModel.kt,f\d\fde6cacb4978ff71b4a37ab444793dcef607a3ac
