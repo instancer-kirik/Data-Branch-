@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pause||Effect</string>
+    <string name="app_name">Pause || Effect</string>
     <string name="show_less">Reduce</string>
     <string name="show_more">Expand</string>
     <string name="title_error">Error_Title</string>

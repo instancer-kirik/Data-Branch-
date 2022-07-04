@@ -85,7 +85,7 @@ fun MyQuestsScreen(
             Button(
                 onClick = { showDialog.value = true },
                 modifier = Modifier.padding(2.dp)
-            ) { Text("DEBUG") }
+            ) { Text("Button") }
 
             //viewModel.addQuestEntity(Quest())
 

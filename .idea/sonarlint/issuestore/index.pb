@@ -47,8 +47,6 @@ z
 Japp/src/main/java/com/instance/dataxbranch/ui/components/ExMainActivity.kt,4\3\432995b0fd4a833b6776bc98c35c4731123a2cfa
 h
 8app/src/main/java/com/instance/dataxbranch/utils/Exts.kt,a\e\ae2c15101fb3d6ca1893c1d076072aa924072371
-z
-Japp/src/main/java/com/instance/dataxbranch/domain/use_case/GetResponses.kt,0\c\0cc6ff847039bc7a2f96fd766963327891ebfb00
 p
 @app/src/main/java/com/instance/dataxbranch/data/entities/Item.kt,4\4\4428f910dfad9f41691b15f7ea90ec8343182159
 ~
@@ -71,8 +69,6 @@ q
 Aapp/src/main/java/com/instance/dataxbranch/data/entities/Skill.kt,f\a\fab29ee09307b535d204f32b708859bda4b65805
 r
 Bapp/src/main/java/com/instance/dataxbranch/data/DataOrException.kt,f\1\f1c18423feb8d9d9294091dfb0030fa7b45bee1b
-~
-Napp/src/main/java/com/instance/dataxbranch/data/firestore/FirestoreResponse.kt,9\0\9035618d9a2a64db62d09c8f8a63e64f4ea55528
 }
 Mapp/src/main/java/com/instance/dataxbranch/composables/CircularProgressBar.kt,c\f\cfa85f0818f73799ea102ceecd9bd85aa5b79e25
 m
@@ -89,8 +85,6 @@ s
 Capp/src/main/java/com/instance/dataxbranch/quests/FireStoreQuest.kt,4\a\4a0e35e50cef7fd1a40a6a99d593557b1ba66786
 n
 >app/src/main/java/com/instance/dataxbranch/utils/Converters.kt,b\1\b19111cf4eba4e9bc5a4522dc3b4a0a0a53bde63
-v
-Fapp/src/main/java/com/instance/dataxbranch/domain/use_case/UseCases.kt,6\a\6a9f2bbdb69309b04562820776deb31e09e24cf4
 w
 Gapp/src/main/java/com/instance/dataxbranch/domain/use_case/GetQuests.kt,f\9\f9c928b198055241d1c5feb6e3890721c68687f2
 j
@@ -105,10 +99,6 @@ Kapp/src/main/java/com/instance/dataxbranch/data/firestore/UserRepository.kt,4\
 Oapp/src/main/java/com/instance/dataxbranch/data/firestore/UserRepositoryImpl.kt,a\c\ac425518ed299b09eb39313460724b7f64aecf65
 h
 8app/src/main/java/com/instance/dataxbranch/utils/auth.kt,5\1\51862650a4472b681d2e88c582e841ede2d169c5
-{
-Kapp/src/main/java/com/instance/dataxbranch/ui/viewModels/QuestsViewModel.kt,a\0\a0ff13ab15f8cae0fd641953a2a6f92b1f761f82
-j
-:app/src/main/java/com/instance/dataxbranch/di/AppModule.kt,e\b\ebb9f0c15bd6beaa6908695966bb089e09b6f278
 z
 Japp/src/main/java/com/instance/dataxbranch/data/firestore/FirestoreUser.kt,8\a\8a3c2ddebfdf23d50c4f83002d1dfd5fb1c65165
 z
@@ -123,5 +113,17 @@ Qapp/src/main/java/com/instance/dataxbranch/ui/components/TermsPopupAlertDialog.
 Wapp/src/main/java/com/instance/dataxbranch/ui/components/AddAbilityEntityAlertDialog.kt,2\7\2776cd5925833e55dbea1ae824e806fcd72c8613
 ~
 Napp/src/main/java/com/instance/dataxbranch/ui/viewModels/RoomQuestViewModel.kt,a\8\a805d13805975d3a2ad62b10a6f7ba2d0e301846
-x
-Happ/src/main/java/com/instance/dataxbranch/ui/viewModels/DevViewModel.kt,f\d\fde6cacb4978ff71b4a37ab444793dcef607a3ac
+€
+Papp/src/main/java/com/instance/dataxbranch/ui/components/OverwriteLocalDialog.kt,9\1\91d550439db48fa240ab56d7d23da98f71d5c7a6
+F
+app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
+?
+settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
+A
+gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
+{
+Kapp/src/main/java/com/instance/dataxbranch/data/entities/ObjectiveEntity.kt,3\6\36f7d747800ef7b220cfb721db913f9f0a335dfb
+n
+>app/src/main/java/com/instance/dataxbranch/ui/WebviewScreen.kt,5\f\5f9efcfe30e45991cb10b787d5abee36692e2033
+y
+Iapp/src/main/java/com/instance/dataxbranch/ui/viewModels/UserViewModel.kt,d\3\d3fd52bf122d8859e12c8943b4eb345860af3788

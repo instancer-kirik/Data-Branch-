@@ -143,7 +143,7 @@ fun firestorePlayground(context:Context,db: FirebaseFirestore){
 fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator) {
 
     TopAppBar(
-        title = { Text(text = "Armed Abilities") },
+        title = { Text(text = "dev toolbar") },
         actions = {ConfigChangeExample()
 
             var expanded by remember { mutableStateOf(false) }

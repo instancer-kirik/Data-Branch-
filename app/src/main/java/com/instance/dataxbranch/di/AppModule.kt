@@ -78,6 +78,15 @@ object AppModule {
         return db.collection("responses")
     }
     @Provides
+    @Named("chatRoomRef")
+    fun provideChatRoomCollRef(db: FirebaseFirestore): CollectionReference {
+        return db.collection("chatRooms")
+    }
+    @Provides
+    fun provideSocialRepository(
+        chatRoomRef: CollectionReference
+    ): SocialRepository = SocialRepositoryImpl(chatRoomRef)
+    @Provides
     fun provideQuestsRepository(
         questsRef: CollectionReference
     ): QuestsRepository = QuestRepositoryImpl(questsRef)
@@ -121,6 +130,7 @@ object AppModule {
         repo: QuestsRepository,
         responseRepo: ResponseRepository,
         localrepo: LocalQuestsRepository,
+        socialRepo: SocialRepository,
         dao: QuestDao
     ) = UseCases(
         getQuests = GetQuests(repo),
@@ -133,7 +143,9 @@ object AppModule {
         addNewQuestEntity = AddNewQuestEntity(localrepo),
         addNewObjectiveEntityToQuestEntity=  AddNewObjectiveEntityToQuestEntity(localrepo),
         addResponse = AddResponse(responseRepo),
-        getResponses = GetResponses(responseRepo)
+        getResponses = GetResponses(responseRepo),
+    addChatRoom= AddChatRoom(socialRepo),
+    getChatRooms = GetChatRooms(socialRepo)
     )
 
 
