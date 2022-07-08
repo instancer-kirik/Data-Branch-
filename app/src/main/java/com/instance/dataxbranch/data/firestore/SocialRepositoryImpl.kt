@@ -52,8 +52,8 @@ class SocialRepositoryImpl @Inject constructor(
             snapshotListener.remove()
         }
     }
-
-    override fun addChatRoomToFirestore(
+/*
+    override fun addMessageToFirestoreChatRoom(
         subject: String,
         description: String,
         author: String,
@@ -62,8 +62,9 @@ class SocialRepositoryImpl @Inject constructor(
         try {
             emit(Response.Loading)
             val fsid = chatRoomRef.document().id
-            val thisMessage = FirestoreChatRoom(
-                subject = subject,
+            val thisMessage = //FirestoreChatRoom(
+                //ubject = subject,
+
                 fsid = fsid,
                 description
                 = description,
@@ -76,6 +77,15 @@ class SocialRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             emit(Response.Error(e.message ?: e.toString()))
         }
+    }*/
+
+    override fun addChatRoomToFirestore(
+        subject: String,
+        description: String,
+        author: String,
+        authorid: String
+    ): Flow<Response<Void?>> {
+        TODO("Not yet implemented")
     }
 
     /*override fun addResponseToFirestore(

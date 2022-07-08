@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.ui.components.TermsPopupAlertDialog
 import com.instance.dataxbranch.ui.destinations.DefaultScreenDestination
@@ -28,6 +29,7 @@ import com.instance.dataxbranch.utils.constants.DEFAULT_UNAME
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+@OptIn(ExperimentalPagerApi::class)
 @RootNavGraph(start = true)
 @Destination
 @Composable

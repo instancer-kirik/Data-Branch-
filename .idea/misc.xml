@@ -3,7 +3,28 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/button_selector.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/edit_text_shadow.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/ic_attach.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/ic_baseline_videocam_24.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/ic_camera.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/ic_chat.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/ic_income_call.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/ic_outgoing_call.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/ic_run_circle.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/ic_voice_record.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/outline_add_photo_alternate_24.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/outline_send_24.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/outline_send_gray_24.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/rounded_message_blue.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/drawable/rounded_message_gray.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/layout/activity_sign_in.xml" value="0.1" />
         <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/layout/activity_terms.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/layout/image_message.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/layout/menu.xml" value="0.17198581560283688" />
+        <entry key="..\:/WorkFolder/AndroidStudioProjects/Data-Branch-/app/src/main/res/layout/message.xml" value="0.1" />
         <entry key="..\:/WorkFolder/AndroidStudioProjects/DataXBranch/app/src/main/res/drawable/profile_picture.xml" value="0.1" />
       </map>
     </option>
