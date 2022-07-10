@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.instance.dataxbranch.data.SampleData
+import com.instance.dataxbranch.data.firestore.FirestoreChat
 import com.instance.dataxbranch.data.firestore.FirestoreChatRoom
 import com.instance.dataxbranch.domain.Response
 import com.instance.dataxbranch.domain.use_case.UseCases
@@ -45,6 +46,7 @@ class ChatRoomViewModel @Inject constructor(
     val flag: Boolean get() = _flag.value
 
     init {
+        addChatRoom()
         getChatRooms()
     }
 
@@ -64,7 +66,8 @@ class ChatRoomViewModel @Inject constructor(
         chatListItem.addAll(listOf(data))
         _getSampleData.value = chatListItem
     }
-    fun getConversation(): List<Pair<String, String>> {
+    fun addChat(text:String){}
+    fun getConversation(): List<FirestoreChat> {
         return selectedChatRoom.conversation
     }
 
@@ -84,9 +87,9 @@ class ChatRoomViewModel @Inject constructor(
         }
     }
 
-    fun addChatRoom(subject: String="default", description: String="", author: String="",authorid: String="") {
+    fun addChatRoom(subject: String="default", title: String="", members: List<String> = listOf()) {
         viewModelScope.launch {
-            useCases.addChatRoom.invoke(subject, description, author,authorid).collect { response ->
+            useCases.addChatRoom.invoke(title, subject, members,"","").collect { response ->
                 _isChatRoomAddedState.value = response
             }
         }

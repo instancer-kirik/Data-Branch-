@@ -4,9 +4,11 @@ package com.instance.dataxbranch.data.firestore
 
 import android.util.Log
 import com.google.firebase.firestore.CollectionReference
+import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.core.Constants.TITLE
 
 import com.instance.dataxbranch.domain.Response
+import com.instance.dataxbranch.quests.Quest
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -52,61 +54,102 @@ class SocialRepositoryImpl @Inject constructor(
             snapshotListener.remove()
         }
     }
-/*
+
     override fun addMessageToFirestoreChatRoom(
-        subject: String,
-        description: String,
-        author: String,
-        authorid: String
+        firestoreChatRoom:FirestoreChatRoom,
+        text: String,
+        name: String,
+        imgUrl: String,
+
     ): Flow<Response<Void?>> =flow{
+        val createdDate: String = firestoreChatRoom.getNow()
         try {
             emit(Response.Loading)
             val fsid = chatRoomRef.document().id
-            val thisMessage = //FirestoreChatRoom(
-                //ubject = subject,
+            val thisMessage = FirestoreChat(name, text, imgUrl, createdDate,firestoreChatRoom.subject)
 
-                fsid = fsid,
-                description
-                = description,
-                author = author,
-                authorid=authorid
-            )
+            //var subject: String,firestoreChatRoom.subject, text,name, imgUrl,createdDate)
             Log.d("FirestoreADD",thisMessage.toString())
             val addition = chatRoomRef.document(fsid).set(thisMessage).await()
             emit(Response.Success(addition))
         } catch (e: Exception) {
             emit(Response.Error(e.message ?: e.toString()))
         }
-    }*/
+    }
 
     override fun addChatRoomToFirestore(
+        title: String,
+        subject: String,
+
+        members: List<String>,
+        recentMessageText: String,
+        recentMessageSendBy: String,
+/*
         subject: String,
         description: String,
         author: String,
-        authorid: String
-    ): Flow<Response<Void?>> {
-        TODO("Not yet implemented")
-    }
-
-    /*override fun addResponseToFirestore(
-        uname: String, data
-        : String, author: String
+        authorid: String*/
     ): Flow<Response<Void?>> = flow {
+        val newRoom =  FirestoreChatRoom(title=title,
+            subject=subject,
+            members=members,
+            recentMessageText=recentMessageText,
+            recentMessageSendBy=recentMessageSendBy,
+        )
+        /*try {
+            emit(Response.Loading)
+            //val id =newRoom.fsid
+
+            val addition= chatRoomRef.add(newRoom).await()
+            emit(Response.Success(addition))
+        } catch (e: Exception) {
+            emit(Response.Error(e.message ?: e.toString()))
+        }*/
         try {
             emit(Response.Loading)
-            val id = responsesRef.document().id
-            val response = Response()
-            response.dateAdded= Date
-            Log.d("FirestoreADD", response.toString())
-            val addition = responsesRef.document(id).set(response).await()
+            val id = chatRoomRef.document().id
+
+            //Log.d("FirestoreADD",quest.toString())
+            val addition = chatRoomRef.document(id).set(newRoom).await()
             emit(Response.Success(addition))
         } catch (e: Exception) {
             emit(Response.Error(e.message ?: e.toString()))
         }
+    }
+   /* fun saveMessage(messageText, sentAt, currentGroupId) {
+        if (messageText.trim()) {
+            const message = {
+                messageText,
+                sentAt,
+                sentBy: this.user.uid,
+            }
+            return Promise((resolve, reject) => {
+                db.collection('message')
+                    .doc(currentGroupId)
+                    .collection('messages')
+                    .add(message)
+                    .then(function (docRef) {
+                        resolve(message)
+                    })
+                    .catch(function (error) {
+                        reject(error)
+                    })
+            })
+        }
+    },*/
+
+    /*override fun addResponseToFirestore(
+        uname: String, data
+        : String, author: String
+    ): Flow<Response<Void?>>
     }*/
 
     override fun addChatRoomToFirestore(room: FirestoreChatRoom): Flow<Response<Void?>> = flow {
-        try {
+        chatRoomRef
+            .add(room)
+            .addOnSuccessListener { Log.d(TAG, "addchatroom to firestore!") }
+            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+        /*try {
             emit(Response.Loading)
 
             val id = if(room.fsid==""){chatRoomRef.document().id}else{room.fsid}
@@ -115,7 +158,7 @@ class SocialRepositoryImpl @Inject constructor(
             emit(Response.Success(addition))
         } catch (e: Exception) {
             emit(Response.Error(e.message ?: e.toString()))
-        }
+        }*/
     }
 
 

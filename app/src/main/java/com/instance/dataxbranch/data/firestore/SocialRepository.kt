@@ -22,10 +22,25 @@ interface   SocialRepository {
 
         //ORIGINALLY HAD SUSPEND FUN
         //fun addMessageToFirestoreChatRoom( subject: String, description: String, author: String, authorid: String ): Flow<Response<Void?>>
-        fun addChatRoomToFirestore(subject: String, description: String, author:String,authorid:String): Flow<Response<Void?>>
+
+        fun addChatRoomToFirestore(title: String,
+                                   subject: String,
+
+                                   members: List<String>,
+                                   recentMessageText: String,
+                                   recentMessageSendBy: String,
+        ): Flow<Response<Void?>>
+
         fun addChatRoomToFirestore(room: FirestoreChatRoom): Flow<Response<Void?>>
         fun deleteChatRoomFromFirestore(fsid: String): Flow<Response<Void?>>
-    }
+    fun addMessageToFirestoreChatRoom(
+        firestoreChatRoom: FirestoreChatRoom,
+        text: String,
+
+        name: String,
+        imgUrl: String
+    ): Flow<Response<Void?>>
+}
     @Module
     @InstallIn(ViewModelComponent::class)
     abstract class SocialModule {

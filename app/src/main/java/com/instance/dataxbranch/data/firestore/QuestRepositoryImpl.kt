@@ -1,6 +1,5 @@
 package com.instance.dataxbranch.data.firestore
 
-import android.util.Log
 import com.google.firebase.firestore.CollectionReference
 import com.instance.dataxbranch.quests.Quest
 import com.instance.dataxbranch.core.Constants.TITLE
@@ -67,7 +66,7 @@ class QuestRepositoryImpl @Inject constructor(
                 = description,
                 author = author
             )
-            Log.d("FirestoreADD",quest.toString())
+            //Log.d("FirestoreADD",quest.toString())
             val addition = questsRef.document(id).set(quest).await()
             emit(Response.Success(addition))
         } catch (e: Exception) {

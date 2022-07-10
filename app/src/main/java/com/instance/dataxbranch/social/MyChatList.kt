@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,7 +58,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-
+@Preview
 @Composable
 fun MyChatList(
     viewModel: UserViewModel = hiltViewModel(),
@@ -313,7 +314,7 @@ private fun ChatRoomCardContent(viewModel: UserViewModel, cviewModel: ChatRoomVi
         ) {
             Text(text = "Title-- " )
             Text(
-                text = chatRoom.title+"",
+                text = chatRoom.title+"\n${chatRoom.fsid}",
                 style = MaterialTheme.typography.h4.copy(
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -322,7 +323,7 @@ private fun ChatRoomCardContent(viewModel: UserViewModel, cviewModel: ChatRoomVi
                 Text("join chat room")
             }
             if (expanded) {
-                Text("test")
+                Text("AAAAAAAAAMYCHATLIST")
 
                 //quest.objectives.forEach { objective -> ObjectiveViewNoEdit(objective = objective) }
 

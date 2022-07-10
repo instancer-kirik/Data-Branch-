@@ -8,9 +8,19 @@ class AddChatRoom (
 
 ) {
     suspend operator fun invoke(
-        subject: String,
+        title: String,
+        topic: String,
+        members: List<String>,
+        recentMessageText: String,
+        recentMessageSendBy: String,
+        /*subject: String,
         description: String,
         author: String,
-        authorid:String
-    ) = repo.addChatRoomToFirestore(subject, description, author,authorid)
+        authorid:String*/
+    ) = repo.addChatRoomToFirestore(title,
+        topic,
+        members,
+    recentMessageText,
+    recentMessageSendBy
+    )
 }

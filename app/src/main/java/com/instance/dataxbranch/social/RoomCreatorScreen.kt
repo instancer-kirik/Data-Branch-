@@ -13,9 +13,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun RoomSelectorScreen (viewModel: UserViewModel = hiltViewModel(),
-                        rviewModel: ChatRoomViewModel = hiltViewModel(),
-                      // devViewModel: DevViewModel = hiltViewModel(),
+fun RoomCreatorScreen (viewModel: UserViewModel = hiltViewModel(),
+                       cViewModel: ChatRoomViewModel = hiltViewModel(),
+                       devViewModel: DevViewModel = hiltViewModel(),
                        navigator: DestinationsNavigator,
 ) {val db = FirebaseFirestore.getInstance()
     val me = viewModel.getMeWithAbilities()
@@ -27,4 +27,9 @@ fun RoomSelectorScreen (viewModel: UserViewModel = hiltViewModel(),
         floatingActionButton = {}){padding ->
 
 
-    }}
+    }
+    //same screen to edit a chat room?
+    //title
+    //level barrier
+    //topic
+}
