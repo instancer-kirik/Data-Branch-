@@ -40,7 +40,7 @@ import com.instance.dataxbranch.core.Utils
 import com.instance.dataxbranch.data.SampleData
 import com.instance.dataxbranch.domain.Response
 import com.instance.dataxbranch.showToast
-import com.instance.dataxbranch.ui.destinations.QuestDetailScreenDestination
+//import com.instance.dataxbranch.ui.destinations.QuestDetailScreenDestination
 import com.instance.dataxbranch.ui.viewModels.ChatRoomViewModel
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 
@@ -106,7 +106,7 @@ fun InRoomScreen (
         val message = remember{ mutableStateOf("")}
         val name = remember{ mutableStateOf("")}
        // realtimeUpdateListener(firestoreChat)
-        Tabs(pagerState = rememberPagerState(pageCount = 3))
+        Tabs(pagerState = rememberPagerState(0))
         Button(onClick = { sendMessage(message,name) }) {Text("Send")
 
         }
@@ -324,7 +324,7 @@ fun LocalLineCardContent(navi: DestinationsNavigator, viewModel: UserViewModel,c
 
                 }
             }
-            Button(onClick = { navi.navigate(QuestDetailScreenDestination) }) { Text("EDIT") }
+            //Button(onClick = { navi.navigate(QuestDetailScreenDestination) }) { Text("EDIT") }
         }
     }
 }
@@ -494,7 +494,7 @@ fun chatRoomSocial(navi: DestinationsNavigator) {
 @ExperimentalPagerApi
 @Composable
 fun MyChatTab(navi:DestinationsNavigator) {
-    val pagerState = rememberPagerState(pageCount = 3)
+    val pagerState = rememberPagerState( 0)
     Column {
         Tabs(pagerState)
         TabsContent(pagerState, navi)
@@ -747,7 +747,7 @@ fun SampleDataListItem(data: SampleData, navi: DestinationsNavigator) {
 @ExperimentalPagerApi
 @Composable
 fun TabsContent(pagerState: PagerState, navi: DestinationsNavigator) {
-    HorizontalPager(state = pagerState) { page ->
+    HorizontalPager(state = pagerState, count = 3) { page ->
         when(page) {
             0 -> MyChats(navi)
             1 -> Text("OOps")//WhatsAppStatus()

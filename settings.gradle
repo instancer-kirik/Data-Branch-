@@ -3,6 +3,7 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+
     }
     resolutionStrategy {
         eachPlugin {
@@ -35,6 +36,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {url "https://jitpack.io"}
     }
 }
 rootProject.name = "DataXBranch"

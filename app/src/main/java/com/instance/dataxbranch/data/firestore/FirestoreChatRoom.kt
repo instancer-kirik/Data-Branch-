@@ -3,18 +3,15 @@ package com.instance.dataxbranch.data.firestore
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-data class FirestoreChatRoom (var id: Int = -11,
+data class FirestoreChatRoom
+    (//var id: Int = -11,
                               var members: List<String> = listOf(""),
                               var recentMessageText: String = "Message here",
-                              var recentMessageSendBy: String = "fsid string",
+                              var recentMessageName: String = "NAME",
                               var readBy: List<String> = listOf(""),
                               var fsid: String = "",
-
-
-
-
                               val conversation: List<FirestoreChat> =listOf(), //[userid,message]
-                              var title: String?=null,
+                              var title: String?="Title",
                              var subject: String = "subject"
 /*chatID (same as the ID of that particular groups row)
 members (userID's of all participating app users in that chat, also used for retrieve the chats for an user)

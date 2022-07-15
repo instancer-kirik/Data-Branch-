@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.callbackFlow
 interface   SocialRepository {
 
         var chatRoomRef: CollectionReference
+
         fun getChatRoomById(fsid: String): Flow<Response<FirestoreChatRoom>>
         fun getChatRoomsFromFirestore(): Flow<Response<List<FirestoreChatRoom>>>
 
@@ -27,11 +28,11 @@ interface   SocialRepository {
                                    subject: String,
 
                                    members: List<String>,
-                                   recentMessageText: String,
-                                   recentMessageSendBy: String,
-        ): Flow<Response<Void?>>
+                                   /*recentMessageText: String,
+                                   recentMessageSendBy: String,*/
+        )//: Flow<Response<Void?>>
 
-        fun addChatRoomToFirestore(room: FirestoreChatRoom): Flow<Response<Void?>>
+        fun addChatRoomToFirestore(room: FirestoreChatRoom)//: Flow<Response<Void?>>
         fun deleteChatRoomFromFirestore(fsid: String): Flow<Response<Void?>>
     fun addMessageToFirestoreChatRoom(
         firestoreChatRoom: FirestoreChatRoom,
@@ -39,7 +40,7 @@ interface   SocialRepository {
 
         name: String,
         imgUrl: String
-    ): Flow<Response<Void?>>
+    )//: Flow<Response<Void?>>
 }
     @Module
     @InstallIn(ViewModelComponent::class)

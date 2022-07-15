@@ -145,8 +145,6 @@ class Quest(val qid: String= "-1",
     open class QuestObjective(obj: String, beginDateAndTime: String, desc: String?, objectiveType: ObjectiveType, requiredAmount: Int?) {
         constructor() : this("", "",
             "", ObjectiveType.Default, -1
-
-
             //"", hashMapOf<Any, Any>(),
             //-1, LinkedTreeMap<Any, Any>()
         )
@@ -160,20 +158,12 @@ class Quest(val qid: String= "-1",
                 requiredAmount = requiredAmount,
                 //quest = "DEBUG_Quest"
             )
-
         }
-
-
         var obj: String= "title"
         var beginDateAndTime: String =  "beginDateAndTime: String, title: String?"
         var desc: String? = null
-
         var objectiveType: ObjectiveType = ObjectiveType.Default
         var requiredAmount: Int? = null;
-
-
-
-
 
         override fun toString(): String {
             return "$obj $desc"
@@ -201,18 +191,7 @@ class Quest(val qid: String= "-1",
         //                currentAmount++;
         //            }
         //        }
-
-
-
-
-
-
-
-
     }
-
-
-
     lateinit var dateAdded: String
     lateinit var dateUpdated: String
     init{
@@ -243,10 +222,6 @@ class Quest(val qid: String= "-1",
         objective.obj="Make Default Objective"
         return objective
         }
-
-
-
-
     /*  private fun Quest(): Quest {
         active = true
         return this
@@ -267,15 +242,11 @@ class Quest(val qid: String= "-1",
             notifyPropertyChanged(BR.lastName)
         }
     }*/
-
-
     fun addObjective() {
         var objective_new = QuestObjective()
         objectives.add(objective_new)
         print("save or cancel")
-
     }
-
     enum class ObjectiveType {
         Default,
         Kill,

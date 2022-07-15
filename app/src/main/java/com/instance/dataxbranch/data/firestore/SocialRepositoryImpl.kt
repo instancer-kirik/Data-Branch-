@@ -9,6 +9,7 @@ import com.instance.dataxbranch.core.Constants.TITLE
 
 import com.instance.dataxbranch.domain.Response
 import com.instance.dataxbranch.quests.Quest
+import com.instance.dataxbranch.showToast
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -61,40 +62,37 @@ class SocialRepositoryImpl @Inject constructor(
         name: String,
         imgUrl: String,
 
-    ): Flow<Response<Void?>> =flow{
+    ){//}: Flow<Response<Void?>> =flow{
         val createdDate: String = firestoreChatRoom.getNow()
         try {
-            emit(Response.Loading)
-            val fsid = chatRoomRef.document().id
+            //emit(Response.Loading)
+            //val fsid = chatRoomRef.document().id
             val thisMessage = FirestoreChat(name, text, imgUrl, createdDate,firestoreChatRoom.subject)
 
             //var subject: String,firestoreChatRoom.subject, text,name, imgUrl,createdDate)
             Log.d("FirestoreADD",thisMessage.toString())
-            val addition = chatRoomRef.document(fsid).set(thisMessage).await()
-            emit(Response.Success(addition))
+            val addition = chatRoomRef.document(firestoreChatRoom.fsid).collection("conversation").add(thisMessage)
+                .addOnSuccessListener { Log.d(TAG,"SENT IN REP IMPL") }
+                .addOnFailureListener { Log.d(TAG,"dud")}
+           // emit(Response.Success(addition))
         } catch (e: Exception) {
-            emit(Response.Error(e.message ?: e.toString()))
+          // emit(Response.Error(e.message ?: e.toString()))
         }
     }
 
     override fun addChatRoomToFirestore(
         title: String,
         subject: String,
-
         members: List<String>,
-        recentMessageText: String,
-        recentMessageSendBy: String,
 /*
         subject: String,
         description: String,
         author: String,
         authorid: String*/
-    ): Flow<Response<Void?>> = flow {
+    ){//}: Flow<Response<Void?>> = flow {
         val newRoom =  FirestoreChatRoom(title=title,
             subject=subject,
             members=members,
-            recentMessageText=recentMessageText,
-            recentMessageSendBy=recentMessageSendBy,
         )
         /*try {
             emit(Response.Loading)
@@ -106,14 +104,17 @@ class SocialRepositoryImpl @Inject constructor(
             emit(Response.Error(e.message ?: e.toString()))
         }*/
         try {
-            emit(Response.Loading)
-            val id = chatRoomRef.document().id
-
+           // emit(Response.Loading)
+            //val id = chatRoomRef.document().id
             //Log.d("FirestoreADD",quest.toString())
-            val addition = chatRoomRef.document(id).set(newRoom).await()
-            emit(Response.Success(addition))
+            val addition = chatRoomRef.add(newRoom)
+                .addOnSuccessListener {docref-> Log.d(TAG,"wrote to firestore! c; $docref")
+                // _isChatRoomAddedState.value = response
+            }
+                .addOnFailureListener { e -> Log.d(TAG,"Error writing document $e") }
+           // emit(Response.Success(addition))
         } catch (e: Exception) {
-            emit(Response.Error(e.message ?: e.toString()))
+           // emit(Response.Error(e.message ?: e.toString()))
         }
     }
    /* fun saveMessage(messageText, sentAt, currentGroupId) {
@@ -144,7 +145,7 @@ class SocialRepositoryImpl @Inject constructor(
     ): Flow<Response<Void?>>
     }*/
 
-    override fun addChatRoomToFirestore(room: FirestoreChatRoom): Flow<Response<Void?>> = flow {
+    override fun addChatRoomToFirestore(room: FirestoreChatRoom){//: Flow<Response<Void?>> = flow {
         chatRoomRef
             .add(room)
             .addOnSuccessListener { Log.d(TAG, "addchatroom to firestore!") }

@@ -47,6 +47,12 @@ val db = FirebaseFirestore.getInstance()
                 AddResponseAlertDialog()
             }
             Column{
+                val crashButton=Button(onClick= {
+                    throw RuntimeException("Test Crash") // Force a crash
+                }
+                ){Text("Crash Button")}
+
+
             PayMeBlock()
             ResponseBlock(context=context, me = me, db=db)
                 Button(onClick = {navigator.navigate(DefaultScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Default screen")}

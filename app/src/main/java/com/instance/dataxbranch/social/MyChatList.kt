@@ -1,3 +1,4 @@
+/*
 package com.instance.dataxbranch.social
 
 import androidx.compose.animation.animateContentSize
@@ -71,11 +72,13 @@ fun MyChatList(
     //val viewModel: WhatsAppChatViewModel = viewModel()
     val getAllChat = cviewModel.getSampleData
 
-    val chatroom = cviewModel.selectedChatRoom
+    //val chatroom = cviewModel.selectedChatRoom
     //val flag=viewModel.flag
+    var OuterRoomList :List<FirestoreChatRoom> =listOf()
 
    // val whatsAppChatList = viewModel.whatsAppStateFlow.asStateFlow().collectAsState().value//this is basically quests list
-    val ChatList = cviewModel.chatsState.value
+
+        //cviewModel.chatsState.value
 
 
 
@@ -88,7 +91,7 @@ fun MyChatList(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White)
+                    .background(Color.DarkGray)
                     .padding(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -96,15 +99,20 @@ fun MyChatList(
                 Spacer(modifier = Modifier.padding(5.dp))
                 //CallChatList(getAllChat.value) it's static val
 
-                when(ChatList) {
+                ChatListColumn(viewModel, cviewModel, cviewModel.chatRoomList,//ChatList.data,
+                    modifier = Modifier.fillMaxSize().padding(padding)
+                )
+               */
+/* when(ChatList) {
 
                     is Response.Loading -> ProgressBar()
-                    is Response.Success -> ChatListColumn(viewModel, cviewModel, ChatList.data,
+                    is Response.Success -> ChatListColumn(viewModel, cviewModel, ChatList.data,//ChatList.data,
                         modifier = Modifier.fillMaxSize().padding(padding)
                     )
                     is Response.Error -> OnlyText("Error",ChatList.message)
 
-                }
+                }*//*
+
             }
         },
         bottomBar = {
@@ -149,9 +157,11 @@ fun CallChatItem(value: List<SampleData>) {
 fun ChatListColumn(viewModel: UserViewModel,cviewModel: ChatRoomViewModel, chatList: List<FirestoreChatRoom>, modifier: Modifier) {
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index}
+    Text("OnIONS")
     LazyColumn(
         modifier.fillMaxSize(),
     ){//repace count with quest.objectives.size
+
         itemsIndexed(chatList){ index,chatRoom ->
 
             ChatRoomView(
@@ -164,6 +174,7 @@ fun ChatListColumn(viewModel: UserViewModel,cviewModel: ChatRoomViewModel, chatL
             )
         }
     }
+    Text("END")
 }
 @Composable
 fun ChatRoomView(viewModel: UserViewModel,cviewModel:ChatRoomViewModel, chatRoom: FirestoreChatRoom, index: Int, selected: Boolean, onClick: (Int) -> Unit) {
@@ -312,18 +323,23 @@ private fun ChatRoomCardContent(viewModel: UserViewModel, cviewModel: ChatRoomVi
                 .weight(1f)
                 .padding(12.dp)
         ) {
-            Text(text = "Title-- " )
+            Text(text = "Title: " )
             Text(
                 text = chatRoom.title+"\n${chatRoom.fsid}",
                 style = MaterialTheme.typography.h4.copy(
                     fontWeight = FontWeight.ExtraBold
                 )
             )
-            Button(onClick={/*cviewModel.addChatRoom()*/}){
+            Button(onClick={*/
+/*cviewModel.addChatRoom()*//*
+}){
                 Text("join chat room")
             }
             if (expanded) {
-                Text("AAAAAAAAAMYCHATLIST")
+                Text("AAAAAAAAAMYCHATLIST" +
+                        "\n${chatRoom.members}" +
+                        "\n${chatRoom.subject}"+
+                        "\n${chatRoom.recentMessageText}")
 
                 //quest.objectives.forEach { objective -> ObjectiveViewNoEdit(objective = objective) }
 
@@ -332,7 +348,7 @@ private fun ChatRoomCardContent(viewModel: UserViewModel, cviewModel: ChatRoomVi
         }
         IconButton(onClick = { expanded = !expanded
             if(!expanded){//saves on click when closing
-                cviewModel.addChatRoom()
+                //cviewModel.addChatRoom()
             }}) {
 
             Icon(
@@ -399,6 +415,7 @@ fun ChatListItem(data: SampleData, index: Int) {
     }
 }
 
+*/
 /*
 class WhatsAppViewModelFactory(private val whatsAppRepository: WhatsAppRepository): ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -408,4 +425,6 @@ class WhatsAppViewModelFactory(private val whatsAppRepository: WhatsAppRepositor
         throw IllegalStateException()
     }
 }
+*//*
+
 */

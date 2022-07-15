@@ -68,7 +68,12 @@ import com.instance.dataxbranch.ui.theme.DataXBranchTheme
 import com.instance.dataxbranch.utils.constants.FIRESTORE_COLLECTION
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
-
+import io.getstream.chat.android.client.ChatClient
+import io.getstream.chat.android.client.logger.ChatLogLevel
+import io.getstream.chat.android.offline.model.message.attachments.UploadAttachmentsNetworkType
+import io.getstream.chat.android.offline.plugin.factory.StreamOfflinePluginFactory
+import io.getstream.chat.android.offline.plugin.configuration.Config
+import io.getstream.chat.android.client.models.User
 /*
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -87,6 +92,35 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalPagerApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+// 1 - Set up the OfflinePlugin for offline storage
+        val offlinePluginFactory = StreamOfflinePluginFactory(
+            config = Config(
+                backgroundSyncEnabled = true,
+                userPresence = true,
+                persistenceEnabled = true,
+                uploadAttachmentsNetworkType = UploadAttachmentsNetworkType.NOT_ROAMING,
+            ),
+            appContext = applicationContext,
+        )
+
+        // 2 - Set up the client for API calls and with the plugin for offline storage
+        val client = ChatClient.Builder("kgb7br38hzkg", applicationContext)
+            .withPlugin(offlinePluginFactory)
+            .logLevel(ChatLogLevel.ALL) // Set to NOTHING in prod
+            .build()
+
+        // 3 - Authenticate and connect the user
+        val user = User(
+            id = "tutorial-droid",
+            name = "Tutorial Droid",
+            image = "https://bit.ly/2TIt8NR"
+        )
+        client.connectUser(
+            user = user,
+            token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidHV0b3JpYWwtZHJvaWQifQ.NhEr0hP9W9nwqV7ZkdShxvi02C5PR7SJE7Cs4y7kyqg"
+        ).enqueue()
+
+        // 4 - Set up the Channels Screen UI
 
       //  FirebaseAuth.getInstance().createUserWithEmailAndPassword(email)
         setContent {
@@ -116,9 +150,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
-
 
 
 /*               // A surface container using the 'background' color from the theme

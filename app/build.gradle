@@ -9,6 +9,7 @@ plugins {
     //id 'kotlin-parcellize'
     id 'com.google.devtools.ksp' version '1.7.0-1.0.6'
     //id 'org.jetbrains.kotlin.plugin.serialization'
+    id 'com.google.firebase.crashlytics'
 }
 kotlin{
     sourceSets{
@@ -35,11 +36,47 @@ android {
             useSupportLibrary true
         }
     }
-
+    /*File signFile = rootProject.file('.sign/keystore.properties')
+    if (signFile.exists()) {
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(signFile))
+        signingConfigs {
+            release {
+                storeFile rootProject.file(properties['keystore'])
+                storePassword properties['storePassword']
+                keyAlias properties['keyAlias']
+                keyPassword properties['keyPassword']
+            }
+        }
+    } else {
+        signingConfigs {
+            release {
+                storeFile rootProject.file('.sign/debug.keystore')
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
+        }
+    }*/
+    /*signingConfigs.debug {
+        storeFile rootProject.file('.sign/debug.keystore')
+        storePassword 'android'
+        keyAlias 'androiddebugkey'
+        keyPassword 'android'
+    }*/
     buildTypes {
+        /*debug {
+            versionNameSuffix "-DEBUG"
+            applicationIdSuffix ".debug"
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+        }*/
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -75,6 +112,13 @@ android {
         }
     }
 }
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        freeCompilerArgs += [
+                '-Xopt-in=kotlin.RequiresOptIn',
+        ]
+    }
+}
 
 dependencies {
 
@@ -82,10 +126,26 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation 'androidx.activity:activity-compose:1.5.0'
+
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation('io.github.raamcosta.compose-destinations:core:1.5.12-beta')
+    ksp('io.github.raamcosta.compose-destinations:ksp:1.6.12-beta')
+// Paging 3.0
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
+    implementation "androidx.room:room-paging:2.4.2"
+    //hilt
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+    implementation "com.google.dagger:hilt-android:2.42"
+    kapt "com.google.dagger:hilt-compiler:2.42"
+
     implementation 'androidx.fragment:fragment-ktx:1.5.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.0'
-    implementation 'androidx.activity:activity-compose:1.5.0'
+
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
@@ -94,21 +154,25 @@ dependencies {
     //implementation 'com.google.firebase:firebase-common-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation "com.google.firebase:firebase-crashlytics:"
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.firebaseui:firebase-ui-database:8.0.1'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21'
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'com.google.firebase:firebase-auth-ktx:21.0.6'
 
+
+
+
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+
     //implementation("androidx.compose.compiler:compiler:")
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
-    implementation "com.google.dagger:hilt-android:2.42"
-    kapt "com.google.dagger:hilt-compiler:2.42"
+
+
     implementation 'com.github.bumptech.glide:glide:4.13.2'
     kapt 'com.github.bumptech.glide:compiler:4.13.2'
 
@@ -116,9 +180,9 @@ dependencies {
     //implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     //implementation "androidx.compose.compiler:compiler:1.2.0"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
     //Pager
-    implementation "com.google.accompanist:accompanist-pager:0.13.0"
+    implementation "com.google.accompanist:accompanist-pager:0.23.0"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     // optional - RxJava2 support for Room
@@ -133,23 +197,31 @@ dependencies {
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
 
+
+
+    //////STREAM CHAT 
+    implementation 'io.getstream:stream-chat-android-compose:5.5.0'
+//coil
+    implementation "io.coil-kt:coil:$coil_version"
+    implementation "io.coil-kt:coil-gif:$coil_version"
+    implementation "io.coil-kt:coil-video:$coil_version"
+    implementation "io.coil-kt:coil-compose:$coil_version"
+
+    //implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
     // optional - Paging 3 Integration
    //implementation "androidx.room:room-paging:2.5.0-alpha02"
 //ROOM
     implementation "androidx.room:room-runtime:2.4.2"
     //kapt "androidx.room:room-compiler:2.4.2"
     //implementation "androidx.room:room-ktx:2.4.2"
-    implementation "androidx.room:room-paging:2.4.2"
 
-// Paging 3.0
-    implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
 
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3"
 
     implementation("com.squareup.moshi:moshi:1.13.0")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
-    implementation('io.github.raamcosta.compose-destinations:core:1.5.12-beta')
-    ksp('io.github.raamcosta.compose-destinations:ksp:1.6.12-beta')
-    implementation('com.google.devtools.ksp:symbol-processing-api:1.7.0-1.0.6')
+
+    implementation('com.google.devtools.ksp:symbol-processing-api:1.7.10-1.0.6')
 }
