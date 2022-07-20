@@ -5,6 +5,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.data.firestore.FirestoreChatRoom
@@ -13,6 +14,8 @@ import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import io.getstream.chat.android.compose.sample.ui.ChannelsActivity
+import io.getstream.chat.android.compose.sample.ui.StartupActivity
 
 @Destination
 @Composable
@@ -31,8 +34,10 @@ fun RoomCreatorScreen (viewModel: UserViewModel = hiltViewModel(),
         //val addable = FirestoreChatRoom()
         //addable.members=addable.members.plus(me.user.fsid)
         val room=FirestoreChatRoom(listOf(me.user.fsid))
-Button(onClick = { cViewModel.addChatRoom(room,context)}) {
-    Text("ADDROOM")
+Button(onClick = { startActivity(context,StartupActivity.createIntent(context,""),null)
+    //cViewModel.addChatRoom(room,context)
+    }) {
+    Text("MESSAGER")
 
 }
 
