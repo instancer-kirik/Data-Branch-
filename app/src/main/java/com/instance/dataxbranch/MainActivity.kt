@@ -2,13 +2,17 @@
 
 package com.instance.dataxbranch
 
+
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -41,12 +45,21 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.instance.dataxbranch.data.PredefinedUserCredentials
 import com.instance.dataxbranch.quests.Quest
-import com.instance.dataxbranch.ui.NavGraphs
+import com.instance.dataxbranch.social.StreamChat.ChannelsActivityScreen
+
+import com.instance.dataxbranch.social.StreamChat.ChatHelper
+import com.instance.dataxbranch.social.StreamChat.MessageListScreen
+
+
 //import com.instance.dataxbranch.destinations.QuestsScreenDestination
 
 //import com.instance.dataxbranch.ui.NavGraphs
@@ -63,10 +76,12 @@ import com.instance.dataxbranch.ui.NavGraphs
 //import com.instance.dataxbranch.firebasepackages.collectionStateOf
 //import com.instance.dataxbranch.ui.destinations.MyQuestsScreenDestination
 //import com.instance.dataxbranch.ui.destinations.QuestsScreenDestination
-
+import kotlin.also
 import com.instance.dataxbranch.ui.theme.DataXBranchTheme
 import com.instance.dataxbranch.utils.constants.FIRESTORE_COLLECTION
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import io.getstream.chat.android.client.ChatClient
 import io.getstream.chat.android.client.logger.ChatLogLevel
@@ -74,6 +89,8 @@ import io.getstream.chat.android.offline.model.message.attachments.UploadAttachm
 import io.getstream.chat.android.offline.plugin.factory.StreamOfflinePluginFactory
 import io.getstream.chat.android.offline.plugin.configuration.Config
 import io.getstream.chat.android.client.models.User
+import io.getstream.chat.android.client.utils.toResult
+
 /*
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -88,7 +105,8 @@ class MainActivity : AppCompatActivity() {
 @AndroidEntryPoint()
 @ExperimentalFoundationApi
 
-class MainActivity : ComponentActivity() {
+class MainActivity:AppCompatActivity() {
+
     @OptIn(ExperimentalPagerApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,9 +120,9 @@ class MainActivity : ComponentActivity() {
             ),
             appContext = applicationContext,
         )
-
+        //ChatHelper.initializeSdk(this, getApiKey())
         // 2 - Set up the client for API calls and with the plugin for offline storage
-        val client = ChatClient.Builder("kgb7br38hzkg", applicationContext)
+        val client = ChatClient.Builder(PredefinedUserCredentials.API_KEY, applicationContext)
             .withPlugin(offlinePluginFactory)
             .logLevel(ChatLogLevel.ALL) // Set to NOTHING in prod
             .build()
@@ -137,6 +155,7 @@ class MainActivity : ComponentActivity() {
                             //val consentBox: CheckBox =findViewById(R.id.checkBox)
                             //val button: Button =findViewById(R.id.checkBox)
                             DestinationsNavHost(navGraph = NavGraphs.root)
+
                             Text("bottom text")
 
                         }
@@ -149,8 +168,70 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    /*companion object {
+        private const val KEY_CHANNEL_ID = "channelId"
+
+        fun createIntent(context: Context, channelId: String): Intent {
+            return Intent(context, StartupActivity::class.java).apply {
+                putExtra(KEY_CHANNEL_ID, channelId)
+            }
+        }
+
+        fun createIntent(context: Context): Intent {
+            return Intent(context, StartupActivity::class.java).apply {
+                putExtra(KEY_CHANNEL_ID, "")
+            }
+        }
+    }*/
+}
+@Destination
+@Composable
+fun ChatApp(navigator: DestinationsNavigator) {//I DONT UNDERSTAND ALL THE COMPLICATED NAVCONTROLLER STUFF
+    val navController = rememberNavController()
+   // val navi: DestinationsNavigator=navController.destinationsNavigator
+    NavHost(navController, startDestination = "channellist") {
+        composable("channellist") {
+            ChannelsActivityScreen(navigator)
+            //ChannelListScreen(navController = navController,
+
+        }
+        composable("messagelist/{cid}") { backStackEntry ->
+            MessageListScreen(
+                navController = navController,
+                cid = backStackEntry.arguments?.getString("cid")!!
+            )
+        }
+    }
 }
 
+/*
+    @OptIn(ExperimentalFoundationApi::class)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val userCredentials = DataBranchApp.credentialsRepository.loadUserCredentials()
+        if (userCredentials != null) {
+            // Ensure that the user is connected
+            ChatHelper.connectUser(userCredentials)
+
+            if (intent.hasExtra(KEY_CHANNEL_ID)) {
+                // Navigating from push, route to the messages screen
+                val channelId = requireNotNull(intent.getStringExtra(KEY_CHANNEL_ID))
+                TaskStackBuilder.create(this)
+                    .addNextIntent(ChannelsActivity.createIntent(this))
+                    .addNextIntent(MessagesActivity.createIntent(this, channelId))
+                    .startActivities()
+            } else {
+                // Logged in, navigate to the channels screen
+                startActivity(ChannelsActivity.createIntent(this))
+            }
+        } else {
+            // Not logged in, start with the login screen
+            startActivity(UserLoginActivity.createIntent(this))
+        }
+        finish()
+    }
+*/
 
 /*               // A surface container using the 'background' color from the theme
                 Surface(
@@ -547,17 +628,7 @@ fun QuestHeader(quest: Quest) {
     )
 }
 
-/*
-@Composable
-fun Screen() {
-    val viewModel = remember { ViewModel() } // or viewModel() etc.
-    val (password, setPassword) = viewModel.password.collectAsMutableState()
 
-    TextField(
-        value = password,
-        onValueChange = setPassword
-    )
-}*/
 //@Preview(showBackground = true)
 @Composable
 fun MessageCard() {

@@ -25,7 +25,7 @@ import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddAbilityEntityAlertDialog
 import com.instance.dataxbranch.ui.components.EditAbilityEntityAlertDialog
-import com.instance.dataxbranch.ui.destinations.*
+import com.instance.dataxbranch.destinations.*
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

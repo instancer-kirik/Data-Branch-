@@ -24,11 +24,15 @@ import io.getstream.chat.android.client.errors.ChatError
 import io.getstream.chat.android.client.logger.ChatLogLevel
 import io.getstream.chat.android.client.notifications.handler.NotificationConfig
 import io.getstream.chat.android.client.notifications.handler.NotificationHandlerFactory
-import io.getstream.chat.android.compose.sample.data.UserCredentials
-import io.getstream.chat.android.compose.sample.ui.StartupActivity
+import com.instance.dataxbranch.data.UserCredentials
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
 import io.getstream.chat.android.core.internal.InternalStreamChatApi
 import io.getstream.chat.android.offline.plugin.configuration.Config
 import io.getstream.chat.android.offline.plugin.factory.StreamOfflinePluginFactory
+import javax.inject.Inject
+import kotlin.reflect.KFunction1
+
 //import io.getstream.chat.android.pushprovider.firebase.FirebasePushDeviceGenerator
 
 /**
@@ -39,7 +43,7 @@ import io.getstream.chat.android.offline.plugin.factory.StreamOfflinePluginFacto
 @OptIn(InternalStreamChatApi::class)
 object ChatHelper {
 
-    private const val TAG = "ChatHelper"
+    private val TAG = "ChatHelper"
 
     /**
      * Initializes the SDK with the given API key.
@@ -49,7 +53,7 @@ object ChatHelper {
         val notificationConfig = NotificationConfig(
             //pushDeviceGenerators = listOf(FirebasePushDeviceGenerator())
         )
-        val notificationHandler = NotificationHandlerFactory.createNotificationHandler(
+        /*val notificationHandler = NotificationHandlerFactory.createNotificationHandler(
             context = context,
             newMessageIntent = { _: String, channelType: String, channelId: String ->
                 StartupActivity.createIntent(
@@ -57,14 +61,17 @@ object ChatHelper {
                     channelId = "$channelType:$channelId"
                 )
             }
-        )
+        )*/
 
-        val offlinePlugin = StreamOfflinePluginFactory(Config(userPresence = true, persistenceEnabled = true), context)
+        val offlinePlugin = StreamOfflinePluginFactory(
+            Config(userPresence = true, persistenceEnabled = true),
+            context
+        )
 
         val logLevel = if (BuildConfig.DEBUG) ChatLogLevel.ALL else ChatLogLevel.NOTHING
 
         ChatClient.Builder(apiKey, context)
-            .notifications(notificationConfig, notificationHandler)
+            .notifications(notificationConfig)
             .withPlugin(offlinePlugin)
             .logLevel(logLevel)
             .build()
@@ -98,9 +105,9 @@ object ChatHelper {
     /**
      * Logs out the user and removes their credentials from the persistent storage.
      */
-    fun disconnectUser() {
+    suspend fun disconnectUser() {
         DataBranchApp.credentialsRepository.clearCredentials()
 
-        ChatClient.instance().disconnect()
+        ChatClient.instance().disconnect(true).await()
     }
 }

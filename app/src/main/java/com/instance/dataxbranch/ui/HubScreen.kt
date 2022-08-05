@@ -14,12 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.instance.dataxbranch.NavGraphs
 import com.instance.dataxbranch.data.local.UserWithAbilities
+
 import com.instance.dataxbranch.ui.components.TermsPopupAlertDialog
-import com.instance.dataxbranch.ui.destinations.DefaultScreenDestination
-import com.instance.dataxbranch.ui.destinations.TypedDestination
+import com.instance.dataxbranch.destinations.HubScreenDestination
+import com.instance.dataxbranch.destinations.TypedDestination
 
 
 //import com.instance.dataxbranch.ui.destinations.Destination
@@ -29,12 +32,13 @@ import com.instance.dataxbranch.utils.constants.DEFAULT_UNAME
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
 @OptIn(ExperimentalPagerApi::class)
 @RootNavGraph(start = true)
 @Destination
 @Composable
-fun DefaultScreen(viewModel: UserViewModel = hiltViewModel(),
-                    navigator: DestinationsNavigator) {
+fun HubScreen(viewModel: UserViewModel = hiltViewModel(),
+              navigator: DestinationsNavigator) {
 
 
     val context = LocalContext.current
@@ -46,13 +50,13 @@ fun DefaultScreen(viewModel: UserViewModel = hiltViewModel(),
         if (viewModel.termsDialogState.value) {
             TermsPopupAlertDialog(viewModel,navigator)
         }
-
+        //startActivity(context, StartupActivity.createIntent(context),null)
         var me = viewModel.getMeWithAbilities()
         if (me.user.fsid=="-1")
         if (me.user.uname ==DEFAULT_UNAME && !me.user.initflag){viewModel.generalRepository.refresh()
             //Log.d(TAG,"REPEATER")
             navigator.navigate(
-                DefaultScreenDestination)}
+                HubScreenDestination)}
         me = viewModel.getMeWithAbilities()
 
        // val which = me.user.defaultScreen

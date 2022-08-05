@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.getstream.chat.android.compose.sample.ui.login
+package com.instance.dataxbranch.social.StreamChat.login
 
 import android.content.Context
 import android.content.Intent
@@ -22,226 +22,62 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import com.instance.dataxbranch.R
-import com.instance.dataxbranch.social.StreamChat.ChatHelper
-import io.getstream.chat.android.client.BuildConfig
-import io.getstream.chat.android.client.errors.ChatError
-import io.getstream.chat.android.client.models.User
+import com.instance.dataxbranch.destinations.ChannelsActivityScreenDestination
 
-import io.getstream.chat.android.compose.sample.data.UserCredentials
-import io.getstream.chat.android.compose.sample.ui.ChannelsActivity
+import com.instance.dataxbranch.social.StreamChat.ChatHelper
+import com.instance.dataxbranch.social.StreamChat.CustomLoginScreen
+
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.navigate
+import io.getstream.chat.android.client.errors.ChatError
 import io.getstream.chat.android.compose.ui.theme.ChatTheme
+import io.getstream.chat.android.core.internal.InternalStreamChatApi
+import io.getstream.chat.android.ui.ChatUI.navigator
+
 
 /**
  * An Activity that allows users to manually log in to an environment with an API key,
  * user ID, user token and user name.
  */
-class CustomLoginActivity : AppCompatActivity() {
+//ACTIVITIES ARE DIFFICULT AND ANNOYING. NOT USING MULTIPLE. just main
+class CustomLoginActivity: AppCompatActivity() {
 
+    @OptIn(InternalStreamChatApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+        super.onCreate(savedInstanceState,)
+        val context = LocalContext
+        val navController: NavController = findNavController(R.id.sign_in_layout)
+        //val  navigator:DestinationsNavigator = getNavigator()
         setContent {
             ChatTheme {
                 CustomLoginScreen(
-                    onBackButtonClick = ::finish,
-                    onLoginButtonClick = { userCredentials ->
-                        ChatHelper.initializeSdk(applicationContext, userCredentials.apiKey)
 
+                    //onBackButtonClick = ::finish,
+                    /*onLoginButtonClick = { userCredentials ->
+
+                        fun openChannels() {
+                            navController.navigate(ChannelsActivityScreenDestination)
+                            //startActivity(ChannelsActivity.createIntent(this))
+                            finish()
+                        }
                         ChatHelper.connectUser(
                             userCredentials = userCredentials,
+
                             onSuccess = ::openChannels,
                             onError = ::showError
                         )
-                    }
-                )
+                    }*/)
+
             }
         }
     }
 
-    @Composable
-    fun CustomLoginScreen(
-        onBackButtonClick: () -> Unit,
-        onLoginButtonClick: (UserCredentials) -> Unit,
-    ) {
-        Scaffold(
-            topBar = { CustomLoginToolbar(onClick = onBackButtonClick) },
-            content = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 16.dp, end = 16.dp, top = 16.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    var apiKeyText by remember { mutableStateOf("") }
-                    var userIdText by remember { mutableStateOf("") }
-                    var userTokenText by remember { mutableStateOf("") }
-                    var userNameText by remember { mutableStateOf("") }
 
-                    val isLoginButtonEnabled = apiKeyText.isNotEmpty() &&
-                        userIdText.isNotEmpty() &&
-                        userTokenText.isNotEmpty()
 
-                    CustomLoginInputField(
-                        hint = stringResource(id = R.string.custom_login_hint_api_key),
-                        value = apiKeyText,
-                        onValueChange = { apiKeyText = it },
-                    )
-
-                    CustomLoginInputField(
-                        hint = stringResource(id = R.string.custom_login_hint_user_id),
-                        value = userIdText,
-                        onValueChange = { userIdText = it },
-                    )
-
-                    CustomLoginInputField(
-                        hint = stringResource(id = R.string.custom_login_hint_user_token),
-                        value = userTokenText,
-                        onValueChange = { userTokenText = it },
-                    )
-
-                    CustomLoginInputField(
-                        hint = stringResource(id = R.string.custom_login_hint_user_name),
-                        value = userNameText,
-                        onValueChange = { userNameText = it },
-                    )
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    CustomLoginButton(
-                        enabled = isLoginButtonEnabled,
-                        onClick = {
-                            onLoginButtonClick(
-                                UserCredentials(
-                                    apiKey = apiKeyText,
-                                    user = User().apply {
-                                        id = userIdText
-                                        name = userNameText
-                                    },
-                                    token = userTokenText,
-                                )
-                            )
-                        }
-                    )
-
-                    Text(
-                        modifier = Modifier.padding(16.dp),
-                        text = stringResource(R.string.sdk_version_template, BuildConfig.STREAM_CHAT_VERSION),
-                        fontSize = 14.sp,
-                        color = ChatTheme.colors.textLowEmphasis
-                    )
-                }
-            }
-        )
-    }
-
-    @Composable
-    private fun CustomLoginToolbar(onClick: () -> Unit) {
-        TopAppBar(
-            title = {
-                Text(text = stringResource(id = R.string.user_login_advanced_options))
-            },
-            navigationIcon = {
-                IconButton(
-                    onClick = onClick
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.stream_compose_ic_arrow_back),
-                        contentDescription = null,
-                        tint = Color.Black,
-                    )
-                }
-            },
-            backgroundColor = Color.White,
-            elevation = 0.dp
-        )
-    }
-
-    @Composable
-    private fun CustomLoginInputField(
-        hint: String,
-        value: String,
-        onValueChange: (String) -> Unit,
-    ) {
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp)
-                .height(56.dp),
-            value = value,
-            onValueChange = { onValueChange(it) },
-            singleLine = true,
-            label = { Text(hint) },
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = ChatTheme.colors.textHighEmphasis,
-                backgroundColor = ChatTheme.colors.inputBackground,
-                cursorColor = ChatTheme.colors.primaryAccent,
-                focusedIndicatorColor = ChatTheme.colors.primaryAccent,
-                focusedLabelColor = ChatTheme.colors.primaryAccent,
-                unfocusedLabelColor = ChatTheme.colors.textLowEmphasis,
-            )
-        )
-    }
-
-    @Composable
-    private fun CustomLoginButton(
-        enabled: Boolean,
-        onClick: () -> Unit = {},
-    ) {
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            enabled = enabled,
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = ChatTheme.colors.primaryAccent,
-                disabledBackgroundColor = ChatTheme.colors.disabled,
-            ),
-            onClick = onClick
-        ) {
-            Text(
-                text = stringResource(id = R.string.custom_login_button_text),
-                fontSize = 16.sp,
-                color = Color.White
-            )
-        }
-    }
-
-    private fun openChannels() {
-        startActivity(ChannelsActivity.createIntent(this))
-        finish()
-    }
 
     private fun showError(chatError: ChatError) {
         Toast.makeText(this, "Login failed ${chatError.message}", Toast.LENGTH_SHORT).show()

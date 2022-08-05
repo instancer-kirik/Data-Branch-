@@ -27,9 +27,9 @@ import com.instance.dataxbranch.ui.components.AddAbilityEntityAlertDialog
 import com.instance.dataxbranch.ui.components.EditAbilityEntityAlertDialog
 import com.instance.dataxbranch.ui.components.EditLoadoutAlertDialog
 
-import com.instance.dataxbranch.ui.destinations.LoadoutScreenDestination
-import com.instance.dataxbranch.ui.destinations.MyQuestsScreenDestination
-import com.instance.dataxbranch.ui.destinations.UserScreenDestination
+import com.instance.dataxbranch.destinations.LoadoutScreenDestination
+import com.instance.dataxbranch.destinations.MyQuestsScreenDestination
+import com.instance.dataxbranch.destinations.UserScreenDestination
 
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination

@@ -9,7 +9,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.ui.destinations.WebviewScreenDestination
+import com.instance.dataxbranch.destinations.WebviewScreenDestination
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.util.*

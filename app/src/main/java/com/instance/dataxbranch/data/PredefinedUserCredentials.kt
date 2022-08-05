@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package io.getstream.chat.android.compose.sample.data
+package com.instance.dataxbranch.data
+
 
 import io.getstream.chat.android.client.models.User
 
@@ -23,7 +24,7 @@ import io.getstream.chat.android.client.models.User
  */
 object PredefinedUserCredentials {
 
-    const val API_KEY: String = "qx5us2v6xvmh"
+    const val API_KEY: String = "kgb7br38hzkg"// should be mine, valid
 
     val availableUsers: List<UserCredentials> = listOf(
         UserCredentials(

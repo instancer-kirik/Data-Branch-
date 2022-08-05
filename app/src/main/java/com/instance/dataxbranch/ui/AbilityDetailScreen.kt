@@ -23,9 +23,9 @@ import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.showToast
-import com.instance.dataxbranch.ui.destinations.AbilitiesScreenDestination
-import com.instance.dataxbranch.ui.destinations.MyQuestsScreenDestination
-import com.instance.dataxbranch.ui.destinations.UserScreenDestination
+import com.instance.dataxbranch.destinations.AbilitiesScreenDestination
+import com.instance.dataxbranch.destinations.MyQuestsScreenDestination
+import com.instance.dataxbranch.destinations.UserScreenDestination
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

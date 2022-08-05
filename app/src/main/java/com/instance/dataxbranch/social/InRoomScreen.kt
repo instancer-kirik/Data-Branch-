@@ -100,7 +100,7 @@ fun InRoomScreen (
 
     Scaffold(
 
-        topBar = { DevToolbar(viewModel,navigator) },
+        topBar = { DevToolbar(viewModel,navigator,context) },
         floatingActionButton = {}){padding ->
 
         val message = remember{ mutableStateOf("")}

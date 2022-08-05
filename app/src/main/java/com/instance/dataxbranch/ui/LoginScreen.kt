@@ -8,16 +8,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.KeyboardType.Companion.Text
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.instance.dataxbranch.data.PredefinedUserCredentials
+import com.instance.dataxbranch.data.UserCredentials
+import com.instance.dataxbranch.data.entities.User
+import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
-import com.instance.dataxbranch.ui.components.AddResponseAlertDialog
 import com.instance.dataxbranch.ui.components.OverwriteLocalDialog
-import com.instance.dataxbranch.ui.destinations.DefaultScreenDestination
-import com.instance.dataxbranch.ui.destinations.UserScreenDestination
+import com.instance.dataxbranch.destinations.UserScreenDestination
+import com.instance.dataxbranch.social.StreamChat.ChatHelper.connectUser
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -45,6 +48,7 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
             // EditAbilityEntityFloatingActionButton()
         }
     ) { padding ->
+
         if (viewModel.downloadCloudDialog.value) {
             OverwriteLocalDialog(viewModel, navigator)
         }
@@ -100,7 +104,7 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
                     if (password.value == matchpassword.value) {
                         Button(onClick = {
 
-                            create(
+                            createFirebaseUser(
                                 db = db,
                                 context,
                                 email.value,
@@ -133,23 +137,40 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
             }) { Text("skip") }
         }
     }}
-
-    fun create(db:FirebaseFirestore,context: Context, email:String, password:String,viewModel: UserViewModel) {
-
+    fun streamchatlogin(user:FirebaseUser){
+        var user2= io.getstream.chat.android.client.models.User()
+        connectUser(UserCredentials(
+            apiKey = PredefinedUserCredentials.API_KEY,
+            user = user2.apply {
+                id = user?.uid ?: "-12"
+                name = user?.displayName.toString()
+            },
+            token = user?.getIdToken(true).toString()
+        ))
+    }
+    fun createFirebaseUser(db:FirebaseFirestore, context: Context, email:String, password:String, viewModel: UserViewModel): FirebaseUser? {
+        var user:FirebaseUser? = null
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
-                if (!it.isSuccessful) return@addOnCompleteListener
+                if (!it.isSuccessful)
                     //else if successful
                     showToast(context, "logged in successfully ${it.result.user?.uid}")
                 it.result.user?.uid?.let { it1 -> viewModel.createAndLogMeIn(context,db,fsid= it1) }//pushes any local user or default to cloud
-
+                 user = it.result.user
+                user?.let { it1 -> streamchatlogin(it1) }
+                return@addOnCompleteListener
             }
             .addOnFailureListener{
                 showToast(context,"Failed to create user: ${it.message}")
             }
 
+        return user
     }
-fun synchronize(db:FirebaseFirestore,context: Context, email:String, password:String,viewModel: UserViewModel) {
+
+//MY ORIGINAL LOGIN FUNCTIONS, originally dealt with just firestore.
+fun synchronize(db:FirebaseFirestore,context: Context, email:String, password:String,viewModel: UserViewModel): FirebaseUser? {
+    var user:FirebaseUser? = null
+    var user2= io.getstream.chat.android.client.models.User()
 
     FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
         .addOnCompleteListener {
@@ -157,9 +178,13 @@ fun synchronize(db:FirebaseFirestore,context: Context, email:String, password:St
             //else if successful
             showToast(context, "logged in successfully ${it.result.user?.uid}")
             it.result.user?.uid?.let { it1 -> viewModel.logMeIn(context,db,fsid= it1) }//sets user from cloud
+            user = it.result.user
+            user?.let { it1 -> streamchatlogin(it1) }
         }
         .addOnFailureListener{
             showToast(context,"Failed to create user: ${it.message}")
         }
 
+
+    return user
 }

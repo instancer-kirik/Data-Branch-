@@ -27,10 +27,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
-import com.instance.dataxbranch.ui.destinations.DevScreenDestination
-import com.instance.dataxbranch.ui.destinations.LoadoutScreenDestination
-import com.instance.dataxbranch.ui.destinations.MyQuestsScreenDestination
-import com.instance.dataxbranch.ui.destinations.UserScreenDestination
+import com.instance.dataxbranch.destinations.DevScreenDestination
+import com.instance.dataxbranch.destinations.LoadoutScreenDestination
+import com.instance.dataxbranch.destinations.MyQuestsScreenDestination
+import com.instance.dataxbranch.destinations.UserScreenDestination
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 
 import com.instance.dataxbranch.ui.viewModels.UserViewModel

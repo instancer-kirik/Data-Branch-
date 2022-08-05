@@ -9,7 +9,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.ui.AbilityDetailScreen
-import com.instance.dataxbranch.ui.destinations.AbilityDetailScreenDestination
+import com.instance.dataxbranch.destinations.AbilityDetailScreenDestination
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.job

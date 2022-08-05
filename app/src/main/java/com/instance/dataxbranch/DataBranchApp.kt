@@ -3,11 +3,11 @@ package com.instance.dataxbranch
 import android.app.Application
 import com.getstream.sdk.chat.utils.DateFormatter
 import com.google.firebase.FirebaseApp
+import com.instance.dataxbranch.data.PredefinedUserCredentials
+import com.instance.dataxbranch.data.UserCredentialsRepository
 import com.instance.dataxbranch.social.StreamChat.ChatHelper
 import dagger.hilt.android.HiltAndroidApp
 import io.getstream.chat.android.client.utils.internal.toggle.ToggleService
-import io.getstream.chat.android.compose.sample.data.PredefinedUserCredentials
-import io.getstream.chat.android.compose.sample.data.UserCredentialsRepository
 import io.getstream.chat.android.core.internal.InternalStreamChatApi
 
 @HiltAndroidApp

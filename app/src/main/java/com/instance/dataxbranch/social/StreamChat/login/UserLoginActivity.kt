@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package io.getstream.chat.android.compose.sample.ui.login
+package com.instance.dataxbranch.social.StreamChat.login
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
@@ -52,19 +53,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.instance.dataxbranch.R
+import com.instance.dataxbranch.core.Constants.TAG
+//import com.instance.dataxbranch.social.StreamChat.ChannelsActivity
 import com.instance.dataxbranch.social.StreamChat.ChatHelper
 import io.getstream.chat.android.client.BuildConfig.STREAM_CHAT_VERSION
 import io.getstream.chat.android.client.ChatClient
 
-import io.getstream.chat.android.compose.sample.data.PredefinedUserCredentials
-import io.getstream.chat.android.compose.sample.data.UserCredentials
-import io.getstream.chat.android.compose.sample.ui.ChannelsActivity
+import com.instance.dataxbranch.data.PredefinedUserCredentials
+import com.instance.dataxbranch.data.UserCredentials
+
 import io.getstream.chat.android.compose.ui.components.avatar.UserAvatar
 import io.getstream.chat.android.compose.ui.theme.ChatTheme
 
 /**
  * An Activity that allows users to log in using one of our predefined sample users.
  */
+
 class UserLoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +83,7 @@ class UserLoginActivity : AppCompatActivity() {
                             // login screen then we need to reinitialize the SDK with our API key.
                             ChatHelper.initializeSdk(applicationContext, userCredentials.apiKey)
                         }
-                        ChatHelper.connectUser(userCredentials = userCredentials)
+                        ChatHelper.connectUser(userCredentials =userCredentials)
                         openChannels()
                     },
                     onCustomLoginClick = ::openCustomLogin
@@ -277,7 +281,8 @@ class UserLoginActivity : AppCompatActivity() {
     }
 
     private fun openChannels() {
-        startActivity(ChannelsActivity.createIntent(this))
+        Log.d(TAG,"IN USERLOGINACTIVITY")
+       // startActivity(ChannelsActivity.createIntent(this))
         finish()
     }
 

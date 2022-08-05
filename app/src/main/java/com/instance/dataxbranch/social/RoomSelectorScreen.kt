@@ -39,7 +39,7 @@ fun RoomSelectorScreen (viewModel: UserViewModel = hiltViewModel(),
 
     Scaffold(
 
-        topBar = { DevToolbar(viewModel,navigator) },
+        topBar = { DevToolbar(viewModel,navigator,context) },
         floatingActionButton = {}){padding ->
        // MyChatList()
 ChatTheme(shapes = StreamShapes.defaultShapes().copy(

@@ -31,7 +31,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.instance.dataxbranch.R
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 //import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
-import com.instance.dataxbranch.ui.destinations.QuestsScreenDestination
+import com.instance.dataxbranch.destinations.QuestsScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
@@ -40,7 +40,7 @@ import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
-import com.instance.dataxbranch.ui.destinations.QuestDetailScreenDestination
+import com.instance.dataxbranch.destinations.QuestDetailScreenDestination
 import com.instance.dataxbranch.utils.await
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import kotlinx.coroutines.*

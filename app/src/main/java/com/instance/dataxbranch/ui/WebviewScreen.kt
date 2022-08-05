@@ -19,7 +19,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.local.UserWithAbilities
-import com.instance.dataxbranch.ui.destinations.*
+import com.instance.dataxbranch.destinations.*
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -94,7 +94,7 @@ fun WebToolbar(
 
                    // Button(onClick = {navigator.navigate(DevScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("DevScreen") }
                     Button(onClick = {viewModel.generalRepository.setMe(UserWithAbilities(User(),listOf()))
-                                     navigator.navigate(DefaultScreenDestination)
+                                     navigator.navigate(HubScreenDestination)
                                      }, modifier= Modifier.padding(2.dp)){ Text("clear local") }
                 } else Text("DEBUG")
 

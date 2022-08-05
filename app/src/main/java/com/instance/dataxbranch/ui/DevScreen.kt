@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,12 +19,14 @@ import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.firestore.FirestoreResponse
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
+import com.instance.dataxbranch.social.StreamChat.ChannelsActivityScreen
 import com.instance.dataxbranch.ui.components.AddResponseAlertDialog
-import com.instance.dataxbranch.ui.destinations.*
+import com.instance.dataxbranch.destinations.*
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
 
 @Destination
 @Composable
@@ -37,7 +40,7 @@ val db = FirebaseFirestore.getInstance()
 
         Scaffold(
 
-            topBar = { DevToolbar(viewModel,navigator) },
+            topBar = { DevToolbar(viewModel,navigator,context) },
             floatingActionButton = {
 
                 // EditAbilityEntityFloatingActionButton()
@@ -55,7 +58,7 @@ val db = FirebaseFirestore.getInstance()
 
             PayMeBlock()
             ResponseBlock(context=context, me = me, db=db)
-                Button(onClick = {navigator.navigate(DefaultScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Default screen")}
+                Button(onClick = {navigator.navigate(HubScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Default screen")}
 }
 }}
 
@@ -146,7 +149,7 @@ fun firestorePlayground(context:Context,db: FirebaseFirestore){
 }
 
 @Composable
-fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator) {
+fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator,context:Context) {
 
     TopAppBar(
         title = { Text(text = "dev toolbar") },
@@ -169,12 +172,19 @@ fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator) {
                     //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
                     //Button(onClick = {viewModel.openDialogState3.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit loadout") }
 
-                    Button(onClick = {navigator.navigate(LoginScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Auth")}
-                    Button(onClick = {navigator.navigate(AbilitiesScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("All Abilities")}
-                    Button(onClick = {viewModel.generalRepository.setMe(UserWithAbilities(User(),listOf()))}, modifier=Modifier.padding(2.dp)){Text("clear local")}
+                        Button(onClick = {navigator.navigate(LoginScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Auth")}
+                        Button(onClick = {navigator.navigate(AbilitiesScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("All Abilities")}
+
+
+
+
+
+                    Button(onClick = {viewModel.generalRepository.resetAndSet(UserWithAbilities(User(),listOf()))}, modifier=Modifier.padding(2.dp)){Text("clear local")}
                 } else Text("DEBUG")
 
             }
+            //startActivity(context, ChannelsActivity.createIntent(context),null)}
+            Button(onClick = {navigator.navigate(ChannelsActivityScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Channels")}
             OutlinedButton(
                 onClick = {
                     expanded = !expanded
@@ -191,7 +201,7 @@ fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator) {
                             modifier = Modifier.padding(2.dp)
                         ) { Text("to user") }
                         Button(
-                            onClick = { navigator.navigate(DefaultScreenDestination) },
+                            onClick = { navigator.navigate(HubScreenDestination) },
                             modifier = Modifier.padding(2.dp)
                         ) { Text("to hub") }
                         Button(

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package io.getstream.chat.android.compose.sample.data
+package com.instance.dataxbranch.data
 
 import android.content.Context
 import android.content.SharedPreferences
+
 import io.getstream.chat.android.client.models.User
 
 /**

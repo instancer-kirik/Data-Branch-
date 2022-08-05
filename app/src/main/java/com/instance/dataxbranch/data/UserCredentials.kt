@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.getstream.chat.android.compose.sample.data
+package com.instance.dataxbranch.data
 
 import io.getstream.chat.android.client.models.User
 
@@ -23,7 +23,8 @@ import io.getstream.chat.android.client.models.User
  * the SDK and connect to Stream servers.
  */
 data class UserCredentials(
-    val apiKey: String,
+    val apiKey: String = PredefinedUserCredentials.API_KEY,
     val user: User,
     val token: String,
+    val fsid: String=""
 )

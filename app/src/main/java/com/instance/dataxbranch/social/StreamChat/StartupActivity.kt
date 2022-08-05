@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package io.getstream.chat.android.compose.sample.ui
+package com.instance.dataxbranch.social.StreamChat;
+//package io.getstream.chat.android.compose.sample.ui
 
 import android.content.Context
 import android.content.Intent
@@ -23,10 +23,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.core.app.TaskStackBuilder
 import com.instance.dataxbranch.DataBranchApp
-import com.instance.dataxbranch.social.StreamChat.ChatHelper
-import com.instance.dataxbranch.social.StreamChat.MessagesActivity
+import com.instance.dataxbranch.social.StreamChat.login.UserLoginActivity
 
-import io.getstream.chat.android.compose.sample.ui.login.UserLoginActivity
 
 /**
  * An Activity without UI responsible for startup routing. It navigates the user to
@@ -36,6 +34,7 @@ import io.getstream.chat.android.compose.sample.ui.login.UserLoginActivity
  * - Channels screen, if the user is authenticated
  * - Messages screen, if the user is coming from a push notification
  */
+
 class StartupActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -51,12 +50,13 @@ class StartupActivity : AppCompatActivity() {
                 // Navigating from push, route to the messages screen
                 val channelId = requireNotNull(intent.getStringExtra(KEY_CHANNEL_ID))
                 TaskStackBuilder.create(this)
-                    .addNextIntent(ChannelsActivity.createIntent(this))
+                    //.addNextIntent(ChannelsActivity.createIntent(this))
                     .addNextIntent(MessagesActivity.createIntent(this, channelId))
                     .startActivities()
             } else {
                 // Logged in, navigate to the channels screen
-                startActivity(ChannelsActivity.createIntent(this))
+                //startActivity(ChannelsActivity.createIntent(this))
+
             }
         } else {
             // Not logged in, start with the login screen
@@ -71,6 +71,12 @@ class StartupActivity : AppCompatActivity() {
         fun createIntent(context: Context, channelId: String): Intent {
             return Intent(context, StartupActivity::class.java).apply {
                 putExtra(KEY_CHANNEL_ID, channelId)
+            }
+        }
+
+        fun createIntent(context: Context): Intent {
+            return Intent(context, StartupActivity::class.java).apply {
+                putExtra(KEY_CHANNEL_ID, "")
             }
         }
     }

@@ -3,12 +3,14 @@ package com.instance.dataxbranch.di
 import com.instance.dataxbranch.data.daos.QuestDao
 import android.app.Application
 import android.content.Context
+import androidx.compose.runtime.Composable
 import androidx.room.Room
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.instance.dataxbranch.DataBranchApp
 import com.instance.dataxbranch.core.Constants.QUESTS
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.UserDao
@@ -24,6 +26,8 @@ import com.instance.dataxbranch.data.local.LocalQuestsRepository
 import com.instance.dataxbranch.domain.use_case.*
 import com.instance.dataxbranch.utils.constants.FIRESTORE_COLLECTION
 import com.instance.dataxbranch.utils.constants.NAME_PROPERTY
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.scope.DestinationScope
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,6 +55,12 @@ object AppModule {
         db: FirebaseFirestore
     ) = db.collection(QUESTS)
 
+
+   /* @Provides
+    fun provideDestinationsNavigator(app: DataBranchApp
+
+    ) : DestinationsNavigator = DestinationScope.destinationsNavigator
+*/
    /* @Provides
     fun provideUsersRef(
         db: FirebaseFirestore

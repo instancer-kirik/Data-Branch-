@@ -99,6 +99,13 @@ class GeneralRepository(application: Application, db: AppDatabase) {
 
     }
     fun getMe(): UserWithAbilities =me_container
+    fun resetAndSet(new_me: UserWithAbilities){
+        CoroutineScope(Dispatchers.IO).launch {
+            uDao.nukeTable()
+            uDao.setMe(me_container.user)
+        }
+
+    }
     fun setMe(new_me: UserWithAbilities) {
         me_container= new_me
 

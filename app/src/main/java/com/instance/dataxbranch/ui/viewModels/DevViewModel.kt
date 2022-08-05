@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.instance.dataxbranch.data.firestore.FirestoreResponse
 import com.instance.dataxbranch.domain.Response
 import com.instance.dataxbranch.domain.use_case.UseCases
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DevViewModel @Inject constructor(
-    val useCases: UseCases
+    val useCases: UseCases,
+   // val navigator: DestinationsNavigator this requires an @Provides method
 ): ViewModel()  {
 
     private val _rState = mutableStateOf<Response<List<FirestoreResponse>>>(Response.Loading)
@@ -26,13 +28,19 @@ class DevViewModel @Inject constructor(
 
     private val _isResponseDeletedState = mutableStateOf<Response<Void?>>(Response.Success(null))
     val isResponseDeletedState: State<Response<Void?>> = _isResponseDeletedState
-    lateinit var oldContext: Context
+    lateinit var navi: DestinationsNavigator
+    var hasNavi: Boolean = false
     var openDialogState = mutableStateOf(false)
 
     init {
         getResponses()
+
     }
 
+    private fun setNavigator(navigator: DestinationsNavigator){
+        this.navi = navigator
+        hasNavi=true
+    }
 
 
     private fun getResponses() {
