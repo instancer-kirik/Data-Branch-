@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -15,8 +16,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.data.PredefinedUserCredentials
 import com.instance.dataxbranch.data.UserCredentials
-import com.instance.dataxbranch.data.entities.User
-import com.instance.dataxbranch.data.local.UserWithAbilities
+//import com.instance.dataxbranch.data.entities.User
+//import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.OverwriteLocalDialog
 import com.instance.dataxbranch.destinations.UserScreenDestination
@@ -29,10 +30,10 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
-               devViewModel: DevViewModel = hiltViewModel(),
+               //devViewModel: DevViewModel = hiltViewModel(),
                navigator: DestinationsNavigator,
 ) {
-    val db = FirebaseFirestore.getInstance()
+   // val db = FirebaseFirestore.getInstance()
 
     //val me = viewModel.getMeWithAbilities()
     val context = LocalContext.current
@@ -56,19 +57,10 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
             val fsid = viewModel.whoAmI()
             val myfsid = viewModel.getMeWithAbilities().user.fsid
             Text("These should match if logged in: $fsid ...from Auth")
-            Text(myfsid + "  ...from local")
-            if (fsid == myfsid) {
-                if (fsid != "-1") {
-                    Button(onClick = {
-                        navigator.navigate(UserScreenDestination)
-                    }) { Text("Proceed; already logged in") }
-                }
-            } else if (fsid != null) {//if not equal
-                Button(onClick = {
-                    viewModel.readUserData(context, db, fsid)
-                    navigator.navigate(UserScreenDestination)
-                }) { Text("Pull from Cloud on AuthID") }
-            }
+            Text( "$myfsid  ...from local")
+
+            Text("padding $padding")
+            LoginLogic( context, fsid , myfsid , navigator , viewModel  )
 
 
             //Text("Above line pulls from FirestoreAuth, if valid, you are already logged in, may skip")
@@ -92,60 +84,30 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
                         //viewModel.onCheckboxChecked(quest, it)
                     })
             }
+            PasswordLogic(
+                email,
+                password,
+                matchpassword,
+                checkedState,
+                context,
+                navigator,
+                viewModel
+            )
 
-            if (!(email.value.isEmpty() || password.value.isEmpty())) {
-                if (checkedState.value) {
-                    Text("Match Password")
-                    TextField(value = matchpassword.value,
-                        onValueChange = { matchpassword.value = it },
-                        singleLine = true,
-                        visualTransformation = PasswordVisualTransformation()
-                    )
-                    if (password.value == matchpassword.value) {
-                        Button(onClick = {
-
-                            createFirebaseUser(
-                                db = db,
-                                context,
-                                email.value,
-                                password.value,
-                                viewModel
-                            )
-
-                            navigator.navigate(UserScreenDestination)
-
-
-                        }) { Text("create") }
-                    }
-                } else {
-                    Button(onClick = {
-                        synchronize(
-                            db = db,
-                            context,
-                            email.value,
-                            password.value,
-                            viewModel
-                        )
-                        navigator.navigate(UserScreenDestination)
-                    }) { Text("synchronize to account") }
-                }
-
-                // Button(onClick = { save(db=db,context,email.value,password.value,viewModel)}){Text("save")}
-            }
             Button(onClick = {
                 navigator.navigate(UserScreenDestination)
             }) { Text("skip") }
         }
     }}
-    fun streamchatlogin(user:FirebaseUser){
-        var user2= io.getstream.chat.android.client.models.User()
+    fun streamchatlogin(user:FirebaseUser,forceRefresh:Boolean){
+        val user2= io.getstream.chat.android.client.models.User()
         connectUser(UserCredentials(
             apiKey = PredefinedUserCredentials.API_KEY,
             user = user2.apply {
-                id = user?.uid ?: "-12"
-                name = user?.displayName.toString()
+                id = user.uid
+                name = user.displayName.toString()
             },
-            token = user?.getIdToken(true).toString()
+            token = user.getIdToken(forceRefresh).toString()
         ))
     }
     fun createFirebaseUser(db:FirebaseFirestore, context: Context, email:String, password:String, viewModel: UserViewModel): FirebaseUser? {
@@ -157,7 +119,7 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
                     showToast(context, "logged in successfully ${it.result.user?.uid}")
                 it.result.user?.uid?.let { it1 -> viewModel.createAndLogMeIn(context,db,fsid= it1) }//pushes any local user or default to cloud
                  user = it.result.user
-                user?.let { it1 -> streamchatlogin(it1) }
+                user?.let { it1 -> streamchatlogin(it1,true) }
                 return@addOnCompleteListener
             }
             .addOnFailureListener{
@@ -170,7 +132,7 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
 //MY ORIGINAL LOGIN FUNCTIONS, originally dealt with just firestore.
 fun synchronize(db:FirebaseFirestore,context: Context, email:String, password:String,viewModel: UserViewModel): FirebaseUser? {
     var user:FirebaseUser? = null
-    var user2= io.getstream.chat.android.client.models.User()
+    //var user2= io.getstream.chat.android.client.models.User()
 
     FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
         .addOnCompleteListener {
@@ -179,7 +141,7 @@ fun synchronize(db:FirebaseFirestore,context: Context, email:String, password:St
             showToast(context, "logged in successfully ${it.result.user?.uid}")
             it.result.user?.uid?.let { it1 -> viewModel.logMeIn(context,db,fsid= it1) }//sets user from cloud
             user = it.result.user
-            user?.let { it1 -> streamchatlogin(it1) }
+            user?.let { it1 -> streamchatlogin(it1,false) }
         }
         .addOnFailureListener{
             showToast(context,"Failed to create user: ${it.message}")
@@ -187,4 +149,73 @@ fun synchronize(db:FirebaseFirestore,context: Context, email:String, password:St
 
 
     return user
+}
+@Composable
+fun LoginLogic(context: Context,fsid: String?,myfsid:String?, navigator: DestinationsNavigator,viewModel: UserViewModel){
+    val db:FirebaseFirestore=FirebaseFirestore.getInstance()
+    if (fsid == myfsid) {
+        if (fsid != "-1") {
+            Button(onClick = {
+                navigator.navigate(UserScreenDestination)
+            }) { Text("Proceed; already logged in") }
+        }
+    } else if (fsid != null) {//if not equal
+        Button(onClick = {
+            viewModel.readUserData(context,db, fsid)
+            navigator.navigate(UserScreenDestination)
+        }) { Text("Pull from Cloud on AuthID") }
+    }
+}
+@Composable
+fun PasswordLogic(
+    email: MutableState<String>,
+    password: MutableState<String>,
+    matchpassword: MutableState<String>,
+    checkedState: MutableState<Boolean>,
+
+    context: Context,
+    navigator: DestinationsNavigator,
+    viewModel: UserViewModel
+) {
+    val db:FirebaseFirestore=FirebaseFirestore.getInstance()
+
+    if (!(email.value.isEmpty() || password.value.isEmpty())) {
+        if (checkedState.value) {
+            Text("Match Password")
+            TextField(value = matchpassword.value,
+                onValueChange = { matchpassword.value = it },
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation()
+            )
+            if (password.value == matchpassword.value) {
+                Button(onClick = {
+
+                    createFirebaseUser(
+                        db = db,
+                        context,
+                        email.value,
+                        password.value,
+                        viewModel
+                    )
+
+                    navigator.navigate(UserScreenDestination)
+
+
+                }) { Text("create") }
+            }
+        } else {
+            Button(onClick = {
+                synchronize(
+                    db = db,
+                    context,
+                    email.value,
+                    password.value,
+                    viewModel
+                )
+                navigator.navigate(UserScreenDestination)
+            }) { Text("synchronize to account") }
+        }
+
+        // Button(onClick = { save(db=db,context,email.value,password.value,viewModel)}){Text("save")}
+    }
 }
