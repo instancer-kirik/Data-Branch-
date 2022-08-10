@@ -27,16 +27,16 @@ data class UserWithAbilities (
     //val aidList: Array<String>
 
 ){
-    fun fixattunment():Boolean{
-        val them=abilities.filter{ it.inloadout }
-        if (them.size > user.attunement){//too many abilities
-        them.forEach { ae ->
-            ae.inloadout=false
+    fun fixattunement(){
+        //val them=abilities.filter{ it.inloadout }
+        user.attuned = abilities.filter{it.inloadout}.size
 
         }
-            return true
+    fun clearLoadoutAbilities(){
+        abilities.filter{ it.inloadout }.forEach { ae ->
+            ae.inloadout=false
+        }
     }
-        return false}
     fun combine(tangent: UserWithAbilities){
         user.combine(tangent.user)
         abilities+=tangent.abilities

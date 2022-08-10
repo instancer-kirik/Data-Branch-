@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.instance.dataxbranch.DataBranchApp
 import com.instance.dataxbranch.R
 import com.instance.dataxbranch.core.Constants.TAG
@@ -90,9 +91,9 @@ fun ChannelsActivityScreen(navi: DestinationsNavigator){
     }
 
     val listViewModel: ChannelListViewModel = viewModel(
-    factory = ChannelViewModelFactory(ChatClient.instance(),
+    factory =factory/*= ChannelViewModelFactory(ChatClient.instance(),
         QuerySortByField.descByName("last_updated"),
-        null)
+        null)*/
     )
     fun onCreate(savedInstanceState: Bundle?) {
     }
@@ -138,6 +139,7 @@ fun ChannelsActivityScreen(navi: DestinationsNavigator){
     @Destination
     @Composable
 fun MyChannelListUI(navi: DestinationsNavigator) {
+    ChatTheme{
         ChatClient.instance().globalState
         val user by ChatClient.instance().clientState.user.collectAsState()
 
@@ -169,7 +171,7 @@ fun MyChannelListUI(navi: DestinationsNavigator) {
                 }
             )
         }
-    }
+    }}
 
     /**
      * An example of a customized DefaultChannelItem component.
@@ -203,69 +205,82 @@ fun MyChannelListUI(navi: DestinationsNavigator) {
      * wrapped in drawers or more components.
      */
     @Composable
-    private fun MyCustomUi(listViewModel:ChannelListViewModel,navController: NavController) {
-        var query by remember { mutableStateOf("") }
+    private fun MyCustomUi(listViewModel:ChannelListViewModel,navController: NavController,navi: DestinationsNavigator) {
+        ChatTheme {
+            var query by remember { mutableStateOf("") }
 
-        val user by listViewModel.user.collectAsState()
-        val delegatedSelectedChannel by listViewModel.selectedChannel
-        val connectionState by listViewModel.connectionState.collectAsState()
+            val user by listViewModel.user.collectAsState()
+            val delegatedSelectedChannel by listViewModel.selectedChannel
+            val connectionState by listViewModel.connectionState.collectAsState()
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column {
-                ChannelListHeader(
-                    title = stringResource(id = R.string.app_name),
-                    currentUser = user,
-                    connectionState = connectionState
-                )
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column {
+                    ChannelListHeader(
+                        title = stringResource(id = R.string.app_name),
+                        currentUser = user,
+                        connectionState = connectionState
+                    )
 
-                SearchInput(
-                    modifier = Modifier
-                        .background(color = ChatTheme.colors.appBackground)
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    query = query,
-                    onValueChange = {
-                        query = it
-                        listViewModel.setSearchQuery(it)
-                    }
-                )
+                    SearchInput(
+                        modifier = Modifier
+                            .background(color = ChatTheme.colors.appBackground)
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        query = query,
+                        onValueChange = {
+                            query = it
+                            listViewModel.setSearchQuery(it)
+                        }
+                    )
 
-                ChannelList(
-                    modifier = Modifier.fillMaxSize(),
-                    viewModel = listViewModel,
-                    onChannelClick = ::openMessages,
-                    onChannelLongClick = { listViewModel.selectChannel(it) }
-                )
-            }
+                    ChannelList(
+                        modifier = Modifier.fillMaxSize(),
+                        viewModel = listViewModel,
+                        onChannelClick = ::openMessages,
+                        onChannelLongClick = { listViewModel.selectChannel(it) }
+                    )
+                }
 
-            val selectedChannel = delegatedSelectedChannel
-            if (selectedChannel != null) {
-                SelectedChannelMenu(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .align(Alignment.Center),
-                    shape = RoundedCornerShape(16.dp),
-                    isMuted = listViewModel.isChannelMuted(selectedChannel.cid),
-                    selectedChannel = selectedChannel,
-                    currentUser = user,
-                    onChannelOptionClick = { action -> listViewModel.performChannelAction(action) },
-                    onDismiss = { listViewModel.dismissChannelAction() }
-                )
+                val selectedChannel = delegatedSelectedChannel
+                if (selectedChannel != null) {
+                    SelectedChannelMenu(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.Center),
+                        shape = RoundedCornerShape(16.dp),
+                        isMuted = listViewModel.isChannelMuted(selectedChannel.cid),
+                        selectedChannel = selectedChannel,
+                        currentUser = user,
+                        onChannelOptionClick = { action -> listViewModel.performChannelAction(action) },
+                        onDismiss = { listViewModel.dismissChannelAction() }
+                    )
+                }
             }
         }
     }
-
-  //,navController: NavController
-    private fun openMessages(channel: Channel) {
-       // navController.navigate("messagelist/${channel.cid}")
+  //
+  private fun openMessages(channel: Channel) {
+      //navController.navigate("messagelist/${channel.cid}")
+      //navi.navigate("messagelist/${channel.cid}")
+      Log.d(TAG, "openmessages in ChannelsActivity ")
+      //return "return"
+  }
+    /*private fun openMessages(channel: Channel,navi: DestinationsNavigator):String {
+        //navController.navigate("messagelist/${channel.cid}")
+        navi.navigate("messagelist/${channel.cid}")
         Log.d(TAG, "openmessages in ChannelsActivity ")
-    }
+        return "return"
+    }*/
+fun depend(channel: Channel,navi: DestinationsNavigator, method: (channel: Channel,navi: DestinationsNavigator) -> String): String {
+    return method(channel,navi)
+}
 @Composable
     private fun openUserLogin(navi: DestinationsNavigator) {
         //finish()
         navi.navigate(CustomLoginScreenDestination)
+
         //overridePendingTransition(0, 0)
 
 /*

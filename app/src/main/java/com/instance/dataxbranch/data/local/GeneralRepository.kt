@@ -23,12 +23,7 @@ class GeneralRepository(application: Application, db: AppDatabase) {
 
     private var me_container= UserWithAbilities(User(),mabilities)
     init {
-        CoroutineScope(Dispatchers.IO).launch {//this might cause issues with data not being loaded fast enough
-            uDao.prime(User())
-            me = uDao.getMe()
-            mabilities = aDao.getAbilites()
-            getMeWithAbilities()
-        }
+        sync()
         //CoroutineScope(Dispatchers.IO).launch {}//on conflict abort
     }
     private fun getMeWithAbilities(){
@@ -44,11 +39,19 @@ class GeneralRepository(application: Application, db: AppDatabase) {
 
         }
     }
+    fun sync(){
+        CoroutineScope(Dispatchers.IO).launch {//this might cause issues with data not being loaded fast enough
+            uDao.prime(User())
+            me = uDao.getMe()
+            mabilities = aDao.getAbilites()
+            getMeWithAbilities()
+        }
+    }
     fun save(me: User): Job =
         CoroutineScope(Dispatchers.IO).launch {
             uDao.save(me)
         }
-    fun sync(): Job = CoroutineScope(Dispatchers.IO).launch {
+    fun syncAE(): Job = CoroutineScope(Dispatchers.IO).launch {
         aDao.update(selectedAE)
     }
     //private lateinit var me_container: UserWithAbilities

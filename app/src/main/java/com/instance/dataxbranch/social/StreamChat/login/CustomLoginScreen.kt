@@ -38,6 +38,7 @@ fun CustomLoginScreen(
     //onBackButtonClick: () -> Unit,
    // onLoginButtonClick: (UserCredentials) -> Unit,
 ) {
+    ChatTheme{
     Scaffold(
         topBar = { CustomLoginToolbar(onClick = { devViewModel.navi.navigate(HubScreenDestination) }) },
         content = {padding->
@@ -213,7 +214,7 @@ fun CustomLoginScreen(
             }
         }
     )
-}
+}}
 
 @Composable
 private fun CustomLoginToolbar(onClick: () -> Unit) {

@@ -60,6 +60,7 @@ data class User @JvmOverloads constructor(
     var level: Int = 1,
     var hearts: Int = 1,
     var attunement: Int = 1,
+    var attuned:Int = 0,
     var playerAvatarjson: String = "",
     var defaultScreen:Int = -1,
     var constitution: Int = 5,
@@ -103,6 +104,9 @@ data class User @JvmOverloads constructor(
             activeQuests[0]
         }
     }
+    /*fun updateAttuned(){
+        attuned =
+    }*/
     fun isDateValid(myDate: String) : Boolean {
 
          val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")

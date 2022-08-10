@@ -1,6 +1,7 @@
 package com.instance.dataxbranch.ui
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.*
@@ -11,9 +12,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.Coil.enqueue
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.PredefinedUserCredentials
 import com.instance.dataxbranch.data.UserCredentials
 //import com.instance.dataxbranch.data.entities.User
@@ -26,6 +29,7 @@ import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import io.getstream.chat.android.client.ChatClient
 
 @Destination
 @Composable
@@ -58,6 +62,9 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
             val myfsid = viewModel.getMeWithAbilities().user.fsid
             Text("These should match if logged in: $fsid ...from Auth")
             Text( "$myfsid  ...from local")
+            /*Button(
+                synchronize())*/
+            ChatClient.instance().getCurrentToken()?.let { Text(it) }
 
             Text("padding $padding")
             LoginLogic( context, fsid , myfsid , navigator , viewModel  )
@@ -100,16 +107,36 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
         }
     }}
     fun streamchatlogin(user:FirebaseUser,forceRefresh:Boolean){
-        val user2= io.getstream.chat.android.client.models.User()
-        connectUser(UserCredentials(
+        val user2= io.getstream.chat.android.client.models.User(
+                id = "bender",
+        extraData = mutableMapOf(
+            "name" to "Bender",
+            "image" to "https://bit.ly/321RmWb",
+        ),
+        )
+
+       // connectUser(UserCredentials(
+        ChatClient.instance().connectUser(user = user2.apply{
+            id = user.uid
+            name = user.displayName.toString()
+        }, token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiZmFuY3ktbW9kZS0wIn0.rSnrWOv8EbsiYzJlvVwqwCgATZ1Magj_fZl-bZyCHKI")
+        .enqueue { result ->
+            if (result.isSuccess) {
+                // Handle success
+                Log.d(TAG,"SUCCESS IN LOGINSCREEN")
+            } else {
+                // Handle error
+                Log.d(TAG,"FAILED IN LOGINSCREEN")
+            }/*
             apiKey = PredefinedUserCredentials.API_KEY,
             user = user2.apply {
                 id = user.uid
                 name = user.displayName.toString()
+
             },
-            token = user.getIdToken(forceRefresh).toString()
-        ))
-    }
+            token = "user2.getIdToken(forceRefresh).toString()"
+        ))*/
+    }}
     fun createFirebaseUser(db:FirebaseFirestore, context: Context, email:String, password:String, viewModel: UserViewModel): FirebaseUser? {
         var user:FirebaseUser? = null
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
@@ -152,10 +179,14 @@ fun synchronize(db:FirebaseFirestore,context: Context, email:String, password:St
 }
 @Composable
 fun LoginLogic(context: Context,fsid: String?,myfsid:String?, navigator: DestinationsNavigator,viewModel: UserViewModel){
+    var user: FirebaseUser? =  FirebaseAuth.getInstance().currentUser
     val db:FirebaseFirestore=FirebaseFirestore.getInstance()
     if (fsid == myfsid) {
         if (fsid != "-1") {
             Button(onClick = {
+                if (user != null) {
+                    streamchatlogin(user,true)
+                }
                 navigator.navigate(UserScreenDestination)
             }) { Text("Proceed; already logged in") }
         }

@@ -12,6 +12,7 @@ import com.instance.dataxbranch.data.local.GeneralRepository
 
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -65,27 +66,46 @@ class UserViewModel @Inject constructor(
     var refreshWebview = mutableStateOf(false)
     var downloadCloudDialog = mutableStateOf(false)
 
-    var mfsid:String = "-2"
+    //var mfsid:String = "-2"
     val handyString: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
     private var meWithAbilities=generalRepository.getMe()
+    var attunement = mutableStateOf(meWithAbilities.user.attunement)
+    var attuned = mutableStateOf(getAttuned())
     var userContainer: User?=null
     init {
 refresh()
-        selectedAE=AbilityEntity()
+        if(meWithAbilities.abilities.size>0) {
+            selectedAE = meWithAbilities.abilities[0]
+
+        }else{selectedAE = AbilityEntity()}
     }
     fun refresh() : String {
-        generalRepository.refresh()
+        generalRepository.sync()
         viewModelScope.launch {
            /* abilities = generalRepository.aDao.getAbilites()
             // Coroutine that will be canceled when the ViewModel is cleared.*/
             meWithAbilities=generalRepository.getMe()
         }
+        fixattunement()
         return meWithAbilities.user.uname
     }
 
-
+    /*fun getAttuned():Int{
+        return if(meWithAbilities.user.attuned==0){
+            if(attuned.value==0){
+                0
+            }else{
+                 -1
+            }
+        }else meWithAbilities.user.attuned
+    }*/
+    fun getAttuned():Int{
+        return if(meWithAbilities.user.attuned==0){
+            meWithAbilities.abilities.filter{it.inloadout}.size
+        }else meWithAbilities.user.attuned
+    }
     fun addNewAbilityEntity(ae: AbilityEntity){
         CoroutineScope(Dispatchers.IO).launch { adao.insert(ae)}
     }
@@ -113,14 +133,28 @@ refresh()
         refresh()
         return meWithAbilities
     }
-    fun sync(){
-        //update(me)
+    fun syncSelectedAE(){
+        update(selectedAE)
+        updateAttuned()
+    }
+    fun sync(a:Int=attuned.value){
+
+        //meWithAbilities.abilities.forEach { update(it) }
+        update(meWithAbilities.user.apply{attuned=a})
         setSelect()
-        //generalRepository.sync()
+        generalRepository.sync()
         refresh()
     }
+    fun syncAttunement(){
+        meWithAbilities.user.attuned=attuned.value
+    }
+
+    fun updateAttuned(){
+        meWithAbilities.user.attuned= meWithAbilities.abilities.filter{it.inloadout}.size
+    }
     fun fixattunement(){
-        meWithAbilities.fixattunment()
+        updateAttuned()
+        meWithAbilities.fixattunement()
     }
     fun getSelect() {
         selectedAE=generalRepository.selectedAE

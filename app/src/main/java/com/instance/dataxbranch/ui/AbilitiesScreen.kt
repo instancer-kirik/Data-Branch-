@@ -20,6 +20,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
 
 import com.instance.dataxbranch.data.entities.AbilityEntity
+import com.instance.dataxbranch.data.local.UserWithAbilities
+import com.instance.dataxbranch.destinations.AbilitiesScreenDestination
 
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddAbilityEntityAlertDialog
@@ -39,8 +41,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun AbilitiesScreen(viewModel: UserViewModel = hiltViewModel(),
                      navigator: DestinationsNavigator) {
-
+    val me=viewModel.getMeWithAbilities()
     val context = LocalContext.current
+
     Scaffold(
 
         topBar = { AbilitiesToolbar(context,viewModel,navigator) },
@@ -59,6 +62,8 @@ fun AbilitiesScreen(viewModel: UserViewModel = hiltViewModel(),
         if (viewModel.openDialogState3.value) {
             EditLoadoutAlertDialog()
         }
+
+        Text("Attunement: ${viewModel.attunement.value} || Attuned: ${viewModel.attuned.value}")
         AbilitiesLazyColumn(context,viewModel, abilities = viewModel.getMeWithAbilities().abilities, modifier = Modifier.padding(2.dp))
         /*me.abilities.forEach {\
             abilityCard(context,it)
@@ -68,7 +73,7 @@ fun AbilitiesScreen(viewModel: UserViewModel = hiltViewModel(),
 }
 
 @Composable
-fun AbilitiesToolbar(context: Context,viewModel:UserViewModel, navigator: DestinationsNavigator) {
+fun AbilitiesToolbar( context: Context, viewModel:UserViewModel, navigator: DestinationsNavigator) {
 
         TopAppBar(
             title = { Text(text = "Possible Actions") },
@@ -76,7 +81,7 @@ fun AbilitiesToolbar(context: Context,viewModel:UserViewModel, navigator: Destin
 
                 var expanded by remember { mutableStateOf(false) }
                 var expanded2 by remember { mutableStateOf(false) }
-                val me=viewModel.getMeWithAbilities()
+
                 OutlinedButton(
                     onClick = {
                         expanded=false
@@ -88,19 +93,27 @@ fun AbilitiesToolbar(context: Context,viewModel:UserViewModel, navigator: Destin
                         //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                         //only room for 3 buttons this way
                         Button(onClick = { viewModel.openDialogState2.value=true}, modifier=Modifier.padding(2.dp)){Text("edit")}
-                        Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("loadout")}
+                        //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("loadout")}
                         Button(onClick = {
-                            if( !viewModel.selectedAE.inloadout){
-                            if (me.user.attunement >= me.abilities.filter{it.inloadout}.size)//when adding ability. enough room in attunement
+                            viewModel.sync()
+                           // viewModel.refresh()
+                                         navigator.navigate(AbilitiesScreenDestination)
+                             }, modifier=Modifier.padding(2.dp)){Text("sync")}
+                        Button(onClick = {
+                            if( !viewModel.selectedAE.inloadout){// me.abilities.filter{it.inloadout}.size
+                            if (viewModel.attunement.value >=viewModel.attuned.value)//when adding ability. enough room in attunement
                             {viewModel.selectedAE.inloadout=!viewModel.selectedAE.inloadout
-                                //me.user.attunement+=1 this changes my actually attument score. no
-                                viewModel.sync()
+                                viewModel.attuned.value+=1//
+                                viewModel.syncSelectedAE()
+                                viewModel.syncAttunement()
                             }else{
                                showToast(context, "not enough attunement slots")
                             }}else{
                                 //when subtracting ability
                                 viewModel.selectedAE.inloadout=!viewModel.selectedAE.inloadout
-                                //me.user.attunement-=1
+                                viewModel.syncSelectedAE()
+                                viewModel.attuned.value-=1
+                                viewModel.syncAttunement()
                             }
 
 
@@ -172,10 +185,13 @@ fun AbilitiesLazyColumn(context:Context,viewModel: UserViewModel, abilities: Lis
     Text(
         "placeholder1"//text = "Index $index",
     )*/
+    //val me =viewModel.getMeWithAbilities()
+
     val state = rememberLazyListState()
     androidx.compose.foundation.lazy.LazyColumn(state = state,
         modifier = modifier.fillMaxSize(),
     ) {
+
         var numLong: Int = 1
         val (longerThan23, rest) = abilities.partition{ it.title!!.length > 23 }
         itemsIndexed(longerThan23) { index, ability ->
