@@ -22,7 +22,7 @@ import kotlinx.coroutines.job
 
 @Composable
 fun AddResponseAlertDialog (
-    QviewModel: QuestsViewModel = hiltViewModel(),
+    //QviewModel: QuestsViewModel = hiltViewModel(),
     UviewModel: UserViewModel= hiltViewModel(),
     viewModel: DevViewModel= hiltViewModel(),
 ) {

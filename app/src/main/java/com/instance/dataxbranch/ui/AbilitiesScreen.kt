@@ -62,13 +62,18 @@ fun AbilitiesScreen(viewModel: UserViewModel = hiltViewModel(),
         if (viewModel.openDialogState3.value) {
             EditLoadoutAlertDialog()
         }
-
-        Text("Attunement: ${viewModel.attunement.value} || Attuned: ${viewModel.attuned.value}")
-        AbilitiesLazyColumn(context,viewModel, abilities = viewModel.getMeWithAbilities().abilities, modifier = Modifier.padding(2.dp))
-        /*me.abilities.forEach {\
+        Column {
+            Text("Attunement: ${viewModel.attunement.value} || Attuned: ${viewModel.attuned.value}")
+            AbilitiesLazyColumn(
+               // context,
+                viewModel,
+                abilities = viewModel.getMeWithAbilities().abilities,
+                modifier = Modifier.padding(2.dp)
+            )
+            /*me.abilities.forEach {\
             abilityCard(context,it)
         }*/
-
+        }
     }
 }
 
@@ -99,28 +104,7 @@ fun AbilitiesToolbar( context: Context, viewModel:UserViewModel, navigator: Dest
                            // viewModel.refresh()
                                          navigator.navigate(AbilitiesScreenDestination)
                              }, modifier=Modifier.padding(2.dp)){Text("sync")}
-                        Button(onClick = {
-                            if( !viewModel.selectedAE.inloadout){// me.abilities.filter{it.inloadout}.size
-                            if (viewModel.attunement.value >=viewModel.attuned.value)//when adding ability. enough room in attunement
-                            {viewModel.selectedAE.inloadout=!viewModel.selectedAE.inloadout
-                                viewModel.attuned.value+=1//
-                                viewModel.syncSelectedAE()
-                                viewModel.syncAttunement()
-                            }else{
-                               showToast(context, "not enough attunement slots")
-                            }}else{
-                                //when subtracting ability
-                                viewModel.selectedAE.inloadout=!viewModel.selectedAE.inloadout
-                                viewModel.syncSelectedAE()
-                                viewModel.attuned.value-=1
-                                viewModel.syncAttunement()
-                            }
-
-
-
-
-
-                                         }, modifier=Modifier.padding(2.dp)){Text("swap in Loadout")}
+                        Button(onClick = { onSwapLoadoutClick(viewModel,context)}, modifier=Modifier.padding(2.dp)){Text("swap in Loadout")}
 //viewModel.openDialogState3.value=true
 
                     } else Text("Interact")
@@ -176,7 +160,7 @@ fun abilityCard( ae: AbilityEntity){
     }
 }
 @Composable
-fun AbilitiesLazyColumn(context:Context,viewModel: UserViewModel, abilities: List<AbilityEntity>, modifier: Modifier){
+fun AbilitiesLazyColumn(/*context:Context*/viewModel: UserViewModel, abilities: List<AbilityEntity>, modifier: Modifier){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int ->
         selectedIndex = index
@@ -196,7 +180,7 @@ fun AbilitiesLazyColumn(context:Context,viewModel: UserViewModel, abilities: Lis
         val (longerThan23, rest) = abilities.partition{ it.title!!.length > 23 }
         itemsIndexed(longerThan23) { index, ability ->
             AbilityView(
-                context = context,
+                //context = context,
                 viewModel = viewModel,
                 ability = ability,
                 index = index,
@@ -210,7 +194,7 @@ fun AbilitiesLazyColumn(context:Context,viewModel: UserViewModel, abilities: Lis
         var idx = 2*ix+numLong+1
         Row(modifier=Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly){AbilityViewShort(
-            context = context,
+            //context = context,
             viewModel = viewModel,
             ability = rowabilities[0],
             index = idx,
@@ -220,7 +204,7 @@ fun AbilitiesLazyColumn(context:Context,viewModel: UserViewModel, abilities: Lis
             if(rowabilities.size>1){
             idx += 1
             AbilityViewShort(
-                context = context,
+                //context = context,
                 viewModel = viewModel,
                 ability = rowabilities[1],
                 index = idx,
@@ -248,7 +232,7 @@ fun AbilitiesLazyColumn(context:Context,viewModel: UserViewModel, abilities: Lis
 }*/
 @Composable
 fun AbilityView(
-    context: Context,
+    //context: Context,
     viewModel: UserViewModel,
     ability: AbilityEntity,
     index: Int,
@@ -276,7 +260,7 @@ fun AbilityView(
 }
 @Composable
 fun AbilityViewShort(
-    context: Context,
+    //context: Context,
     viewModel: UserViewModel,
     ability: AbilityEntity,
     index: Int,
@@ -336,3 +320,27 @@ fun EditAbilityEntityFloatingActionButton(viewModel: UserViewModel = hiltViewMod
     }
 }
 
+fun onSwapLoadoutClick(viewModel: UserViewModel,context: Context){
+
+    if( !viewModel.selectedAE.inloadout){// me.abilities.filter{it.inloadout}.size
+        if (viewModel.attunement.value >=viewModel.attuned.value)//when adding ability. enough room in attunement
+        {viewModel.selectedAE.inloadout=!viewModel.selectedAE.inloadout
+            viewModel.attuned.value+=1//
+            viewModel.syncSelectedAE()
+            viewModel.syncAttunement()
+        }else{
+            showToast(context, "not enough attunement slots")
+        }}else{
+        //when subtracting ability
+        viewModel.selectedAE.inloadout=!viewModel.selectedAE.inloadout
+        viewModel.syncSelectedAE()
+        viewModel.attuned.value-=1
+        viewModel.syncAttunement()
+    }
+
+
+
+
+
+
+}

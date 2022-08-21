@@ -51,4 +51,8 @@ data class AbilityEntity @JvmOverloads constructor(
         }
         return levels.last()
     }
+    fun OnCasted():Int{
+        trainedAmt+=1
+        return (trainedAmt)
+    }
 }

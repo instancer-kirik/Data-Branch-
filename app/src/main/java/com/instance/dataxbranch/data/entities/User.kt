@@ -76,6 +76,7 @@ data class User @JvmOverloads constructor(
     var hasDied: Boolean = false,
     var numKills: Int = 0,
     var numDeaths: Int = 0,
+    var friends: List<Int> = listOf(),//just use ids
     @ColumnInfo(name = "dob") var dob: String= "",
     @ColumnInfo(name = "dateUpdated") var dateUpdated: String= "",
     @ColumnInfo(name = "completedQuests")var completedQuests: List<Int> =listOf(),
@@ -92,9 +93,10 @@ data class User @JvmOverloads constructor(
 
 
     @ColumnInfo(name = "status")var status: String = "intrepid.. curious",
-    @ColumnInfo(name = "terms_status")var terms_status: String = ""//update this on accepting terms
+    @ColumnInfo(name = "terms_status")var terms_status: String = "",//update this on accepting terms
+    var xp: Int = 0,
 
-//authored quests, nuggets,
+//store list of authored quests, nuggets,abilities,items etc
     ) {
 
     fun getActiveQuest(): Long{
@@ -155,6 +157,7 @@ data class User @JvmOverloads constructor(
         val newer = whichNewer(dateUpdated,tangent.dateUpdated)
         if (newer ==1) {
             //newer is tangent
+            friends+=tangent.friends
             activeCloudQuests +=tangent.activeCloudQuests
             cloudAbilities +=tangent.cloudAbilities
             completedCloudQuests += tangent.completedCloudQuests

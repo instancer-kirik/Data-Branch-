@@ -27,6 +27,7 @@ import com.instance.dataxbranch.data.firestore.FirestoreUser
 import com.instance.dataxbranch.data.local.UserWithAbilities
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
+import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.showToast
 
 
@@ -65,7 +66,7 @@ class UserViewModel @Inject constructor(
     var termsDialogState = mutableStateOf(false)
     var refreshWebview = mutableStateOf(false)
     var downloadCloudDialog = mutableStateOf(false)
-
+    var singleConditionsDialog = mutableStateOf(true)
     //var mfsid:String = "-2"
     val handyString: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
@@ -132,6 +133,11 @@ refresh()
     fun getMeWithAbilities(): UserWithAbilities {
         refresh()
         return meWithAbilities
+    }
+    fun getFriends(): List<User>{//maybe do a simpler struct for friends
+    TODO("make sure no secrets. make sure it works and updates on sync and such")
+        //return meWithAbilities.user.friends// stored as ids, must store more local or pull from cloud
+
     }
     fun syncSelectedAE(){
         update(selectedAE)
@@ -249,7 +255,13 @@ refresh()
             .addOnSuccessListener { showToast(context,"wrote to firestore! c;") }
             .addOnFailureListener { e -> showToast(context, "Error writing document $e") }
 
-    }}
+    }
+
+    fun onQuestCompleted(quest: QuestWithObjectives) {
+meWithAbilities.user.xp+=quest.quest.rewardxp
+
+    }
+}
 
     /*val rowsInserted: MutableLiveData<Int> = MutableLiveData()
     override fun onCleared() {

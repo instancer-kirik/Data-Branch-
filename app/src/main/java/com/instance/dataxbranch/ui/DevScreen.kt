@@ -46,11 +46,11 @@ val db = FirebaseFirestore.getInstance()
                 // EditAbilityEntityFloatingActionButton()
             }
         ) {padding ->
-            if (viewModel.openDialogState3.value) {
-                AddResponseAlertDialog()
+            if (devViewModel.openDialogState.value) {
+                AddResponseAlertDialog(viewModel=devViewModel)
             }
             Column{
-                val crashButton=Button(onClick= {
+                /*val crashButton=*/Button(onClick= {
                     throw RuntimeException("Test Crash") // Force a crash
                 }
                 ){Text("Crash Button")}
@@ -64,13 +64,14 @@ val db = FirebaseFirestore.getInstance()
 
 @Composable
 fun PayMeBlock() {
-    Text("Merch and livestreams and such")
-    var text = remember {
+    Text("Merch and livestreams and such. TO DO")
+    val text = remember {
         mutableStateOf("https://www.__patreon.com/instance_select?fan_landing=true")
     }
     Text("Grant me money. Support the Developer ")
     Text("I'll set up IAP and ads soon. and I'll grant you exclusive goodies.  " )
-    Text("Does this count as a game?")
+
+    //Does this count as a game?
     //Text("cashapp \$Instancer")
     stringBlock(s = "Patreon: ", text)
     /*Column{Text("Future PayToWin features: +ability slots (planned to earn in update)" )
@@ -90,6 +91,7 @@ fun ResponseBlock(context: Context, me: UserWithAbilities,db: FirebaseFirestore)
     var subjecttext = remember { mutableStateOf("") }
     var isVisible = remember { mutableStateOf(true) }
     Column{
+        Text("Here you can submit responses, bug reports, and requests")
     stringBlock(s = "Subject: ", subjecttext)
     stringBlock(s = "Message to dev: ", text)
 
@@ -225,4 +227,17 @@ fun test(context: Context) : Context {
 
     showToast(context, "DGFSGSGGFSGJ")
     return context
+}
+@Composable
+fun notePadSlide(viewModel: DevViewModel,context:Context){
+
+
+}
+@Composable
+fun notePadButton(viewModel: DevViewModel){
+    Button(onClick = { viewModel.openNoteDialogState.value=true},
+        modifier = Modifier.padding(2.dp)
+    ) { Text("^NotePad^") }
+
+
 }

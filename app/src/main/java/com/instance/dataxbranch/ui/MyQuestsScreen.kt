@@ -41,6 +41,7 @@ import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
 import com.instance.dataxbranch.destinations.QuestDetailScreenDestination
+import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.instance.dataxbranch.utils.await
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import kotlinx.coroutines.*
@@ -55,6 +56,7 @@ var showDialog2 =     mutableStateOf(false)
 @Composable
 fun MyQuestsScreen(
     viewModel: RoomQuestViewModel = hiltViewModel(),
+    uViewModel: UserViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
 
 
@@ -95,7 +97,7 @@ fun MyQuestsScreen(
                 alert(viewModel)
             }
 
-            LocalLazyColumn(viewModel, quests = viewModel.quests, modifier = Modifier.padding(2.dp),navigator)
+            LocalLazyColumn(viewModel, quests = viewModel.quests, modifier = Modifier.padding(2.dp),navigator,uViewModel)
             Button(
                 onClick = { showDialog.value = true },
                 modifier = Modifier.padding(2.dp)
@@ -150,7 +152,7 @@ fun AddQuestEntityFloatingActionButton(viewModel: RoomQuestViewModel = hiltViewM
 
 
 @Composable
-fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObjectives>, modifier: Modifier,navi: DestinationsNavigator,){
+fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObjectives>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index}
 
@@ -170,7 +172,8 @@ fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObject
                 index = index,
                 selected = selectedIndex == index,
                 onClick = onItemClick,
-                navi = navi
+                navi = navi,
+                uViewModel = uViewModel
             )
 
         }
@@ -188,7 +191,9 @@ fun LocalQuestView(
     quest: QuestWithObjectives,
     index: Int,
     selected: Boolean,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
+    uViewModel: UserViewModel
+
 ) {
     //Text("DEBUG")
     Box(modifier = Modifier
@@ -202,7 +207,7 @@ fun LocalQuestView(
             text = "Index $index",
         )
 
-        LocalQuestCardContent(navi,viewModel,quest)
+        LocalQuestCardContent(navi,viewModel,quest,uViewModel,)
 
     }
     //Text("DEBUG2")
@@ -224,7 +229,7 @@ fun LocalQuestView(
 }*/
 
 @Composable
-fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewModel, quest: QuestWithObjectives) {
+fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewModel, quest: QuestWithObjectives,uViewModel: UserViewModel) {
 
         var expanded by remember { mutableStateOf(false) }
 
@@ -290,7 +295,7 @@ fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewM
                     onCheckedChange = {
                         checkedState.value = it
                         quest.quest.apply { completed = it }
-                        viewModel.onCheckboxChecked(quest, it)
+                        viewModel.onCheckboxChecked(quest, it,uViewModel)
                     })
                 //if(!checkedState.value){ trying to pop up dialog for confirm or cancel
                 /*val time = measureTimeMillis {
@@ -449,7 +454,7 @@ fun ObjectiveViewEdit(viewModel: RoomQuestViewModel, oe: ObjectiveEntity) {
         }
 }
 @Composable//, onClick: (Int) -> Unit
-fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestWithObjectives,navi: DestinationsNavigator,) {
+fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestWithObjectives,navi: DestinationsNavigator,uViewModel: UserViewModel) {
     Box(modifier = Modifier
 
         //.background(if (selected) MaterialTheme.colors.secondary else Color.Transparent)
@@ -458,7 +463,7 @@ fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestWithObjective
         Text(
             "placeholder2"//text = "Index $index",
         )
-        LocalQuestCardContent(navi,viewModel,quest)
+        LocalQuestCardContent(navi,viewModel,quest, uViewModel )
     }
 
 }

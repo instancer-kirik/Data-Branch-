@@ -142,9 +142,11 @@ fun ConfigChangeExample() {
     }
 }
     @Composable
-    fun LoadoutabilityCard(context: Context, ae: AbilityEntity){
+    fun LoadoutabilityCard(context: Context, ae: AbilityEntity,userViewModel: UserViewModel){
         Row(modifier= Modifier.clickable{
-            showToast(context,"casted")
+
+            showToast(context,"casted ${ae.OnCasted()} times")
+            userViewModel.update(ae)
         }){
             Column{
                 Text(""+ae.title)
@@ -243,7 +245,7 @@ fun ConfigChangeExample() {
                 text = "Index $index",
             )*/
             //if (selected){viewModel.selectedAE = ability}
-            LoadoutabilityCard(context,ability)
+            LoadoutabilityCard(context,ability, viewModel)
 
         }
         //Text("DEBUG2")
@@ -270,7 +272,7 @@ fun ConfigChangeExample() {
                 text = "Index $index",
             )*/
             //if (selected){viewModel.selectedAE = ability}
-            LoadoutabilityCard(context,ability)
+            LoadoutabilityCard(context,ability,viewModel)
 
         }
         //Text("DEBUG2")

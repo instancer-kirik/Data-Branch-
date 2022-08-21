@@ -140,15 +140,19 @@ class RoomQuestViewModel @Inject constructor(
         //Log.d(TAG, "$obj is is $checked   "+obj.completed.toString())
         //obj.completed=checked
         CoroutineScope(Dispatchers.IO).launch {localQuestsRepository.update(obj)}
+        //should also
         /*viewModelScope.launch {
             localQuestsRepository.update(obj.copy(completed = checked))
         }*/
     }
 
-    fun onCheckboxChecked(quest: QuestWithObjectives, checked: Boolean) {
+    fun onCheckboxChecked(quest: QuestWithObjectives, checked: Boolean,userViewModel: UserViewModel) {
         //Log.d(TAG, "$quest is is $checked   "+quest.quest.completed.toString())
         viewModelScope.launch {
             localQuestsRepository.update(quest.quest.copy(completed = checked))
+        }
+        if(checked){
+            userViewModel.onQuestCompleted(quest)
         }
     }
      /*fun loadQuestWithObjectives(id: Int): QuestWithObjectives =withContext(Dispatchers.IO){

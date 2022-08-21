@@ -31,7 +31,7 @@ class DevViewModel @Inject constructor(
     lateinit var navi: DestinationsNavigator
     var hasNavi: Boolean = false
     var openDialogState = mutableStateOf(false)
-
+    var openNoteDialogState = mutableStateOf(false)
     init {
         getResponses()
 

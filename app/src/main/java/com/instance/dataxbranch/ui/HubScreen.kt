@@ -47,8 +47,10 @@ fun HubScreen(viewModel: UserViewModel = hiltViewModel(),
 
 
     ) { padding ->
-        if (viewModel.termsDialogState.value) {
-            TermsPopupAlertDialog(viewModel,navigator)
+        if (viewModel.singleConditionsDialog.value) {
+            if (viewModel.termsDialogState.value) {
+                TermsPopupAlertDialog(viewModel,navigator)
+            }
         }
         //startActivity(context, StartupActivity.createIntent(context),null)
         var me = viewModel.getMeWithAbilities()

@@ -449,6 +449,7 @@ fun chatRoomSocial(navi: DestinationsNavigator) {
             topBar()
         },
         content = {
+            Text(it.toString())
             MyChatTab(navi)
         },
         floatingActionButton = {

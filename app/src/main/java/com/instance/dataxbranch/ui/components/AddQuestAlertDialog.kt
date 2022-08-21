@@ -24,16 +24,20 @@ import kotlinx.coroutines.job
 
 @Composable
 fun AddQuestAlertDialog(
-    viewModel: QuestsViewModel = hiltViewModel()
+    viewModel: QuestsViewModel = hiltViewModel(),
+    primertitle: String = "",
+    primerdesc: String = "",
+    openState: MutableState<Boolean> = viewModel.openDialogState
+
 ) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf(primertitle) }
+    var description by remember { mutableStateOf(primerdesc) }
     val focusRequester = FocusRequester()
 
-    if (viewModel.openDialogState.value) {
+    if (openState.value) {
         AlertDialog(
             onDismissRequest = {
-                viewModel.openDialogState.value = false
+                openState.value = false
             },
             title = {
                 Text(
@@ -75,7 +79,7 @@ fun AddQuestAlertDialog(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.openDialogState.value = false
+                        openState.value = false
                         viewModel.addQuest(title, description,"author")
                     }
                 ) {
@@ -87,7 +91,7 @@ fun AddQuestAlertDialog(
             dismissButton = {
                 TextButton(
                     onClick = {
-                        viewModel.openDialogState.value = false
+                        openState.value = false
                     }
                 ) {
                     Text(
