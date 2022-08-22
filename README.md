@@ -1,7 +1,7 @@
 # Data-Branch-
 Title is now 
 Pause || Effect
-pip boy-like application.
+Pip-Boy / Pause menu- like application.
 
 Current Features:
 
