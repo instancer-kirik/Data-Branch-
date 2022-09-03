@@ -2,6 +2,7 @@ package com.instance.dataxbranch.ui.viewModels
 
 
 import android.content.Context
+import android.util.Log
 
 
 import com.instance.dataxbranch.data.daos.AbilityDao
@@ -23,7 +24,9 @@ import com.google.firebase.firestore.SetOptions
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.AppDatabase
+import com.instance.dataxbranch.data.entities.CharacterEntity
 import com.instance.dataxbranch.data.firestore.FirestoreUser
+import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
@@ -52,6 +55,7 @@ class UserViewModel @Inject constructor(
 
     ): ViewModel() {
     lateinit var selectedAE: AbilityEntity
+    var selectedCharacterWithStuff: CharacterWithStuff? = null
     var currentSite: String= "https://sites.google.com/view/instance-select/home"
 
     //val _qwe:
@@ -93,6 +97,22 @@ refresh()
         return meWithAbilities.user.uname
     }
 
+    fun getAllCharacters():List<CharacterWithStuff>{
+        return generalRepository.mcharacters
+    }
+    fun setSelectedCharacter(index: Int){
+        generalRepository.selectedCharacterWithStuff=generalRepository.mcharacters[index]
+        selectedCharacterWithStuff=generalRepository.selectedCharacterWithStuff
+        Log.d(TAG,"SELECTED CHARACTER IS INDEX $index and is $selectedCharacterWithStuff")
+    }
+    fun setSelectedCharacter(character: CharacterWithStuff){
+        generalRepository.selectedCharacterWithStuff=character
+        selectedCharacterWithStuff=generalRepository.selectedCharacterWithStuff
+        Log.d(TAG,"SELECTED CHARACTER is $selectedCharacterWithStuff")
+    }
+    fun addCharacterEntity(name:String){
+        generalRepository.makeACharacter(name)
+    }
     /*fun getAttuned():Int{
         return if(meWithAbilities.user.attuned==0){
             if(attuned.value==0){
@@ -108,20 +128,18 @@ refresh()
         }else meWithAbilities.user.attuned
     }
     fun addNewAbilityEntity(ae: AbilityEntity){
-        CoroutineScope(Dispatchers.IO).launch { adao.insert(ae)}
+        generalRepository.insertAbility("Ability")
     }
     fun addNewAbilityEntity(title: String){ //might be better to just do on new title
-        CoroutineScope(Dispatchers.IO).launch { adao.insert(AbilityEntity(title=title,author=meWithAbilities.user.uname))}
+        generalRepository.insertAbility(title)
     }
-    fun addNewAbilitiyEntity() {
+   /* fun addNewAbilityEntity() {
         CoroutineScope(Dispatchers.IO).launch { adao.insert(AbilityEntity()) }
 
         //dao.insert(QuestEntity(title = title, author = author))
-    }
+    }*/
     fun update(ae: AbilityEntity){
-        CoroutineScope(Dispatchers.IO).launch {
-            adao.update(ae)
-        }}
+        generalRepository.syncAE(ae)}
 
     fun update(me:User){
 
@@ -135,10 +153,52 @@ refresh()
         return meWithAbilities
     }
     fun getFriends(): List<User>{//maybe do a simpler struct for friends
-    TODO("make sure no secrets. make sure it works and updates on sync and such")
+    //"make sure no secrets. make sure it works and updates on sync and such")
+        return listOf(meWithAbilities.user,User(uname="friend1", name = "friend 1"))
         //return meWithAbilities.user.friends// stored as ids, must store more local or pull from cloud
 
     }
+    fun getAllFirestoreUsers(context:Context, db: FirebaseFirestore=FirebaseFirestore.getInstance()):List<FirestoreUser>{
+        var output :List<FirestoreUser> =listOf()
+        var cachedUsers = generalRepository.getCachedUsers()
+        if (cachedUsers.isNotEmpty()){
+            showToast(context, "Cache fetched success in uViewModel")
+            return cachedUsers
+        }else{
+        db.collection("users").get().addOnSuccessListener {
+
+            if (it != null) {
+                output = it.toObjects(FirestoreUser::class.java)
+                generalRepository.setUsers(output)
+            } else {
+                showToast(context, "GOT NULL")
+            }
+        }.addOnFailureListener { e ->
+                showToast(context, e.toString())
+        }
+
+
+            showToast(context, "returning with length ${output.size}")
+        return output
+    }}
+/*db.collection("cities")
+        .whereEqualTo("capital", true)
+        .get()
+        .addOnSuccessListener { documents ->
+            for (document in documents) {
+                Log.d(TAG, "${document.id} => ${document.data}")
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.w(TAG, "Error getting documents: ", exception)
+        }*/
+    /*private fun getAllUsers() {
+        viewModelScope.launch {
+            useCases.getAllUsers().collect { response ->
+                _questsState.value = response
+            }
+        }
+    }*/
     fun syncSelectedAE(){
         update(selectedAE)
         updateAttuned()
@@ -165,8 +225,15 @@ refresh()
     fun getSelect() {
         selectedAE=generalRepository.selectedAE
     }
-    private fun setSelect() {
-        generalRepository.selectedAE= selectedAE
+    private fun setSelect(it:AbilityEntity?=null) {
+        if (it==null) {
+            generalRepository.selectedAE = selectedAE
+        }
+        else{
+            generalRepository.selectedAE=it
+
+        }
+        getSelect()
     }
     fun whoAmI(): String? {
         val auth = FirebaseAuth.getInstance()

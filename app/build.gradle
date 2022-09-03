@@ -8,6 +8,7 @@ plugins {
     //id 'org.jetbrains.kotlin.jvm'
     //id 'kotlin-parcellize'
     id 'com.google.devtools.ksp' version '1.7.0-1.0.6'
+
     //id 'org.jetbrains.kotlin.plugin.serialization'
     id 'com.google.firebase.crashlytics'
     id 'kotlin-parcelize'
@@ -133,8 +134,11 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.5.1'
 
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation('io.github.raamcosta.compose-destinations:core:1.5.12-beta')
+    /*implementation('io.github.raamcosta.compose-destinations:core:1.5.12-beta')
     ksp('io.github.raamcosta.compose-destinations:ksp:1.6.12-beta')
+*/
+    ksp 'io.github.raamcosta.compose-destinations:ksp:1.6.12-beta'
+    implementation 'io.github.raamcosta.compose-destinations:core:1.5.12-beta'
 // Paging 3.0
     implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
     implementation "androidx.room:room-paging:2.4.3"
@@ -143,7 +147,7 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.43.1'
     kapt 'com.google.dagger:hilt-compiler:2.43.1'
 
-    implementation 'androidx.fragment:fragment-ktx:1.5.1'
+    implementation 'androidx.fragment:fragment-ktx:1.5.2'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
 

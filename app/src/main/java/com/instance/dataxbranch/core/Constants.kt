@@ -3,6 +3,7 @@ package com.instance.dataxbranch.core
 object Constants {
     const val SAVE= "Save"
     const val EDIT="Edit"
+    const val REFRESH= "Refresh"
     const val EDIT_ABILITY= "Edit selected ability"
     const val ADD_ABILITY= "Add an ability"
     const val EDIT_LOADOUT= "Edit ability slots"

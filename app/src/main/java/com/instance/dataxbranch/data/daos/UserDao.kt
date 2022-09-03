@@ -3,9 +3,10 @@ package com.instance.dataxbranch.data.daos
 import android.util.Log
 import androidx.room.*
 import com.instance.dataxbranch.core.Constants.TAG
-import com.instance.dataxbranch.data.entities.AbilityEntity
-import com.instance.dataxbranch.data.entities.User
+import com.instance.dataxbranch.data.entities.*
+import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
+import com.instance.dataxbranch.quests.QuestWithObjectives
 import kotlinx.coroutines.flow.Flow
 
 
@@ -50,6 +51,32 @@ abstract class UserDao {
     @Transaction
     @Query("SELECT * FROM abilities")
     abstract fun getAbilities(): List<AbilityEntity>
+
+
+    @Transaction
+    @Query("SELECT * FROM characters")
+    abstract fun getAllCharacters(): List<CharacterEntity>
+
+    @Query("SELECT * FROM characters WHERE id =:id")
+    abstract fun getCharacterEntity(id: Long): CharacterEntity
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    abstract fun insertCharacter(vararg char: CharacterEntity?)
+
+    @Delete
+    abstract fun delete(vararg char: CharacterEntity?)
+
+    @Query("DELETE FROM characters")
+    abstract fun wipeCharacters()
+
+    @Update
+    fun update(char: CharacterEntity?){
+        Log.d(TAG,"updating with $char")
+    }
+
+    @Query("SELECT * FROM abilities WHERE aid =:id")
+    abstract fun getAbilityEntityList(id: Long): List<AbilityEntity>
+
 
 
     open fun getMeAbilities(): UserWithAbilities? {

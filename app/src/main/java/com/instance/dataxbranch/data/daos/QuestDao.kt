@@ -30,6 +30,8 @@ abstract class QuestDao {
 
     @Query("SELECT * FROM objectives WHERE id =:id")
     abstract fun getObjectiveEntityList(id: Long): List<ObjectiveEntity>
+
+
     @Query("DELETE FROM quests")
     abstract fun deleteAll()
     @Query("DELETE FROM quests")

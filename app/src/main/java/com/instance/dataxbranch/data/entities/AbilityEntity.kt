@@ -10,7 +10,16 @@ import com.squareup.moshi.JsonClass
     tableName = "abilities",
     indices = [
         Index(value = ["aid"], unique = true)
-    ]
+    ],
+    foreignKeys = [
+        ForeignKey(
+            entity= CharacterEntity::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("aid"),
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
+
+        )]
         /*    CREATE TABLE "abilities" (
         "uid" INTEGER NOT NULL UNIQUE,
         "LeveL" INTEGER,

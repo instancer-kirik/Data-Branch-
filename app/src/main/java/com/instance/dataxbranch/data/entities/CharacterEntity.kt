@@ -13,21 +13,36 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Entity(
-    tableName = "my_resources_attributes_stats",
+    tableName = "characters",//my_resources_attributes_stats
     indices = [
-        Index(value = ["me_id"], unique = true)
+        Index(value = ["id"], unique = true)//character_
+
+
+
+
+    ],
+    foreignKeys = [
+        ForeignKey(
+            entity = User::class,
+            parentColumns = arrayOf("me_id"),
+            childColumns = arrayOf("id"),
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
+
+        ),
 
     ]
 
 )
 @TypeConverters(Converters::class)
 @JsonClass(generateAdapter=true)
-data class User @JvmOverloads constructor(
-    @ColumnInfo(name = "me_id")@PrimaryKey(autoGenerate = true) val me_id: Long=0,
+data class CharacterEntity @JvmOverloads constructor(
+    @ColumnInfo(name = "character_id") val character_id: Long=0,
+    @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) var id: Long=0,
     @ColumnInfo(name = "firestore_id") var fsid: String = "-1",
    // @ColumnInfo(name = "title") var title: String? = null,
     @ColumnInfo(name = "uid")val uid: Long = 1L,
-    @ColumnInfo(name = "id") var id: Long=0,
+
     @ColumnInfo(name = "uname")var uname: String = DEFAULT_UNAME,
     @ColumnInfo(name = "name")var name: String = "name",
     @ColumnInfo(name = "imageUrl") var imageUrl: String = "",
@@ -84,12 +99,12 @@ data class User @JvmOverloads constructor(
     @ColumnInfo(name = "completedCloudQuests")var completedCloudQuests: List<String> =listOf(),//listof fsid
 
 
-    @ColumnInfo(name = "abilities")var abilities: List<Int> =listOf(),
+    @ColumnInfo(name = "abilities")var abilities: List<Long> =listOf(),
     @ColumnInfo(name = "cloudAbilities")var cloudAbilities: List<String> =listOf(),
 
     @ColumnInfo(name = "activeCloudQuests")var activeCloudQuests: List<String> =listOf(),
     @ColumnInfo(name = "activeQuests")var activeQuests: List<Long> =listOf(),
-    @ColumnInfo(name = "dockedQuests")val dockedQuests: List<Int> =listOf(),
+    @ColumnInfo(name = "quests")val quests: List<Long> =listOf(),//dockedQuests
     @ColumnInfo(name = "dockedCloudQuests") var dockedCloudQuests: List<String> =listOf(),
 
 
@@ -154,7 +169,7 @@ data class User @JvmOverloads constructor(
         return formatted
     }
 
-    fun combine(tangent: User): Int{
+    fun combine(tangent: CharacterEntity): Int{
         val newer = whichNewer(dateUpdated,tangent.dateUpdated)
         if (newer ==1) {
             //newer is tangent

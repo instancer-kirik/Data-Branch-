@@ -30,9 +30,9 @@ data class FirestoreUser(
     var completedCloudQuests: List<String> =listOf(),
 
 
-    val cloudAbilities: List<String>,
-    val activeCloudQuests: List<String>,//for quests or  abilities cannot have long, only has access to string
-    val dockedCloudQuests: List<String>,
+    val cloudAbilities: List<String> =listOf(),
+    val activeCloudQuests: List<String> =listOf(),//for quests or  abilities cannot have long, only has access to string
+    val dockedCloudQuests: List<String> = listOf(),
     var status: String = "intrepid.. curious",
     var terms_status: String = "", //update with timestamp of accepting terms
 
@@ -61,6 +61,22 @@ data class FirestoreUser(
 
 
     var history: String ="one day, I was born, and another I got a sledgehammer. today I'm writing this",
+    //8/21/2022
+var xp: Int = 0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ){
     fun toLocalUser():User{
     return User(//notice how these are all cloud data
@@ -103,6 +119,8 @@ data class FirestoreUser(
         dockedCloudQuests = this.dockedCloudQuests,
         status=this.status,
         terms_status=this.terms_status,
+        //8/21/2022
+        xp = this.xp
     )
 }}
 /*

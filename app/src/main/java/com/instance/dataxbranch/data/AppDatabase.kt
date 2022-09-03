@@ -6,14 +6,13 @@ import com.instance.dataxbranch.data.daos.AbilityDao
 //import com.instance.dataxbranch.data.daos.EntityDao
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.daos.UserDao
-import com.instance.dataxbranch.data.entities.AbilityEntity
-import com.instance.dataxbranch.data.entities.ObjectiveEntity
-import com.instance.dataxbranch.data.entities.QuestEntity
-import com.instance.dataxbranch.data.entities.User
+import com.instance.dataxbranch.data.entities.*
 import com.instance.dataxbranch.utils.Converters
 
 
-@Database(entities = arrayOf(QuestEntity::class, ObjectiveEntity::class, AbilityEntity::class, User::class), version = 31)
+@Database(entities = arrayOf(QuestEntity::class,
+    ObjectiveEntity::class, AbilityEntity::class,
+    User::class, CharacterEntity::class), version = 34)
 @TypeConverters(Converters::class)
  abstract class AppDatabase() : RoomDatabase(){
     //abstract fun addQuestEntity(title: String, author: String): Any
