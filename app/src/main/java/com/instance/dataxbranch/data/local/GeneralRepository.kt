@@ -9,6 +9,7 @@ import com.instance.dataxbranch.data.entities.AbilityEntity
 
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.AppDatabase
+import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.CharacterEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
 import com.instance.dataxbranch.data.firestore.FirestoreUser
@@ -23,8 +24,14 @@ class GeneralRepository(application: Application, db: AppDatabase,questsReposito
     private var cachedUsers: List<FirestoreUser> = listOf()
     val aDao: AbilityDao=db.abilityDao()
     val uDao: UserDao=db.userDao()
+    val qDao: QuestDao =db.questDao()
     var mabilities: List<AbilityEntity> = listOf(AbilityEntity())
     var mcharacters: List<CharacterWithStuff> = listOf(
+        CharacterWithStuff(
+            CharacterEntity(uname="ME"),
+            listOf(AbilityEntity(title = "my_ability1")),
+            arrayOf(QuestWithObjectives(QuestEntity(title="my_quest1") ,listOf()))
+        ),
         CharacterWithStuff(
             CharacterEntity(uname="PRIME1"),
             listOf(AbilityEntity(title = "APRIME1")),
@@ -38,7 +45,7 @@ class GeneralRepository(application: Application, db: AppDatabase,questsReposito
 
     private lateinit var me:User
     lateinit var selectedAE: AbilityEntity
-    lateinit var selectedCharacterWithStuff: CharacterWithStuff
+    var selectedCharacterWithStuff: CharacterWithStuff = mcharacters[0]
     private var me_container= UserWithAbilities(User(),mabilities)
     init {
         sync()
@@ -64,11 +71,20 @@ class GeneralRepository(application: Application, db: AppDatabase,questsReposito
             mabilities = aDao.getAbilites()
             getMeWithAbilities()
             getAllCharacters()
+
         }
     }
     fun save(me: User): Job =
         CoroutineScope(Dispatchers.IO).launch {
             uDao.save(me)
+        }
+    fun save(char:CharacterWithStuff): Job =
+        CoroutineScope(Dispatchers.IO).launch {
+            uDao.save(char.character)
+            //char.abilities.forEach {aDao.save(it)}
+            char.quests.forEach {qDao.save(it)}
+            aDao.save(char.abilities)
+            //qDao.save(char.quests)
         }
     fun syncAE(): Job = CoroutineScope(Dispatchers.IO).launch {
         aDao.update(selectedAE)
@@ -107,6 +123,11 @@ class GeneralRepository(application: Application, db: AppDatabase,questsReposito
             var character= CharacterWithStuff(CharacterEntity(name=name))
             mcharacters= mcharacters.plus(character)
             uDao.insertCharacter(character.character)
+        }
+    fun setUpSelectedWithMe():Job =
+        CoroutineScope(Dispatchers.IO).launch {
+
+
         }
     //private lateinit var me_container: UserWithAbilities
         //lateinit var me_user: User

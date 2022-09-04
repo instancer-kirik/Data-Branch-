@@ -19,6 +19,8 @@ import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.entities.CharacterEntity
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.destinations.CharacterSelectScreenDestination
+import com.instance.dataxbranch.destinations.CharacterSheetScreenDestination
+import com.instance.dataxbranch.destinations.EditCharacterScreenDestination
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -45,7 +47,13 @@ fun CharacterSelectScreen (viewModel: UserViewModel = hiltViewModel(),
             //
         }
         Column{
-        Button(onClick = { viewModel.addCharacterEntity("Dummy")}){Text("Add Character")}
+            Row ( modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+            ){
+                Button(onClick = { viewModel.addCharacterEntity("Dummy") }) { Text("Add") }
+                Button(onClick = { navigator.navigate(EditCharacterScreenDestination)}) { Text("Edit") }
+                Button(onClick = { navigator.navigate(CharacterSheetScreenDestination)}) { Text("View Character Sheet") }
+            }
         ListCharactersLazyColumn(context,viewModel, characters=characters, modifier = Modifier.padding(padding))
     }}
 }

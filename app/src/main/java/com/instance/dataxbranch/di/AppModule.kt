@@ -124,9 +124,9 @@ object AppModule {
     }
     @Singleton
     @Provides
-    fun provideGeneralRepository(app:Application,db: AppDatabase):
+    fun provideGeneralRepository(app:Application,db: AppDatabase,questsRepository: LocalQuestsRepository):
             GeneralRepository {
-        return GeneralRepository(app,db)
+        return GeneralRepository(app,db,questsRepository)
     }
     /*@Singleton THIS IS FOR ROOM
     @Provides

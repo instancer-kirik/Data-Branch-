@@ -55,7 +55,7 @@ class UserViewModel @Inject constructor(
 
     ): ViewModel() {
     lateinit var selectedAE: AbilityEntity
-    var selectedCharacterWithStuff: CharacterWithStuff? = null
+    var selectedCharacterWithStuff: CharacterWithStuff=generalRepository.selectedCharacterWithStuff
     var currentSite: String= "https://sites.google.com/view/instance-select/home"
 
     //val _qwe:
@@ -327,6 +327,10 @@ refresh()
     fun onQuestCompleted(quest: QuestWithObjectives) {
 meWithAbilities.user.xp+=quest.quest.rewardxp
 
+    }
+
+    fun save(c: CharacterWithStuff) {
+        generalRepository.save(c)
     }
 }
 

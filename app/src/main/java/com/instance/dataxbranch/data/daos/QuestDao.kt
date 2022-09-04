@@ -1,6 +1,7 @@
 package com.instance.dataxbranch.data.daos
 
 import androidx.room.*
+import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 
@@ -14,12 +15,16 @@ abstract class QuestDao {
     abstract fun getItAll(): Array<QuestWithObjectives>//probably includes objectives
 
     @Transaction
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun save(objective: ObjectiveEntity)
 
-    @Insert
+    /*@Transaction
+    @Update
+    abstract fun save(objectives: List<ObjectiveEntity>)
+*/
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun save(quest:QuestEntity):Long
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertQuestEntity(quest: QuestEntity?):Long
 
     @Insert
@@ -45,18 +50,42 @@ abstract class QuestDao {
 
 
 
-    fun insert(QuestWithObjectives: QuestWithObjectives) {
-        val id = insertQuestEntity(QuestWithObjectives.quest)
-        QuestWithObjectives.objectives.forEach { i -> i.id= id }
-        insertAll(QuestWithObjectives.objectives)
+    fun insert(qwo: QuestWithObjectives) {
+        val id = insertQuestEntity(qwo.quest)
+        qwo.objectives.forEach { i -> i.id= id }
+        insertAll(qwo.objectives)
+    }
+
+    fun save(qwo: QuestWithObjectives) {
+        val id = save(qwo.quest)
+        qwo.objectives.forEach { i -> i.id= id }
+        updateAll(qwo.objectives)
+    }
+    /*@Transaction
+
+    fun save(QuestsWithObjectives: List<QuestWithObjectives>) {
+        val id = update(QuestsWithObjectives.)
+        QuestsWithObjectives.objectives.forEach { i -> i.id= id }
+        updateAll(QuestsWithObjectives.objectives)
+    }*/
+    /*@Transaction
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun save(items: Iterable<QuestWithObjectives>)*/
+    fun save(items: Iterable<QuestWithObjectives>){
+        items.forEach{
+            save(it.quest)
+            insertAll(it.objectives)
+        }
     }
 
     fun delete(QuestWithObjectives: QuestWithObjectives) {
         delete(QuestWithObjectives.quest, QuestWithObjectives.objectives)
     }
 
-    @Insert
-    abstract fun insertAll(objectives: List<ObjectiveEntity?>?)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertAll(objectives: Iterable<ObjectiveEntity>?)
+    @Update
+    abstract fun updateAll(objectives: List<ObjectiveEntity?>?)
     //
     //abstract fun insertQuestEntity(recipe: QuestEntity?): Long //return type is the key here.
     @Transaction
@@ -66,9 +95,10 @@ abstract class QuestDao {
     @Query("SELECT * FROM quests")
     abstract fun loadAll(): Array<QuestWithObjectives>
 
-
     @Update
-    abstract fun update(vararg quest:QuestEntity)
+    abstract fun update(quest: QuestEntity?):Int
+    @Update
+    abstract fun update(vararg quest:QuestEntity):Int
     @Update
     abstract fun update(objective: ObjectiveEntity)
 

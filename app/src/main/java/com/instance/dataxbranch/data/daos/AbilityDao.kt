@@ -22,6 +22,8 @@ abstract class AbilityDao() {//:EntityDao<AbilityEntity>
     @Insert
     abstract fun insertAll(abilities: List<AbilityEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun save(items: Iterable<AbilityEntity>)
     /*@Query("SELECT * FROM abilities WHERE uid=:uid") not many to many here, no need
     abstract fun getAbilites(uid:Long): List<AbilityEntity>*/
     @Query("SELECT * FROM abilities")

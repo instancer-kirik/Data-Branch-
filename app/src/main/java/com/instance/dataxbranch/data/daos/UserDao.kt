@@ -46,7 +46,9 @@ abstract class UserDao {
     @Transaction
    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun save(user: User)
-
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun save(char: CharacterEntity)
 
     @Transaction
     @Query("SELECT * FROM abilities")

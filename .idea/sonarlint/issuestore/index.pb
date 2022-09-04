@@ -59,8 +59,6 @@ z
 Japp/src/main/java/com/instance/dataxbranch/data/entities/QuestionEntity.kt,4\d\4d7558e16ef20126dfea60dc47d142ac9884409d
 v
 Fapp/src/main/java/com/instance/dataxbranch/data/entities/PlotEntity.kt,c\5\c5009fb40683bfdb94805563702e4551d9283daa
-
-Oapp/src/main/java/com/instance/dataxbranch/data/firestore/ResponseRepository.kt,0\9\097cf5938742478f53f48bda7d0f519779260ecb
 É
 Sapp/src/main/java/com/instance/dataxbranch/data/firestore/ResponseRepositoryImpl.kt,a\2\a2b5a2d63b34776b5b12eaa2b7d7285f0da9cdf2
 z
@@ -91,8 +89,6 @@ Mapp/src/main/java/com/instance/dataxbranch/ui/viewModels/ChatRoomViewModel.kt,
 Napp/src/main/java/com/instance/dataxbranch/data/firestore/FirestoreChatRoom.kt,a\7\a7077c27887124ab359bba5d8010f68252e38309
 o
 ?app/src/main/java/com/instance/dataxbranch/social/MyChatList.kt,9\6\969625a588d31008d6b181a5048753d03aa69303
-}
-Mapp/src/main/java/com/instance/dataxbranch/data/firestore/SocialRepository.kt,f\c\fcfe0fe34029d144bb8b0b43ab47599f330b4c79
 Å
 Qapp/src/main/java/com/instance/dataxbranch/data/firestore/SocialRepositoryImpl.kt,5\f\5f7f3fe7f2437af8d5d480058afa89cfeaf8d2bf
 x
@@ -187,8 +183,6 @@ l
 <app/src/main/java/com/instance/dataxbranch/ui/LoginScreen.kt,e\8\e899b378da4ab1879b60988ce29b5c7c1c61be81
 Ä
 Papp/src/main/java/com/instance/dataxbranch/ui/components/OverwriteLocalDialog.kt,9\1\91d550439db48fa240ab56d7d23da98f71d5c7a6
-k
-;app/src/main/java/com/instance/dataxbranch/ui/UserScreen.kt,f\9\f92ff9f0aee4f28d95dc68df44f2d3127af29f9b
 o
 ?app/src/main/java/com/instance/dataxbranch/ui/UserDumpScreen.kt,9\2\92deb430e132905d7ad4438fd375612c022e318f
 ?
@@ -205,8 +199,6 @@ j
 :app/src/main/java/com/instance/dataxbranch/MainActivity.kt,5\4\54e4fca92e8a9990650ad1227cbd46a5465d6b46
 É
 Sapp/src/main/java/com/instance/dataxbranch/domain/use_case/AddQuestEntitybyQuest.kt,5\4\549b234f3320add81c374bc0a78763ce7a6497bc
-{
-Kapp/src/main/java/com/instance/dataxbranch/data/entities/ObjectiveEntity.kt,3\6\36f7d747800ef7b220cfb721db913f9f0a335dfb
 k
 ;app/src/main/java/com/instance/dataxbranch/DataBranchApp.kt,0\a\0a9e6e67b9854d797d0aaccd16c6e478461f0627
 {
@@ -217,3 +209,23 @@ n
 >app/src/main/java/com/instance/dataxbranch/ui/FriendsScreen.kt,9\f\9f2867d1f62975d76658d329ae5edfd2b72e9c87
 |
 Lapp/src/main/java/com/instance/dataxbranch/domain/use_case/GetLocalQuests.kt,8\9\899acd53e7214d9ff881b983170f386e5051e43a
+o
+?app/src/main/java/com/instance/dataxbranch/ui/MyQuestsScreen.kt,0\f\0ff88e920ee84f9d1289b0092cf06c8201619784
+p
+@app/src/main/java/com/instance/dataxbranch/ui/AbilitiesScreen.kt,e\1\e1506c007b959ac9c9126b7b83ef3061412698ea
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+z
+Japp/src/main/java/com/instance/dataxbranch/data/local/UserWithAbilities.kt,b\e\be1975757804d88f83542ee3793fa9570dca9c30
+w
+Gapp/src/main/java/com/instance/dataxbranch/data/entities/QuestEntity.kt,6\b\6ba2cf95ec6f6968dbaae5c7a9eaf1518de4ade3
+~
+Napp/src/main/java/com/instance/dataxbranch/ui/viewModels/RoomQuestViewModel.kt,a\8\a805d13805975d3a2ad62b10a6f7ba2d0e301846
+<
+build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
+@
+app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
+l
+<app/src/main/java/com/instance/dataxbranch/core/Constants.kt,e\f\efd79d22c064fa431bbf205333959cf5513e1eb4
+z
+Japp/src/main/java/com/instance/dataxbranch/data/firestore/FirestoreUser.kt,8\a\8a3c2ddebfdf23d50c4f83002d1dfd5fb1c65165
