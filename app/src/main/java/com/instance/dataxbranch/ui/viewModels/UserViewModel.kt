@@ -7,24 +7,20 @@ import android.util.Log
 
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.UserDao
-import com.instance.dataxbranch.data.entities.AbilityEntity
-import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.local.GeneralRepository
 
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.AppDatabase
-import com.instance.dataxbranch.data.entities.CharacterEntity
+import com.instance.dataxbranch.data.entities.*
 import com.instance.dataxbranch.data.firestore.FirestoreUser
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
@@ -55,7 +51,9 @@ class UserViewModel @Inject constructor(
 
     ): ViewModel() {
     lateinit var selectedAE: AbilityEntity
-    var selectedCharacterWithStuff: CharacterWithStuff=generalRepository.selectedCharacterWithStuff
+    lateinit var selectedQuest: QuestWithObjectives
+    //var selectedCharacterWithStuff: CharacterWithStuff=generalRepository.selectedCharacterWithStuff
+   // var selectedCharacterIndex:Int = 0
     var currentSite: String= "https://sites.google.com/view/instance-select/home"
 
     //val _qwe:
@@ -71,6 +69,8 @@ class UserViewModel @Inject constructor(
     var refreshWebview = mutableStateOf(false)
     var downloadCloudDialog = mutableStateOf(false)
     var singleConditionsDialog = mutableStateOf(true)
+    var characterDialogState = mutableStateOf(false)
+    var recomposeState = mutableStateOf(false)
     //var mfsid:String = "-2"
     val handyString: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
@@ -81,18 +81,32 @@ class UserViewModel @Inject constructor(
     var userContainer: User?=null
     init {
 refresh()
-        if(meWithAbilities.abilities.size>0) {
-            selectedAE = meWithAbilities.abilities[0]
+        selectedAE = if(meWithAbilities.abilities.isNotEmpty()) {
+            meWithAbilities.abilities[0]
+        }else{
+            AbilityEntity()
+        }
 
-        }else{selectedAE = AbilityEntity()}
+        selectedQuest = if(getSelectedCharacter().quests.isNotEmpty()) {
+            getSelectedCharacter().quests[0]
+        }else{
+            QuestWithObjectives(QuestEntity(title="init"),listOf(ObjectiveEntity(obj="init")))
+        }
     }
-    fun refresh() : String {
+    fun refresh(andQuests:Boolean = false) : String {
         generalRepository.sync()
         viewModelScope.launch {
            /* abilities = generalRepository.aDao.getAbilites()
             // Coroutine that will be canceled when the ViewModel is cleared.*/
             meWithAbilities=generalRepository.getMe()
+            if(andQuests){
+                generalRepository.questsRepository.refresh()
+                generalRepository.updateCharacterQuests()
+            }
         }
+
+
+
         fixattunement()
         return meWithAbilities.user.uname
     }
@@ -101,14 +115,16 @@ refresh()
         return generalRepository.mcharacters
     }
     fun setSelectedCharacter(index: Int){
-        generalRepository.selectedCharacterWithStuff=generalRepository.mcharacters[index]
-        selectedCharacterWithStuff=generalRepository.selectedCharacterWithStuff
-        Log.d(TAG,"SELECTED CHARACTER IS INDEX $index and is $selectedCharacterWithStuff")
+
+        generalRepository.selectedCharacterIndex = index
+        generalRepository.selectedCharacterWithStuff=generalRepository.mcharacters[generalRepository.selectedCharacterIndex]
+
+        Log.d(TAG,"SELECTED CHARACTER IS INDEX ${generalRepository.selectedCharacterIndex} and is ${getSelectedCharacter()}")
     }
     fun setSelectedCharacter(character: CharacterWithStuff){
         generalRepository.selectedCharacterWithStuff=character
-        selectedCharacterWithStuff=generalRepository.selectedCharacterWithStuff
-        Log.d(TAG,"SELECTED CHARACTER is $selectedCharacterWithStuff")
+
+        Log.d(TAG,"WARNING, DOES NOT UPDATE INDEX SELECTED CHARACTER is ${getSelectedCharacter()}")
     }
     fun addCharacterEntity(name:String){
         generalRepository.makeACharacter(name)
@@ -122,6 +138,12 @@ refresh()
             }
         }else meWithAbilities.user.attuned
     }*/
+    fun getSelectedCharacter():CharacterWithStuff{
+        return generalRepository.selectedCharacterWithStuff
+    }
+    fun getSelectedCharacterIndex():Int{
+        return generalRepository.selectedCharacterIndex
+    }
     fun getAttuned():Int{
         return if(meWithAbilities.user.attuned==0){
             meWithAbilities.abilities.filter{it.inloadout}.size
@@ -147,6 +169,36 @@ refresh()
             udao.save(me)
            // udao.update(me)
         }}
+    fun onCheckboxChecked(quest: QuestWithObjectives, checked: Boolean,) {
+        //Log.d(TAG, "$quest is is $checked   "+quest.quest.completed.toString())
+        viewModelScope.launch {
+            generalRepository.questsRepository.update(quest.quest.copy(completed = checked))
+        }
+        if(checked){
+            onQuestCompleted(quest)
+        }
+    }
+    fun onObjCheckedChanged(obj: ObjectiveEntity, b: Boolean){ CoroutineScope(Dispatchers.IO).launch {generalRepository.questsRepository.update(obj)} }
+    fun addNewObjectiveEntity(quest: QuestWithObjectives){ CoroutineScope(Dispatchers.IO).launch { useCases.addNewObjectiveEntityToQuestEntity(quest)} }
+    fun getQuestsFromRepo():Array<QuestWithObjectives>{ return generalRepository.questsRepository.getQuests() }
+    fun addNewQuestEntity(title: String, description:String,author: String){
+        var char = getSelectedCharacter()
+        viewModelScope.launch {
+            val result = generalRepository.newQuestOnCharacter(
+                QuestEntity(
+                    title = title,
+                    description = description,
+                    author = author
+                )
+            )
+            Log.d(TAG, "11111character quests: ${char.quests.size}")
+            //generalRepository.updateCharacterQuests()
+            refresh(true)
+            Log.d(TAG, "character quests: ${getSelectedCharacter().quests.size}")
+            /*    CoroutineScope(Dispatchers.IO).launch {
+            result =useCases.addNewQuestEntity(title,description, author) }*/
+        }
+    }
 
     fun getMeWithAbilities(): UserWithAbilities {
         refresh()
@@ -158,6 +210,14 @@ refresh()
         //return meWithAbilities.user.friends// stored as ids, must store more local or pull from cloud
 
     }
+    fun update(oe: ObjectiveEntity){
+        CoroutineScope(Dispatchers.IO).launch {
+            qdao.update(oe)
+        }}
+    fun update(quest: QuestWithObjectives){
+        CoroutineScope(Dispatchers.IO).launch {
+            qdao.update(quest.quest)
+        }}
     fun getAllFirestoreUsers(context:Context, db: FirebaseFirestore=FirebaseFirestore.getInstance()):List<FirestoreUser>{
         var output :List<FirestoreUser> =listOf()
         var cachedUsers = generalRepository.getCachedUsers()
@@ -326,7 +386,9 @@ refresh()
 
     fun onQuestCompleted(quest: QuestWithObjectives) {
 meWithAbilities.user.xp+=quest.quest.rewardxp
-
+val char = getSelectedCharacter()
+    char.character.xp+=quest.quest.rewardxp
+       save(char)
     }
 
     fun save(c: CharacterWithStuff) {

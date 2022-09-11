@@ -43,7 +43,7 @@ data class CharacterEntity @JvmOverloads constructor(
    // @ColumnInfo(name = "title") var title: String? = null,
     @ColumnInfo(name = "uid")val uid: Long = 1L,
 
-    @ColumnInfo(name = "uname")var uname: String = DEFAULT_UNAME,
+    //@ColumnInfo(name = "uname")var uname: String = DEFAULT_UNAME,
     @ColumnInfo(name = "name")var name: String = "name",
     @ColumnInfo(name = "imageUrl") var imageUrl: String = "",
     //val price: Long = 100L,
@@ -104,14 +104,15 @@ data class CharacterEntity @JvmOverloads constructor(
 
     @ColumnInfo(name = "activeCloudQuests")var activeCloudQuests: List<String> =listOf(),
     @ColumnInfo(name = "activeQuests")var activeQuests: List<Long> =listOf(),
-    @ColumnInfo(name = "quests")val quests: List<Long> =listOf(),//dockedQuests
+    @ColumnInfo(name = "quests") var quests: List<Long> =listOf(),//dockedQuests
     @ColumnInfo(name = "dockedCloudQuests") var dockedCloudQuests: List<String> =listOf(),
 
 
     @ColumnInfo(name = "status")var status: String = "intrepid.. curious",
     @ColumnInfo(name = "terms_status")var terms_status: String = "",//update this on accepting terms
     var xp: Int = 0,
-
+    @ColumnInfo(name = "race")var race: String = "Generic",
+    @ColumnInfo(name = "class")var className: String = "Nothing",
 //store list of authored quests, nuggets,abilities,items etc
     ) {
 
@@ -182,7 +183,7 @@ data class CharacterEntity @JvmOverloads constructor(
             rating_denominator = tangent.rating_denominator
             fsid =tangent.fsid
             //uid=tangent.uid
-            uname = tangent.uname
+            //uname = tangent.uname characters don't have usernames
             name = tangent.name
             imageUrl = tangent.imageUrl
             tagline = tangent.tagline
@@ -220,8 +221,9 @@ data class CharacterEntity @JvmOverloads constructor(
             numDeaths = tangent.numDeaths
             //8/21/2022
             xp = tangent.xp
-
-
+            //9/9/2022
+            className = tangent.className
+            race = tangent.race
             }
         else if(newer ==0) {
             //newer is user

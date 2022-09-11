@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.entities.CharacterEntity
 import com.instance.dataxbranch.data.local.CharacterWithStuff
+import com.instance.dataxbranch.destinations.CharacterQuestsScreenDestination
 import com.instance.dataxbranch.destinations.CharacterSelectScreenDestination
 import com.instance.dataxbranch.destinations.CharacterSheetScreenDestination
 import com.instance.dataxbranch.destinations.EditCharacterScreenDestination
@@ -52,14 +53,15 @@ fun CharacterSelectScreen (viewModel: UserViewModel = hiltViewModel(),
             ){
                 Button(onClick = { viewModel.addCharacterEntity("Dummy") }) { Text("Add") }
                 Button(onClick = { navigator.navigate(EditCharacterScreenDestination)}) { Text("Edit") }
-                Button(onClick = { navigator.navigate(CharacterSheetScreenDestination)}) { Text("View Character Sheet") }
+                Button(onClick = { navigator.navigate(CharacterQuestsScreenDestination)}) { Text("Quest") }
+                Button(onClick = { navigator.navigate(CharacterSheetScreenDestination)}) { Text("Sheet") }
             }
         ListCharactersLazyColumn(context,viewModel, characters=characters, modifier = Modifier.padding(padding))
     }}
 }
 @Composable
 fun ListCharactersLazyColumn(context:Context,viewModel: UserViewModel, characters: List<CharacterWithStuff>, modifier: Modifier){
-    var selectedIndex by remember { mutableStateOf(0) }
+    var selectedIndex by remember { mutableStateOf(viewModel.getSelectedCharacterIndex()) }
     val onItemClick = { index: Int ->
         selectedIndex = index
         viewModel.setSelectedCharacter(index)
@@ -115,8 +117,9 @@ fun CharacterEntityView(char: CharacterWithStuff,
 fun CharacterEntityCard( char: CharacterWithStuff){
     Row{
         Column {
-            Text(char.character.uname)
+
             Text(char.character.name)
+            Text("Lvl ${char.character.level} ${char.character.race} ${char.character.className}")
         }
     }
    /* Row(modifier= Modifier.background(if (ae.inloadout) Color.Blue else Color.Transparent   )*//*{

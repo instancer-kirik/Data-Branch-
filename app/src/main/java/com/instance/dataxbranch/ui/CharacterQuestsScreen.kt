@@ -26,41 +26,40 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.gms.tasks.Tasks.await
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.instance.dataxbranch.R
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 //import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
-import com.instance.dataxbranch.destinations.QuestsScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.core.Constants.TAG
+import com.instance.dataxbranch.destinations.CharacterQuestDetailScreenDestination
+import com.instance.dataxbranch.destinations.CharacterQuestsScreenDestination
 import com.instance.dataxbranch.quests.QuestWithObjectives
-import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
 import com.instance.dataxbranch.destinations.QuestDetailScreenDestination
+import com.instance.dataxbranch.ui.components.AddQuestEntityOnCharacterAlertDialog
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.instance.dataxbranch.utils.await
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import kotlinx.coroutines.*
-import kotlin.system.measureTimeMillis
 
-var showDialog =     mutableStateOf(false)
-var showDialog2 =     mutableStateOf(false)
+var showDialogC =     mutableStateOf(false)
+var showDialogC2 =     mutableStateOf(false)
+var recomposeState = mutableStateOf(false)
 //viewModel: RoomQuestViewModel = hiltViewModel(),
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalStdlibApi::class)
 
 @Destination
 @Composable
-fun MyQuestsScreen(
-    viewModel: RoomQuestViewModel = hiltViewModel(),
+fun CharacterQuestsScreen(
+    //viewModel: RoomQuestViewModel = hiltViewModel(),
     uViewModel: UserViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
 
 
     ) {
+
     /*viewModel.rowsInserted.observeForever(){
         Log.d(TAG, "$it rows inserted")
     }*/
@@ -71,12 +70,15 @@ fun MyQuestsScreen(
 
         topBar = { QuestToolbar(navigator) },
         floatingActionButton = {
-            AddQuestEntityFloatingActionButton()
+            AddQuestEntityFloatingActionButtonC()
         }
     ) { padding ->
 
-        if (viewModel.openDialogState.value) {
-            AddQuestEntityAlertDialog()
+        if (recomposeState.value){
+            recomposeState.value =false
+            }
+        if (uViewModel.characterDialogState.value) {
+            AddQuestEntityOnCharacterAlertDialog()
         }
         Column {
            /* Button(
@@ -85,7 +87,7 @@ fun MyQuestsScreen(
             ) { Text("to Cloud Quests") }
 */
             Button(
-                onClick = { showDialog.value = true },
+                onClick = { showDialogC.value = true },
                 modifier = Modifier.padding(2.dp)
             ) { Text("Button") }
 
@@ -93,13 +95,13 @@ fun MyQuestsScreen(
 
             //Text(viewModel.localQuestsRepository.getQuests().forEach { it.toString() }.toString())
 //viewModel.dao.getAll()
-            if (showDialog.value) {
-                alert(viewModel)
+            if (showDialogC.value) {
+                alertC(uViewModel,navigator)
             }
-
-            LocalLazyColumn(viewModel, quests = viewModel.quests, modifier = Modifier.padding(2.dp),navigator,uViewModel)
+            Text("Quests are: ${uViewModel.getSelectedCharacter().character.quests} --")
+            CharacterLocalLazyColumn( quests = uViewModel.getSelectedCharacter().quests, modifier = Modifier.padding(2.dp),navigator,uViewModel)
             Button(
-                onClick = { showDialog.value = true },
+                onClick = { showDialogC.value = true },
                 modifier = Modifier.padding(2.dp)
             ) { Text("End") }
 
@@ -108,23 +110,26 @@ fun MyQuestsScreen(
     }
 
 @Composable
-fun alert(viewModel: RoomQuestViewModel) {
+fun alertC(uViewModel: UserViewModel,navi: DestinationsNavigator) {
     AlertDialog(
         title = {
             Text(text = "Test")
         },
         text = {
-            Text(viewModel.getQuestsFromRepo().toString())
+            Text(uViewModel.getQuestsFromRepo().toString())
         },
         onDismissRequest = {
 
         },
         buttons = {
-            Button(onClick = { showDialog.value = false
-            viewModel.refresh()}) {
+            Button(onClick = { showDialogC.value = false
+            uViewModel.refresh(true)
+            //navi.navigate(CharacterQuestsScreenDestination)
+
+            }) {
                 Text("Refresh")
             }
-            Button(onClick = { CoroutineScope(Dispatchers.IO).launch { viewModel.localQuestsRepository.deleteAllRows() }}) {
+            Button(onClick = { CoroutineScope(Dispatchers.IO).launch { uViewModel.generalRepository.questsRepository.deleteAllRows() }}) {
                 Text("Clear")
             }
         }
@@ -134,11 +139,11 @@ fun alert(viewModel: RoomQuestViewModel) {
 
 
 @Composable
-fun AddQuestEntityFloatingActionButton(viewModel: RoomQuestViewModel = hiltViewModel()
+fun AddQuestEntityFloatingActionButtonC(uViewModel: UserViewModel = hiltViewModel()
 ) {
     FloatingActionButton(
         onClick = {
-            viewModel.openDialogState.value = true
+            uViewModel.characterDialogState.value = true
         },
         backgroundColor = MaterialTheme.colors.primary
     ) {
@@ -152,12 +157,18 @@ fun AddQuestEntityFloatingActionButton(viewModel: RoomQuestViewModel = hiltViewM
 
 
 @Composable
-fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObjectives>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel){
+fun CharacterLocalLazyColumn(quests: Array<QuestWithObjectives>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel){
     var selectedIndex by remember { mutableStateOf(0) }
-    val onItemClick = { index: Int -> selectedIndex = index}
+    val onItemClick = { index: Int -> selectedIndex = index
+    uViewModel.selectedQuest=quests[index]
+        recomposeState.value=true
+    }
 
     Text(
-        "placeholder1"//text = "Index $index",
+        "Selected Character: ${uViewModel.getSelectedCharacter().character.name}" +
+                "\n Selected Quest: ${uViewModel.selectedQuest}\"" +
+                "\n NUMQUESTS = ${uViewModel.getSelectedCharacter().quests.size}" +
+                "\n Quests: ${uViewModel.getSelectedCharacter().quests} ##"//text = "Index $index"
     )
     LazyColumn(
         modifier.fillMaxSize(),
@@ -165,9 +176,9 @@ fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObject
         //val mObserver = Observer<List<QuestWithObjectives>> { qwe->
         itemsIndexed(quests) { index,quest ->
             //Text(quest.toString())//text = "Index $index",
-            LocalQuestView(
+            CharacterLocalQuestView(
 
-                viewModel = viewModel,
+
                 quest = quest,
                 index = index,
                 selected = selectedIndex == index,
@@ -185,9 +196,9 @@ fun LocalLazyColumn(viewModel: RoomQuestViewModel, quests: Array<QuestWithObject
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LocalQuestView(
+fun CharacterLocalQuestView(
     navi: DestinationsNavigator,
-    viewModel: RoomQuestViewModel,
+
     quest: QuestWithObjectives,
     index: Int,
     selected: Boolean,
@@ -207,7 +218,7 @@ fun LocalQuestView(
             text = "Index $index",
         )
 
-        LocalQuestCardContent(navi,viewModel,quest,uViewModel,)
+        CharacterLocalQuestCardContent(navi,quest,uViewModel)
 
     }
     //Text("DEBUG2")
@@ -229,7 +240,7 @@ fun LocalQuestView(
 }*/
 
 @Composable
-fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewModel, quest: QuestWithObjectives,uViewModel: UserViewModel) {
+fun CharacterLocalQuestCardContent(navi: DestinationsNavigator, quest: QuestWithObjectives,uViewModel: UserViewModel) {
 
         var expanded by remember { mutableStateOf(false) }
 
@@ -252,7 +263,7 @@ fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewM
                     .fillMaxWidth()
                     .background(Color.Black.copy(alpha = 0.5f))
             ) {
-                Text(text = "Title:            id= ${quest.quest.id}")
+                Text(text = "Title:          id= ${quest.quest.id}")
                 Text(
 
                     text = quest.quest.title + "",
@@ -272,9 +283,9 @@ fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewM
                         //Text("open")
 
                         quest.objectives.forEach { oe ->
-                            ObjectiveViewEdit(viewModel, oe)
+                            CharacterObjectiveViewEdit(oe,uViewModel)
                         }
-                        Button(onClick = { viewModel.addNewObjectiveEntity(quest) }) { Text("ADD OBJECTIVE") }
+                        Button(onClick = { uViewModel.addNewObjectiveEntity(quest) }) { Text("ADD OBJECTIVE") }
                     }
 
 
@@ -295,13 +306,13 @@ fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewM
                     onCheckedChange = {
                         checkedState.value = it
                         quest.quest.apply { completed = it }
-                        viewModel.onCheckboxChecked(quest, it,uViewModel)
+                        uViewModel.onCheckboxChecked(quest, it)
                     })
                 //if(!checkedState.value){ trying to pop up dialog for confirm or cancel
                 /*val time = measureTimeMillis {
                                 runBlocking {
                                         try {
-                                            showDialog2.value = true
+                                            showDialogC2.value = true
                                             Log.d(TAG,"IN ---------------")
                                             waitcomplete(context, quest, viewModel)
                                         }finally{
@@ -336,7 +347,7 @@ fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewM
 
                 }
             }
-                Button(onClick = { navi.navigate(QuestDetailScreenDestination) }) { Text("EDIT") }
+                Button(onClick = { navi.navigate(CharacterQuestDetailScreenDestination) }) { Text("EDIT") }
         }}
 }
 /*
@@ -366,7 +377,7 @@ fun CompleteCheckBox(objective: Quest.QuestObjective) {
 }*/
 
 @Composable
-fun ObjectiveViewEdit(viewModel: RoomQuestViewModel, oe: ObjectiveEntity) {
+fun CharacterObjectiveViewEdit( oe: ObjectiveEntity,uViewModel:UserViewModel) {
 
 
         var value by remember { mutableStateOf(oe.obj) }
@@ -392,7 +403,7 @@ fun ObjectiveViewEdit(viewModel: RoomQuestViewModel, oe: ObjectiveEntity) {
                             oe.obj =
                                 value// updates quest. needs method to push back to firebase
                             oe.desc = value2
-                            viewModel.update(oe)
+                            uViewModel.update(oe)
                         }
                     }
                 ) {
@@ -442,7 +453,7 @@ fun ObjectiveViewEdit(viewModel: RoomQuestViewModel, oe: ObjectiveEntity) {
                             onCheckedChange = {
                                 checkedState.value = it
                                 oe.apply { completed = it }
-                                viewModel.onObjCheckedChanged(oe, it)
+                                uViewModel.onObjCheckedChanged(oe, it)
                             })
                     }
 
@@ -453,7 +464,7 @@ fun ObjectiveViewEdit(viewModel: RoomQuestViewModel, oe: ObjectiveEntity) {
             }
         }
 }
-@Composable//, onClick: (Int) -> Unit
+/*@Composable//, onClick: (Int) -> Unit
 fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestWithObjectives,navi: DestinationsNavigator,uViewModel: UserViewModel) {
     Box(modifier = Modifier
 
@@ -466,16 +477,16 @@ fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestWithObjective
         LocalQuestCardContent(navi,viewModel,quest, uViewModel )
     }
 
-}
-suspend fun waitcomplete(context: Context, quest: QuestWithObjectives, viewModel: RoomQuestViewModel) :Boolean{
+}*/
+suspend fun Characterwaitcomplete(context: Context, quest: QuestWithObjectives, viewModel: RoomQuestViewModel) :Boolean{
 return MaterialAlertDialogBuilder(context)
 .setTitle("Complete Quest?")
 .create()
 .await(positiveText = "Confirm", negativeText = "Cancel")
 }
 @Composable
-fun complete(quest: QuestWithObjectives ,viewModel: RoomQuestViewModel) :Boolean{
-    if(showDialog2.value){
+fun complete2(quest: QuestWithObjectives ,viewModel: RoomQuestViewModel) :Boolean{
+    if(showDialogC2.value){
 
 
     AlertDialog(
@@ -486,18 +497,18 @@ fun complete(quest: QuestWithObjectives ,viewModel: RoomQuestViewModel) :Boolean
             Text(quest.quest.title.toString())
         },
         onDismissRequest = {
-            showDialog2.value = false
+            showDialogC2.value = false
 
         },
         buttons = {
             Button(onClick = {
-                showDialog2.value = false
+                showDialogC2.value = false
                 quest.quest.apply { completed = true }
 
             }) {
                 Text("Yes")
             }
-            Button(onClick = {  showDialog2.value = false} ) {
+            Button(onClick = {  showDialogC2.value = false} ) {
                 Text("not yet")
             }
             Button(onClick = { CoroutineScope(Dispatchers.IO).launch { viewModel.localQuestsRepository.deleteQuestEntity(quest) } }) {

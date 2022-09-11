@@ -94,7 +94,7 @@ fun EditCharacterScreen(
                    "SPD " to remember { mutableStateOf(c.character.speed) },
                    "CON " to remember { mutableStateOf(c.character.constitution) },
                )*/
-               val c = viewModel.selectedCharacterWithStuff
+               val c = viewModel.getSelectedCharacter()
                c.let {
                    val m = mapOf(
                        "energy " to remember { mutableStateOf(c.character.energy) },
@@ -235,7 +235,8 @@ fun CstatState(m:Map<String, MutableState<Int>>):Map<String, Int> {
 fun CharacterSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, c: CharacterWithStuff,
                    m:Map<String, MutableState<Int>>, roomQuestViewModel: RoomQuestViewModel){
     var tg by remember { mutableStateOf(c.character.tagline)}
-    var un by remember { mutableStateOf(c.character.uname)}
+    var cn by remember { mutableStateOf(c.character.className)}
+    var rc by remember { mutableStateOf(c.character.race)}
     var nm by remember { mutableStateOf(c.character.name)}
     var b by remember { mutableStateOf(c.character.bio)}
     var status by remember {mutableStateOf(c.character.status)}
@@ -264,7 +265,8 @@ fun CharacterSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, c:
                     c.character.constitution = mapped["CON "]!!
                    // Log.d(TAG, "energy is now " + mapped["energy "])
                     c.character.tagline = tg
-                    c.character.uname = un
+                    c.character.className = cn
+                    c.character.race = rc
                     c.character.name = nm
                     c.character.bio = b
                     c.character.status = status
@@ -291,8 +293,19 @@ fun CharacterSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, c:
                 navigator.navigate(UserScreenDestination)}){Text("REFRESH")
                 }}
         TextField(
-            value = "$un",
-            onValueChange = { un = it },
+            value = "$rc",
+            onValueChange = { rc = it },
+            //label = { Text("tagline:") },
+            maxLines = 2,
+            textStyle = TextStyle(
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(8.dp)
+        )
+        TextField(
+            value = "$cn",
+            onValueChange = { cn = it },
             //label = { Text("tagline:") },
             maxLines = 2,
             textStyle = TextStyle(

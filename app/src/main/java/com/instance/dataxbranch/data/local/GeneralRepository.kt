@@ -1,6 +1,8 @@
 package com.instance.dataxbranch.data.local
 
 import android.app.Application
+import android.util.Log
+import com.instance.dataxbranch.core.Constants.TAG
 
 import com.instance.dataxbranch.data.daos.AbilityDao
 
@@ -19,7 +21,9 @@ import kotlinx.coroutines.*
 
 import javax.inject.Singleton
 @Singleton
-class GeneralRepository(application: Application, db: AppDatabase,questsRepository: LocalQuestsRepository) {
+class GeneralRepository(application: Application, db: AppDatabase,
+                        val questsRepository: LocalQuestsRepository
+) {
 
     private var cachedUsers: List<FirestoreUser> = listOf()
     val aDao: AbilityDao=db.abilityDao()
@@ -28,24 +32,25 @@ class GeneralRepository(application: Application, db: AppDatabase,questsReposito
     var mabilities: List<AbilityEntity> = listOf(AbilityEntity())
     var mcharacters: List<CharacterWithStuff> = listOf(
         CharacterWithStuff(
-            CharacterEntity(uname="ME"),
+            CharacterEntity(name="ME"),
             listOf(AbilityEntity(title = "my_ability1")),
             arrayOf(QuestWithObjectives(QuestEntity(title="my_quest1") ,listOf()))
         ),
         CharacterWithStuff(
-            CharacterEntity(uname="PRIME1"),
+            CharacterEntity(name="PRIME1"),
             listOf(AbilityEntity(title = "APRIME1")),
             arrayOf(QuestWithObjectives(QuestEntity(title="APRIME1") ,listOf()))
         ),
         CharacterWithStuff(
-            CharacterEntity(uname="PRIME2"),
+            CharacterEntity(name="PRIME2"),
             listOf(AbilityEntity(title = "APRIME2")),
             arrayOf(QuestWithObjectives(QuestEntity(title="APRIME2") ,listOf()))
         ))
 
     private lateinit var me:User
     lateinit var selectedAE: AbilityEntity
-    var selectedCharacterWithStuff: CharacterWithStuff = mcharacters[0]
+    var selectedCharacterIndex: Int = 0
+    var selectedCharacterWithStuff: CharacterWithStuff = mcharacters[selectedCharacterIndex]
     private var me_container= UserWithAbilities(User(),mabilities)
     init {
         sync()
@@ -78,7 +83,7 @@ class GeneralRepository(application: Application, db: AppDatabase,questsReposito
         CoroutineScope(Dispatchers.IO).launch {
             uDao.save(me)
         }
-    fun save(char:CharacterWithStuff): Job =
+    fun save(char:CharacterWithStuff=selectedCharacterWithStuff): Job =
         CoroutineScope(Dispatchers.IO).launch {
             uDao.save(char.character)
             //char.abilities.forEach {aDao.save(it)}
@@ -97,20 +102,24 @@ class GeneralRepository(application: Application, db: AppDatabase,questsReposito
 
     }
     fun getAllCharacters():Job =
+
         CoroutineScope(Dispatchers.IO).launch {
             uDao.getAllCharacters().forEach{
-                mcharacters=mcharacters.plus(CharacterWithStuff(it))
-
+                if(mcharacters.any { character->character.character.character_id==it.character_id }){
+                    Log.d(TAG,"REPO CALLED, ALREADY IN LIST")
+                }else {
+                    mcharacters = mcharacters.plus(CharacterWithStuff(it))
+                }
             }
         }
 
-    private fun CharacterWithStuff(character: CharacterEntity) :CharacterWithStuff{
-        return CharacterWithStuff(character,mabilities,arrayOf())
+    private fun CharacterWithStuff(character: CharacterEntity,) :CharacterWithStuff{
+        return CharacterWithStuff(character,mabilities,getQuestsbyCharacter(character))
     }
 
-    fun getACharacter(id:Long,questsRepository:LocalQuestsRepository ):Job =
+    fun getACharacter(id:Long ):Job =
         CoroutineScope(Dispatchers.IO).launch {
-            selectedCharacterWithStuff=getCharacterWithStuff(id,questsRepository)
+            selectedCharacterWithStuff=getCharacterWithStuff(id)
         }
     fun syncCharacter(char: CharacterWithStuff):Job =
         CoroutineScope(Dispatchers.IO).launch {
@@ -151,9 +160,9 @@ class GeneralRepository(application: Application, db: AppDatabase,questsReposito
                     // do something else
 
             }*/
-     fun getCharacterWithStuff(id: Long, questsRepository: LocalQuestsRepository): CharacterWithStuff {
+     fun getCharacterWithStuff(id: Long): CharacterWithStuff {
         //var abilities: List<AbilityEntity> =listOf()
-        var qwos: Array<QuestWithObjectives> =questsRepository.getQuests()
+        //var qwos: Array<QuestWithObjectives> =questsRepository.getQuests()
            val character = uDao.getCharacterEntity(id)
             //character.abilities.forEach{ abilities=abilities.plus(aDao.getAbilitesByaid(it))}
            // abilities =
@@ -161,12 +170,30 @@ class GeneralRepository(application: Application, db: AppDatabase,questsReposito
            // qwos =
            //val objectives: List<ObjectiveEntity> = getObjectiveEntityList(id)
            //val qwo = QuestWithObjectives(quest,objectives)
+
+        //qwos.filter{it.quest.id in character.quests}.toTypedArray()
            return CharacterWithStuff(character,
                mabilities.filter{it.aid in character.abilities},
-               qwos.filter{it.quest.id in character.quests}.toTypedArray())
+               getQuestsbyCharacter(character))
        }
+        fun getQuestsbyCharacter(character:CharacterEntity):Array<QuestWithObjectives>{
+            val qwos: Array<QuestWithObjectives> =questsRepository.getQuests()
+            return qwos.filter{it.quest.id in character.quests}.toTypedArray()
+        }
+        fun newQuestOnCharacter(questEntity: QuestEntity){
+            //var qwo: QuestWithObjectives =
+            CoroutineScope(Dispatchers.IO).launch {
+                selectedCharacterWithStuff.character.quests=selectedCharacterWithStuff.character.quests.plus(qDao.save(questEntity))
+                //uDao.save(selectedCharacterWithStuff.character)
 
 
+            }
+
+        }
+        fun updateCharacterQuests(){
+            selectedCharacterWithStuff.quests=getQuestsbyCharacter(selectedCharacterWithStuff.character)
+            Log.d(TAG,"UPDATECHARACTERQUESTS")
+        }
         fun refresh(): Job =
 
             CoroutineScope(Dispatchers.IO).launch {
@@ -226,6 +253,7 @@ class GeneralRepository(application: Application, db: AppDatabase,questsReposito
     fun getCachedUsers(): List<FirestoreUser> {
        return cachedUsers
     }
+
     /*fun sync(): Job =
         CoroutineScope(Dispatchers.IO).launch {
             uDao.save(me_user)

@@ -91,7 +91,7 @@ fun CharacterSheetScreen(
                    "SPD " to remember { mutableStateOf(c.character.speed) },
                    "CON " to remember { mutableStateOf(c.character.constitution) },
                )*/
-               val c = viewModel.selectedCharacterWithStuff
+               val c = viewModel.getSelectedCharacter()
                c.let {
                    val m = mapOf(
                        "energy " to c.character.energy,
@@ -232,7 +232,8 @@ fun staticStatState(m:Map<String, Int>):Map<String, Int> {
 fun CharacterSpielStatic(navigator:DestinationsNavigator, viewModel: UserViewModel, c: CharacterWithStuff,
                    m:Map<String, Int>, roomQuestViewModel: RoomQuestViewModel){
     var tg = c.character.tagline
-    var un = c.character.uname
+    var cn = c.character.className
+    var rc = c.character.race
     var nm = c.character.name
     var b = c.character.bio
     var status = c.character.status
@@ -261,7 +262,8 @@ fun CharacterSpielStatic(navigator:DestinationsNavigator, viewModel: UserViewMod
                     c.character.constitution = mapped["CON "]!!
                    // Log.d(TAG, "energy is now " + mapped["energy "])
                     c.character.tagline = tg
-                    c.character.uname = un
+                    c.character.className = cn
+                    c.character.race = rc
                     c.character.name = nm
                     c.character.bio = b
                     c.character.status = status
@@ -286,7 +288,12 @@ fun CharacterSpielStatic(navigator:DestinationsNavigator, viewModel: UserViewMod
             ) { Text("useless save button") }
             Button(onClick = { navigator.navigate(EditCharacterScreenDestination)}) { Text("Edit")}}
         Text(
-           un
+            rc
+            ,
+            modifier = Modifier.padding(8.dp)
+        )
+        Text(
+           cn
             ,
             modifier = Modifier.padding(8.dp)
         )
