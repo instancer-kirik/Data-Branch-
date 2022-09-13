@@ -186,10 +186,18 @@ class GeneralRepository(application: Application, db: AppDatabase,
                 selectedCharacterWithStuff.character.quests=selectedCharacterWithStuff.character.quests.plus(qDao.save(questEntity))
                 //uDao.save(selectedCharacterWithStuff.character)
 
-
+                save()
             }
 
         }
+    fun putAbilityOnCharacter(ae: AbilityEntity) {
+        selectedCharacterWithStuff.character.abilities=selectedCharacterWithStuff.character.abilities.plus(ae.aid)
+        selectedCharacterWithStuff.abilities= selectedCharacterWithStuff.abilities.plus(ae)
+        CoroutineScope(Dispatchers.IO).launch {
+            save()
+            // udao.update(me)
+        }
+    }
         fun updateCharacterQuests(){
             selectedCharacterWithStuff.quests=getQuestsbyCharacter(selectedCharacterWithStuff.character)
             Log.d(TAG,"UPDATECHARACTERQUESTS")
@@ -242,17 +250,27 @@ class GeneralRepository(application: Application, db: AppDatabase,
         CoroutineScope(Dispatchers.IO).launch {
             aDao.save(ability)
         }
-    fun insertAbility(title: String): Job =
+    fun insertAbility(title: String): AbilityEntity {
+        val ae = AbilityEntity(title = title, author = me_container.user.uname)
+
+
+        CoroutineScope(Dispatchers.IO).launch {
+            aDao.insert(ae)
+        }
+        return ae
+    }
+/*fun insertAbility(title: String): Job =
         CoroutineScope(Dispatchers.IO).launch {
             aDao.insert(AbilityEntity(title=title,author=me_container.user.uname))
-        }
-
+        }*/
     fun setUsers(output: List<FirestoreUser>) {
         cachedUsers=output
     }
     fun getCachedUsers(): List<FirestoreUser> {
        return cachedUsers
     }
+
+
 
     /*fun sync(): Job =
         CoroutineScope(Dispatchers.IO).launch {

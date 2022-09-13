@@ -70,7 +70,7 @@ class UserViewModel @Inject constructor(
     var downloadCloudDialog = mutableStateOf(false)
     var singleConditionsDialog = mutableStateOf(true)
     var characterDialogState = mutableStateOf(false)
-    var recomposeState = mutableStateOf(false)
+    var allabilities = mutableStateOf(false)
     //var mfsid:String = "-2"
     val handyString: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
@@ -154,6 +154,13 @@ refresh()
     }
     fun addNewAbilityEntity(title: String){ //might be better to just do on new title
         generalRepository.insertAbility(title)
+    }
+    fun addNewAbilityEntityOnCharacter(title: String){ //might be better to just do on new title
+        val result = generalRepository.insertAbility(title)
+        putAbilityOnCharacter(result)
+}
+    fun putAbilityOnCharacter(ae: AbilityEntity=selectedAE){
+        generalRepository.putAbilityOnCharacter(ae)
     }
    /* fun addNewAbilityEntity() {
         CoroutineScope(Dispatchers.IO).launch { adao.insert(AbilityEntity()) }

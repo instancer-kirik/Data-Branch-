@@ -20,7 +20,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
 
 import com.instance.dataxbranch.data.entities.AbilityEntity
-import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.destinations.AbilitiesScreenDestination
 
 import com.instance.dataxbranch.showToast
@@ -43,7 +42,7 @@ fun AbilitiesScreen(viewModel: UserViewModel = hiltViewModel(),
                      navigator: DestinationsNavigator) {
     val me=viewModel.getMeWithAbilities()
     val context = LocalContext.current
-
+    //var all = remember { mutableStateOf(false) }
     Scaffold(
 
         topBar = { AbilitiesToolbar(context,viewModel,navigator) },
@@ -64,10 +63,18 @@ fun AbilitiesScreen(viewModel: UserViewModel = hiltViewModel(),
         }
         Column {
             Text("Attunement: ${viewModel.attunement.value} || Attuned: ${viewModel.attuned.value}")
+            Row {
+                Button(onClick = {
+                    viewModel.allabilities.value = !viewModel.allabilities.value
+                }, modifier = Modifier.padding(padding)) { Text("Mode") }
+                if(!viewModel.allabilities.value){Text("Selected Character: ${viewModel.getSelectedCharacter().character.name}")}
+                else{Text("All Abilities")
+                Button(onClick = {viewModel.putAbilityOnCharacter()}){Text("Add to ${viewModel.getSelectedCharacter().character.name}")}}
+            }
             AbilitiesLazyColumn(
                // context,
                 viewModel,
-                abilities = viewModel.getMeWithAbilities().abilities,
+                abilities = whichAbilitiesToUse(viewModel,viewModel.allabilities),
                 modifier = Modifier.padding(2.dp)
             )
             /*me.abilities.forEach {\
@@ -75,6 +82,12 @@ fun AbilitiesScreen(viewModel: UserViewModel = hiltViewModel(),
         }*/
         }
     }
+}
+
+fun whichAbilitiesToUse(viewModel: UserViewModel, all: MutableState<Boolean>): List<AbilityEntity> {
+    return if(all.value){
+        viewModel.getMeWithAbilities().abilities
+    }else viewModel.getSelectedCharacter().abilities
 }
 
 @Composable
@@ -291,9 +304,9 @@ fun AddAbilityEntityFloatingActionButton(viewModel: UserViewModel = hiltViewMode
 ) {
     FloatingActionButton(
         onClick = {
-            viewModel.openDialogState.value = true
 
-        },
+            viewModel.openDialogState.value = true}
+        ,
         backgroundColor = MaterialTheme.colors.primary
     ) {
         Icon(

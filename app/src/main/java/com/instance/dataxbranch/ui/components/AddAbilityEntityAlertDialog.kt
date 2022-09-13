@@ -64,7 +64,11 @@ fun AddAbilityEntityAlertDialog(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.addNewAbilityEntity(title)
+                        if (viewModel.allabilities.value) {
+                            viewModel.addNewAbilityEntity(title)
+                        }else {
+                            viewModel.addNewAbilityEntityOnCharacter(title)
+                        }
                         viewModel.openDialogState.value = false
                     }
                 ) {
