@@ -24,6 +24,7 @@ import com.instance.dataxbranch.data.entities.*
 import com.instance.dataxbranch.data.firestore.FirestoreUser
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
+import com.instance.dataxbranch.domain.getNow
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
 import com.instance.dataxbranch.quests.QuestWithObjectives
@@ -36,6 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
@@ -176,15 +178,7 @@ refresh()
             udao.save(me)
            // udao.update(me)
         }}
-    fun onCheckboxChecked(quest: QuestWithObjectives, checked: Boolean,) {
-        //Log.d(TAG, "$quest is is $checked   "+quest.quest.completed.toString())
-        viewModelScope.launch {
-            generalRepository.questsRepository.update(quest.quest.copy(completed = checked))
-        }
-        if(checked){
-            onQuestCompleted(quest)
-        }
-    }
+
     fun onObjCheckedChanged(obj: ObjectiveEntity, b: Boolean){ CoroutineScope(Dispatchers.IO).launch {generalRepository.questsRepository.update(obj)} }
     fun addNewObjectiveEntity(quest: QuestWithObjectives){ CoroutineScope(Dispatchers.IO).launch { useCases.addNewObjectiveEntityToQuestEntity(quest)} }
     fun getQuestsFromRepo():Array<QuestWithObjectives>{ return generalRepository.questsRepository.getQuests() }
@@ -390,13 +384,55 @@ refresh()
             .addOnFailureListener { e -> showToast(context, "Error writing document $e") }
 
     }
+    fun onCheckboxChecked(quest: QuestWithObjectives, checked: Boolean,):String? {
+        //Log.d(TAG, "$quest is is $checked   "+quest.quest.completed.toString())
+        //dateLastDone = getNow()
+        viewModelScope.launch {
 
-    fun onQuestCompleted(quest: QuestWithObjectives) {
-meWithAbilities.user.xp+=quest.quest.rewardxp
-val char = getSelectedCharacter()
-    char.character.xp+=quest.quest.rewardxp
-       save(char)
+            generalRepository.questsRepository.update(quest.quest.copy(completed = checked, ))
+        }
+        if(checked){
+            return onQuestCompleted(quest)
+        }
+        return null
     }
+    fun onHabitClick(quest:QuestWithObjectives):String {
+        val char = getSelectedCharacter()
+        quest.quest.onDone()
+        generalRepository.questsRepository.update(quest)//notice different save style
+       return if (quest.quest.isHabit){
+            if (quest.quest.habitStreak>3) {
+               if (Random.nextInt(0, 6) == 5) {//0,1,2,3,4,5. 5 grants reward
+                   char.character.xp += quest.quest.rewardxp
+                   save(char)
+                   "Random Persistence Reward :3"//gets random reward
+               }else{
+                   "Good consistency"//default, no reward
+               }
+
+           }else{
+               "Heating up!"
+           }
+        }else {
+        "not habit?"
+
+    }
+    }
+
+    fun onQuestCompleted(quest: QuestWithObjectives):String {
+        val char = getSelectedCharacter()
+        //Regular quest, default case
+            meWithAbilities.user.xp += quest.quest.rewardxp
+            char.character.xp += quest.quest.rewardxp
+
+            //Plans: to handle other rewards, like tokens and items
+            // status updates
+            //notification to QuestGiver
+            save(char)
+            return "Quest Complete!"
+
+        }
+
 
     fun save(c: CharacterWithStuff) {
         generalRepository.save(c)

@@ -43,9 +43,10 @@ fun CharacterQuestDetailScreen (viewModel: UserViewModel =hiltViewModel(),
     var sourceUrl = remember { mutableStateOf(viewModel.selectedQuest.quest.sourceUrl) }
     var featuredImage = remember { mutableStateOf(viewModel.selectedQuest.quest.featuredImage) }
     var reward = remember { mutableStateOf(viewModel.selectedQuest.quest.reward) }
+    var isHabitState = remember { mutableStateOf(viewModel.selectedQuest.quest.isHabit) }
     var rewardxp= remember {mutableStateOf(viewModel.selectedQuest.quest.rewardxp) }
     val checkedState = remember { mutableStateOf(viewModel.selectedQuest.quest.completed) }
-    val them =listOf(title,desc,checkedState,ingredients,reward,rewardxp,region,sourceUrl, featuredImage)
+    val them =listOf(title,desc,checkedState,ingredients,reward,rewardxp,region,sourceUrl, featuredImage,isHabitState)
     val context = LocalContext.current
     Scaffold(
 
@@ -87,16 +88,29 @@ padding
 
                 //bintBlock(s = "damage", damage)
                 bintBlock(s = "Reward XP", rewardxp)
+
             }
             Column {
-                Checkbox(
-                    checked = checkedState.value,
-                    onCheckedChange = {
-                        checkedState.value = it
-                        viewModel.selectedQuest.quest.apply { completed = it }
-                        //viewModel.onCheckboxChecked(it)
-                    })
+                Row {
+                    Text("Completed")
+                    Checkbox(
+                        checked = checkedState.value,
+                        onCheckedChange = {
+                            checkedState.value = it
+                            viewModel.selectedQuest.quest.apply { completed = it }
+                            //viewModel.onCheckboxChecked(it)
+                        })
+                }
+                Row {
+                    Text("isHabit")
 
+                    Checkbox(
+                        checked = isHabitState.value,
+                        onCheckedChange = {
+                            isHabitState.value = it
+                            viewModel.selectedQuest.quest.apply { isHabit = it }
+                        })
+                }
                 Button(onClick = {save2(context,navigator,viewModel,them)}){
                     Icon(
                         imageVector = Icons.Default.Done,
@@ -179,8 +193,10 @@ fun cintBlock(s: String = "", i: MutableState<Int>){
             }
         )}
 }
-//val them =listOf(title,desc,checkedState,ingredients,reward,rewardxp,region,sourceUrl, featuredImage)
+
 fun save2(context: Context,navigator: DestinationsNavigator,viewModel:UserViewModel,them: List<MutableState<out Any>>){
+//    val them =listOf(title,desc,checkedState,ingredients,reward,rewardxp,region,sourceUrl, featuredImage)
+  //  val them =listOf(title,desc,checkedState,ingredients,reward,rewardxp,region,sourceUrl, featuredImage,isHabitState)
     viewModel.selectedQuest.quest.title = them[0].value.toString()
     viewModel.selectedQuest.quest.description =
         them[1].value.toString()//this isn't changing even though I clearly change it.
@@ -189,17 +205,19 @@ fun save2(context: Context,navigator: DestinationsNavigator,viewModel:UserViewMo
     viewModel.selectedQuest.quest.ingredients = them[3].value as String
     viewModel.selectedQuest.quest.reward =them[4].value as String
     viewModel.selectedQuest.quest.rewardxp = them[5].value as Int
-    viewModel.selectedQuest.quest.sourceUrl =  them[6].value as String
-    viewModel.selectedQuest.quest.featuredImage = them[7].value as String
+    viewModel.selectedQuest.quest.region = them[6].value as String
+    viewModel.selectedQuest.quest.sourceUrl =  them[7].value as String
+    viewModel.selectedQuest.quest.featuredImage = them[8].value as String
+    viewModel.selectedQuest.quest.isHabit = them[9].value as Boolean
     /*viewModel.selectedQuest.quest.
     viewModel.selectedQuest.quest.levels=levels*/
     viewModel.update(viewModel.selectedQuest)
 
     viewModel.sync()
     //viewModel.generalRepository.save(me.user)
-
+    showToast(context, "Saved " + them[9].value.toString())
     navigator.navigate(CharacterQuestsScreenDestination)
-    showToast(context, "Saved " + them[1].value.toString())
+
 }
 
 @Composable

@@ -39,6 +39,7 @@ import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
 import com.instance.dataxbranch.destinations.QuestDetailScreenDestination
+import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddQuestEntityOnCharacterAlertDialog
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.instance.dataxbranch.utils.await
@@ -217,9 +218,11 @@ fun CharacterLocalQuestView(
         Text(
             text = "Index $index",
         )
-
-        CharacterLocalQuestCardContent(navi,quest,uViewModel)
-
+        if (quest.quest.isHabit){
+            CharacterHabitCardContent(navi,quest,uViewModel)
+        }else {
+            CharacterLocalQuestCardContent(navi, quest, uViewModel)
+        }
     }
     //Text("DEBUG2")
 }
@@ -306,7 +309,8 @@ fun CharacterLocalQuestCardContent(navi: DestinationsNavigator, quest: QuestWith
                     onCheckedChange = {
                         checkedState.value = it
                         quest.quest.apply { completed = it }
-                        uViewModel.onCheckboxChecked(quest, it)
+                        val result =uViewModel.onCheckboxChecked(quest, it)
+                        if (result != null) { showToast(context, result) }
                     })
                 //if(!checkedState.value){ trying to pop up dialog for confirm or cancel
                 /*val time = measureTimeMillis {
@@ -348,6 +352,117 @@ fun CharacterLocalQuestCardContent(navi: DestinationsNavigator, quest: QuestWith
                 }
             }
                 Button(onClick = { navi.navigate(CharacterQuestDetailScreenDestination) }) { Text("EDIT") }
+        }}
+}
+
+
+@Composable
+fun CharacterHabitCardContent(navi: DestinationsNavigator, quest: QuestWithObjectives,uViewModel: UserViewModel) {
+
+    var expanded by remember { mutableStateOf(false) }
+
+
+    Row(horizontalArrangement = Arrangement.End,
+        modifier = Modifier
+            .padding(4.dp)
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+            .fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(14.dp)
+                .fillMaxWidth()
+                .background(Color.Black.copy(alpha = 0.5f))
+        ) {
+            Text(text = "HABIT:          id= ${quest.quest.id}")
+            Text(
+
+                text = quest.quest.title + "",
+                style = MaterialTheme.typography.h4.copy(
+                    fontWeight = FontWeight.ExtraBold
+                )
+                , modifier = Modifier.background(
+                    if(quest.quest.beenAwhile()){Color.Black.copy(alpha = 0.3f)
+                    }else{Color.Red.copy(alpha = 0.5f)}
+                )
+            )
+
+
+            //Text(quest.objectives.toString())
+            if (expanded) {
+
+                //var listofObjectiveEntities: Array<ObjectiveEntity> = arrayOf(ObjectiveEntity(-5,"",-5,"",Quest.ObjectiveType.Default,0,0,""))
+                //var objective: Quest.QuestObjective
+                run {
+                    //Text("open")
+
+                    quest.objectives.forEach { oe ->
+                        CharacterObjectiveViewEdit(oe,uViewModel)
+                    }
+                    Button(onClick = { uViewModel.addNewObjectiveEntity(quest) }) { Text("ADD OBJECTIVE") }
+                }
+
+
+            }
+
+        }
+        Column{
+            Row(
+                modifier = Modifier.background(Color.Black.copy(alpha = 0.6f)),
+                horizontalArrangement = Arrangement.End
+            ) {
+                var bouncy by remember { mutableStateOf(false) }
+                val context = LocalContext.current
+
+                //val checkedState = remember { mutableStateOf(quest.quest.completed) }
+
+                Button(onClick = { showToast(context,uViewModel.onHabitClick(quest))}){Text("Do")}
+                //if(!checkedState.value){ trying to pop up dialog for confirm or cancel
+                /*val time = measureTimeMillis {
+                                runBlocking {
+                                        try {
+                                            showDialogC2.value = true
+                                            Log.d(TAG,"IN ---------------")
+                                            waitcomplete(context, quest, viewModel)
+                                        }finally{
+                                            Log.d(TAG,"END")
+                                        }
+                            }
+                            }
+                            showToast(context,"completed in $time millis")*/
+
+                /*if(bouncy){checkedState.value = it
+                                quest.quest.apply { completed = it }
+                                viewModel.onCheckboxChecked(quest, it)}*/
+                // }else{
+
+
+                IconButton(onClick = {
+                    expanded = !expanded
+                    if (!expanded) {//saves on click when closing
+                        //viewModel.addQuest(quest)
+                    }
+                }) {
+
+                    Icon(
+                        imageVector = if (expanded) Icons.Filled.Check else Icons.Filled.ArrowDropDown,
+                        contentDescription = if (expanded) {
+                            stringResource(R.string.show_less)
+                        } else {
+                            stringResource(R.string.show_more)
+                        }
+
+                    )
+
+                }
+            }
+            Button(onClick = { navi.navigate(CharacterQuestDetailScreenDestination) }) { Text("EDIT") }
         }}
 }
 /*

@@ -32,6 +32,7 @@ import com.instance.dataxbranch.destinations.DevScreenDestination
 import com.instance.dataxbranch.destinations.LoadoutScreenDestination
 import com.instance.dataxbranch.destinations.MyQuestsScreenDestination
 import com.instance.dataxbranch.destinations.UserScreenDestination
+import com.instance.dataxbranch.domain.getNow
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
@@ -270,7 +271,7 @@ fun CharacterSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, c:
                     c.character.name = nm
                     c.character.bio = b
                     c.character.status = status
-                    c.character.dateUpdated=c.character.getNow()
+                    c.character.dateUpdated=getNow()
                     viewModel.save(c)
                     showToast(context = context, msg = " updated in user " + c.character)
                     var name = "init"

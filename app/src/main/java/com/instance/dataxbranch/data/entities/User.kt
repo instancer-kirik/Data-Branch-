@@ -146,13 +146,7 @@ data class User @JvmOverloads constructor(
         }
         return -1
     }
-    fun getNow():String{
-        val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-        val formatted = current.format(formatter)
-        println("Current Date and Time is: $formatted")
-        return formatted
-    }
+
 
     fun combine(tangent: User): Int{
         val newer = whichNewer(dateUpdated,tangent.dateUpdated)

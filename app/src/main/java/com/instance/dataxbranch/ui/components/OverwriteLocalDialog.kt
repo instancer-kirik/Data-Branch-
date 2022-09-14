@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.destinations.WebviewScreenDestination
+import com.instance.dataxbranch.domain.getNow
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.util.*
@@ -85,7 +86,7 @@ fun  OverwriteLocalDialog(//QviewModel: QuestsViewModel = hiltViewModel(),
                 TextButton(
                     onClick = {
                         viewModel.overwriteLogIn(context=context, db = FirebaseFirestore.getInstance(),fsid=currentUser.uid)
-                        me.user.dateUpdated = me.user.getNow()//Calendar.getInstance().time.toString();
+                        me.user.dateUpdated =getNow()//Calendar.getInstance().time.toString();
                         viewModel.downloadCloudDialog.value = false
 
                     }

@@ -1,10 +1,14 @@
 package com.instance.dataxbranch.data.entities
 
-import androidx.room.*
 //import com.instance.dataxbranch.quests.Quest
+import android.util.Log
+import androidx.room.*
+import com.instance.dataxbranch.core.Constants.TAG
+import com.instance.dataxbranch.domain.getNow
 import com.instance.dataxbranch.utils.Converters
 import com.squareup.moshi.JsonClass
-import javax.inject.Inject
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Entity(
     tableName = "quests",
@@ -57,6 +61,14 @@ INSERT INTO "main"."quests" VALUES('2','0','','','','0','','','','','','','','',
     @ColumnInfo(name = "region") var region: String = "state or region here. goal: sort by region",
     @ColumnInfo(name = "reward") var reward: String = "",
     @ColumnInfo(name = "reward_xp") var rewardxp: Int = 25,//set by calculating it on quest create rewardxp*difficulty
+
+    @ColumnInfo(name = "isHabit") var isHabit: Boolean=false,//if habit, reward is randomly, and sporatically given,
+    @ColumnInfo(name = "habitStreak") var habitStreak: Int = 0,
+    @ColumnInfo(name = "dateLastDone") var dateLastDone: String = "",
+
+
+
+
     //@ColumnInfo(name = "oids") var oids: List<Int> =listOf(),
     //var check: Nothing = TODO()
 /*@ColumnInfo(name = "trakt_id") override val traktId: Int? = null,
@@ -67,6 +79,39 @@ INSERT INTO "main"."quests" VALUES('2','0','','','','0','','','','','','','','',
 
 ) {
 
+     fun onDone(){
+         dateLastDone=getNow()
+     }
+    fun beenAwhile():Boolean{
+        return dateAnalyzer(qDate=getNow())==1
+    }
+    fun dateAnalyzer(myDate: String=dateLastDone, qDate: String): Int {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+        val cal: Calendar = Calendar.getInstance()
+        if(myDate == ""){return 0}
+        try {
+
+            formatter.parse(myDate)?.let { cal.setTime(it) }
+            cal.add(Calendar.DATE, 1)
+            Log.d(TAG,"DATE DEBUG IN QUESTENTITY ${cal.before(qDate)}")
+            val date = formatter.parse(myDate)
+            val qdate = formatter.parse(qDate)
+            //date.toString()
+            if (date != null) {
+                if (qdate != null) {
+                    return if(date.before(qdate)){
+                        1
+                    }else{
+                        0
+                    }
+                }
+            } else{return -1}
+        } catch(ignored: java.text.ParseException) {
+            //Log.d(TAG, "returning -1 with $ignored")
+            return -1
+        }
+        return -1
+    }
 }
 
 /**/

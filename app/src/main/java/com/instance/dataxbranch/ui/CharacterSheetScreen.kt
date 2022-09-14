@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.destinations.*
+import com.instance.dataxbranch.domain.getNow
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 
@@ -267,7 +268,7 @@ fun CharacterSpielStatic(navigator:DestinationsNavigator, viewModel: UserViewMod
                     c.character.name = nm
                     c.character.bio = b
                     c.character.status = status
-                    c.character.dateUpdated=c.character.getNow()
+                    c.character.dateUpdated=getNow()
                     viewModel.save(c)
                     showToast(context = context, msg = " updated in user " + c.character)
                     var name = "init"
