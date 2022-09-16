@@ -3,14 +3,12 @@ package com.instance.dataxbranch.di
 import com.instance.dataxbranch.data.daos.QuestDao
 import android.app.Application
 import android.content.Context
-import androidx.compose.runtime.Composable
 import androidx.room.Room
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.instance.dataxbranch.DataBranchApp
 import com.instance.dataxbranch.core.Constants.QUESTS
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.UserDao
@@ -20,14 +18,13 @@ import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.data.AppDatabase
 import com.instance.dataxbranch.data.firestore.*
 import com.instance.dataxbranch.data.local.UserWithAbilities
-import com.instance.dataxbranch.data.local.GeneralRepository
-import com.instance.dataxbranch.data.local.LocalQuestsRepository
+import com.instance.dataxbranch.data.repository.GeneralRepository
+import com.instance.dataxbranch.data.repository.ItemRepository
+import com.instance.dataxbranch.data.repository.LocalQuestsRepository
 
 import com.instance.dataxbranch.domain.use_case.*
 import com.instance.dataxbranch.utils.constants.FIRESTORE_COLLECTION
 import com.instance.dataxbranch.utils.constants.NAME_PROPERTY
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.scope.DestinationScope
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -124,10 +121,17 @@ object AppModule {
     }
     @Singleton
     @Provides
-    fun provideGeneralRepository(app:Application,db: AppDatabase,questsRepository: LocalQuestsRepository):
-            GeneralRepository {
-        return GeneralRepository(app,db,questsRepository)
+    fun provideItemRepository(app:Application,db: AppDatabase):
+            ItemRepository {
+        return ItemRepository(app,db)
     }
+    @Singleton
+    @Provides
+    fun provideGeneralRepository(app:Application,db: AppDatabase,questsRepository: LocalQuestsRepository,itemRepository: ItemRepository):
+            GeneralRepository {
+        return GeneralRepository(app,db,questsRepository, itemRepository)
+    }
+
     /*@Singleton THIS IS FOR ROOM
     @Provides
     fun provideResponseRepository(app:Application,db: AppDatabase):

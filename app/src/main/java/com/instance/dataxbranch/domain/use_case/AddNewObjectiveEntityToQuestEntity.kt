@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.domain.use_case
 
 import com.instance.dataxbranch.quests.QuestWithObjectives
-import com.instance.dataxbranch.data.local.LocalQuestsRepository
+import com.instance.dataxbranch.data.repository.LocalQuestsRepository
 
 class AddNewObjectiveEntityToQuestEntity(private val repo: LocalQuestsRepository){//
 

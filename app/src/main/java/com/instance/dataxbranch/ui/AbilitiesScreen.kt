@@ -165,7 +165,7 @@ fun abilityCard( ae: AbilityEntity){
         showToast(context,"casted")*/
     ){
         Column{
-        Text(""+ae.title)
+        Text("${ae.title} id: ${ae.aid}")
         Row{Text("Cost: "+ae.requiredEnergy)
             Text("   Level: "+ae.getLevel())}
     }

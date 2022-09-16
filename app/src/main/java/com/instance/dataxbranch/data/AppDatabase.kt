@@ -3,6 +3,7 @@ package com.instance.dataxbranch.data
 import android.content.Context
 import androidx.room.*
 import com.instance.dataxbranch.data.daos.AbilityDao
+import com.instance.dataxbranch.data.daos.ItemDao
 //import com.instance.dataxbranch.data.daos.EntityDao
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.daos.UserDao
@@ -12,7 +13,8 @@ import com.instance.dataxbranch.utils.Converters
 
 @Database(entities = arrayOf(QuestEntity::class,
     ObjectiveEntity::class, AbilityEntity::class,
-    User::class, CharacterEntity::class), version = 37)
+    User::class, CharacterEntity::class,
+    ItemEntity::class), version = 38)
 @TypeConverters(Converters::class)
  abstract class AppDatabase() : RoomDatabase(){
     //abstract fun addQuestEntity(title: String, author: String): Any
@@ -20,6 +22,7 @@ import com.instance.dataxbranch.utils.Converters
     abstract fun questDao(): QuestDao
     abstract fun abilityDao(): AbilityDao
     abstract fun userDao(): UserDao
+    abstract fun itemDao(): ItemDao
     //\abstract fun entityDao(): EntityDao
 
     //fun addQuestEntity(quest:Quest): Any

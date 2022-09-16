@@ -1,4 +1,4 @@
-package com.instance.dataxbranch.data.local
+package com.instance.dataxbranch.data.repository
 
 import android.app.Application
 import android.util.Log
@@ -15,15 +15,18 @@ import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.CharacterEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
 import com.instance.dataxbranch.data.firestore.FirestoreUser
-import com.instance.dataxbranch.data.firestore.QuestsRepository
+import com.instance.dataxbranch.data.local.CharacterWithStuff
+import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import kotlinx.coroutines.*
 
 import javax.inject.Singleton
 @Singleton
 class GeneralRepository(application: Application, db: AppDatabase,
-                        val questsRepository: LocalQuestsRepository
+                        val questsRepository: LocalQuestsRepository,
+                        val itemRepository: ItemRepository
 ) {
+
 
     private var cachedUsers: List<FirestoreUser> = listOf()
     val aDao: AbilityDao=db.abilityDao()
@@ -83,12 +86,13 @@ class GeneralRepository(application: Application, db: AppDatabase,
         CoroutineScope(Dispatchers.IO).launch {
             uDao.save(me)
         }
-    fun save(char:CharacterWithStuff=selectedCharacterWithStuff): Job =
+    fun save(char: CharacterWithStuff =selectedCharacterWithStuff): Job =
         CoroutineScope(Dispatchers.IO).launch {
             uDao.save(char.character)
             //char.abilities.forEach {aDao.save(it)}
+            //should save elsewhere, but whateev
             char.quests.forEach {qDao.save(it)}
-            aDao.save(char.abilities)
+            char.abilities.forEach{aDao.save(it)}
             //qDao.save(char.quests)
         }
     fun syncAE(): Job = CoroutineScope(Dispatchers.IO).launch {
@@ -113,7 +117,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
             }
         }
 
-    private fun CharacterWithStuff(character: CharacterEntity,) :CharacterWithStuff{
+    private fun CharacterWithStuff(character: CharacterEntity,) : CharacterWithStuff {
         return CharacterWithStuff(character,mabilities,getQuestsbyCharacter(character))
     }
 
@@ -250,15 +254,15 @@ class GeneralRepository(application: Application, db: AppDatabase,
         CoroutineScope(Dispatchers.IO).launch {
             aDao.save(ability)
         }
-    fun insertAbility(title: String): AbilityEntity {
-        val ae = AbilityEntity(title = title, author = me_container.user.uname)
+    /*fun insertAbility(ae:AbilityEntity): AbilityEntity {
+
 
 
         CoroutineScope(Dispatchers.IO).launch {
             aDao.insert(ae)
         }
         return ae
-    }
+    }*/
 /*fun insertAbility(title: String): Job =
         CoroutineScope(Dispatchers.IO).launch {
             aDao.insert(AbilityEntity(title=title,author=me_container.user.uname))

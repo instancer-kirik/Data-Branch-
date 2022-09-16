@@ -113,6 +113,8 @@ data class CharacterEntity @JvmOverloads constructor(
     var xp: Int = 0,
     @ColumnInfo(name = "race")var race: String = "Generic",
     @ColumnInfo(name = "class")var className: String = "Nothing",
+
+    @ColumnInfo(name = "inventory")var items: String = "Nothing",
 //store list of authored quests, nuggets,abilities,items etc
     ) {
 

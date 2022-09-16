@@ -7,7 +7,7 @@ import android.util.Log
 
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.UserDao
-import com.instance.dataxbranch.data.local.GeneralRepository
+import com.instance.dataxbranch.data.repository.GeneralRepository
 
 
 import androidx.compose.runtime.mutableStateOf
@@ -24,7 +24,6 @@ import com.instance.dataxbranch.data.entities.*
 import com.instance.dataxbranch.data.firestore.FirestoreUser
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
-import com.instance.dataxbranch.domain.getNow
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
 import com.instance.dataxbranch.quests.QuestWithObjectives
@@ -52,6 +51,7 @@ class UserViewModel @Inject constructor(
     //var
 
     ): ViewModel() {
+    lateinit var selectedItem: ItemEntity
     lateinit var selectedAE: AbilityEntity
     lateinit var selectedQuest: QuestWithObjectives
     //var selectedCharacterWithStuff: CharacterWithStuff=generalRepository.selectedCharacterWithStuff
@@ -112,7 +112,9 @@ refresh()
         fixattunement()
         return meWithAbilities.user.uname
     }
-
+    fun getItems():ArrayList<ItemEntity>{
+        return generalRepository.itemRepository.getitems()
+    }
     fun getAllCharacters():List<CharacterWithStuff>{
         return generalRepository.mcharacters
     }
@@ -152,14 +154,17 @@ refresh()
         }else meWithAbilities.user.attuned
     }
     fun addNewAbilityEntity(ae: AbilityEntity){
-        generalRepository.insertAbility("Ability")
+        generalRepository.insertAbility(ae)
     }
     fun addNewAbilityEntity(title: String){ //might be better to just do on new title
-        generalRepository.insertAbility(title)
+        val ae = AbilityEntity(title = title, author = generalRepository.getMe().user.uname)
+        generalRepository.insertAbility(ae)
     }
     fun addNewAbilityEntityOnCharacter(title: String){ //might be better to just do on new title
-        val result = generalRepository.insertAbility(title)
-        putAbilityOnCharacter(result)
+        val ae = AbilityEntity(title = title, author = generalRepository.getMe().user.uname)
+        putAbilityOnCharacter(ae)
+        generalRepository.insertAbility(ae)
+
 }
     fun putAbilityOnCharacter(ae: AbilityEntity=selectedAE){
         generalRepository.putAbilityOnCharacter(ae)

@@ -15,8 +15,6 @@ data class CharacterWithStuff (
     //val title: String,
     //val title: String? =quest.title,
     //val author: String? =quest.author,
-
-
     @Relation(
         parentColumn = "abilities",
         entityColumn = "aid",
@@ -35,6 +33,19 @@ data class CharacterWithStuff (
     //val aidList: Array<String>
 
 ){
+
+    @Relation(
+        parentColumn = "inventory",
+        entityColumn = "id",
+
+
+        )
+    var inventory: ArrayList<ItemEntity> = arrayListOf()
+    //val aidList: Array<String>
+    var equipment: MutableMap<String, Long?> = mutableMapOf("L" to null, "R" to null,
+        "Head" to null,"Necklace" to null, "Torso" to null,"Legs" to null,"Feets" to null,
+        "Shoulders" to null,"Arms" to null,"Wrists" to null, "Hands" to null,
+        "Ring1" to null,"Ring2" to null,"Ring3" to null,"Ring4" to null,"Ring5" to null )
     fun fixattunement(){
         //val them=abilities.filter{ it.inloadout }
         character.attuned = abilities.filter{it.inloadout}.size

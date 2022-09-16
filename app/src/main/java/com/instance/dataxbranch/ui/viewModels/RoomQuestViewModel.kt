@@ -9,7 +9,7 @@ import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.AppDatabase
 import com.instance.dataxbranch.data.entities.QuestEntity
-import com.instance.dataxbranch.data.local.LocalQuestsRepository
+import com.instance.dataxbranch.data.repository.LocalQuestsRepository
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
 import com.instance.dataxbranch.quests.Quest
