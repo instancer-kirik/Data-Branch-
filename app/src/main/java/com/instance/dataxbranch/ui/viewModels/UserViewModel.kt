@@ -73,6 +73,7 @@ class UserViewModel @Inject constructor(
     var singleConditionsDialog = mutableStateOf(true)
     var characterDialogState = mutableStateOf(false)
     var allabilities = mutableStateOf(false)
+    var inventoryModeState = mutableStateOf(false)
     //var mfsid:String = "-2"
     val handyString: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
@@ -94,6 +95,11 @@ refresh()
         }else{
             QuestWithObjectives(QuestEntity(title="init"),listOf(ObjectiveEntity(obj="init")))
         }
+        selectedItem = if(getItems().isNotEmpty()){
+            getItems()[0]
+        } else{
+            ItemEntity()
+        }
     }
     fun refresh(andQuests:Boolean = false) : String {
         generalRepository.sync()
@@ -112,7 +118,7 @@ refresh()
         fixattunement()
         return meWithAbilities.user.uname
     }
-    fun getItems():ArrayList<ItemEntity>{
+    fun getItems():Array<ItemEntity>{
         return generalRepository.itemRepository.getitems()
     }
     fun getAllCharacters():List<CharacterWithStuff>{
@@ -168,6 +174,14 @@ refresh()
 }
     fun putAbilityOnCharacter(ae: AbilityEntity=selectedAE){
         generalRepository.putAbilityOnCharacter(ae)
+    }
+    fun putItemOnCharacter(item: ItemEntity=selectedItem){
+        generalRepository.putItemOnCharacter(item)
+    }
+    fun addNewItemEntityOnCharacter(name: String) {
+        val item = ItemEntity(name=name, author = generalRepository.getMe().user.uname)
+        putItemOnCharacter(item)
+        generalRepository.insertItem(item =item)
     }
    /* fun addNewAbilityEntity() {
         CoroutineScope(Dispatchers.IO).launch { adao.insert(AbilityEntity()) }
@@ -442,6 +456,8 @@ refresh()
     fun save(c: CharacterWithStuff) {
         generalRepository.save(c)
     }
+
+
 }
 
     /*val rowsInserted: MutableLiveData<Int> = MutableLiveData()

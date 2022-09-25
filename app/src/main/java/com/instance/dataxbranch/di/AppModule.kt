@@ -16,6 +16,7 @@ import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.quests.QuestWithObjectives
 
 import com.instance.dataxbranch.data.AppDatabase
+import com.instance.dataxbranch.data.daos.ItemDao
 import com.instance.dataxbranch.data.firestore.*
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.data.repository.GeneralRepository
@@ -172,11 +173,13 @@ object AppModule {
 */
 
     @Provides
-
     fun provideQuestDao(db: AppDatabase): QuestDao {
         return db.questDao()
     }
-
+    @Provides
+    fun provideItemDao(db: AppDatabase): ItemDao {
+        return db.itemDao()
+    }
     @Provides
     fun provideUserDao(db: AppDatabase): UserDao {
         return db.userDao()

@@ -17,8 +17,8 @@ import javax.inject.Singleton
 @Singleton
 class ItemRepository @Inject constructor(application: Application, db: AppDatabase) {
     var itemDao: ItemDao
-     // lateinit var selecteditem: ItemEntity
-    private var mitems: ArrayList<ItemEntity> = arrayListOf()//ArrayList<ItemEntity> = arrayOf()
+    // lateinit var selecteditem: ItemEntity
+    private var mitems: Array<ItemEntity> = arrayOf()//ArrayList<ItemEntity> = arrayOf()
 
     private fun initRepo(): Job =
             CoroutineScope(Dispatchers.IO).launch {
@@ -74,7 +74,7 @@ class ItemRepository @Inject constructor(application: Application, db: AppDataba
             itemDao.getItems()
         }
 
-    fun getitems(): ArrayList<ItemEntity> = mitems
+    fun getitems(): Array<ItemEntity> = mitems
 
     fun deleteAllRows(): Job =
         CoroutineScope(Dispatchers.IO).launch {

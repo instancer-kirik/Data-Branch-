@@ -28,7 +28,7 @@ abstract class ItemDao() {//:EntityDao<ItemEntity>
     /*@Query("SELECT * FROM items WHERE uid=:uid") not many to many here, no need
     abstract fun getAbilites(uid:Long): List<ItemEntity>*/
     @Query("SELECT * FROM items")
-    abstract fun getItems(): ArrayList<ItemEntity>
+    abstract fun getItems(): Array<ItemEntity>
     @Query("SELECT * FROM items WHERE iid = :iid")
     abstract fun getItemByiid(iid:Long): ItemEntity
 

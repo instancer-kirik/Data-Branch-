@@ -7,13 +7,11 @@ import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.daos.AbilityDao
 
 import com.instance.dataxbranch.data.daos.UserDao
-import com.instance.dataxbranch.data.entities.AbilityEntity
 
-import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.AppDatabase
+import com.instance.dataxbranch.data.daos.ItemDao
 import com.instance.dataxbranch.data.daos.QuestDao
-import com.instance.dataxbranch.data.entities.CharacterEntity
-import com.instance.dataxbranch.data.entities.QuestEntity
+import com.instance.dataxbranch.data.entities.*
 import com.instance.dataxbranch.data.firestore.FirestoreUser
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
@@ -32,7 +30,8 @@ class GeneralRepository(application: Application, db: AppDatabase,
     val aDao: AbilityDao=db.abilityDao()
     val uDao: UserDao=db.userDao()
     val qDao: QuestDao =db.questDao()
-    var mabilities: List<AbilityEntity> = listOf(AbilityEntity())
+    val iDao: ItemDao = db.itemDao()
+    var mabilities: List<AbilityEntity> = listOf()
     var mcharacters: List<CharacterWithStuff> = listOf(
         CharacterWithStuff(
             CharacterEntity(name="ME"),
@@ -42,12 +41,12 @@ class GeneralRepository(application: Application, db: AppDatabase,
         CharacterWithStuff(
             CharacterEntity(name="PRIME1"),
             listOf(AbilityEntity(title = "APRIME1")),
-            arrayOf(QuestWithObjectives(QuestEntity(title="APRIME1") ,listOf()))
+            arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME1") ,listOf()))
         ),
         CharacterWithStuff(
             CharacterEntity(name="PRIME2"),
             listOf(AbilityEntity(title = "APRIME2")),
-            arrayOf(QuestWithObjectives(QuestEntity(title="APRIME2") ,listOf()))
+            arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME2") ,listOf()))
         ))
 
     private lateinit var me:User
@@ -202,6 +201,16 @@ class GeneralRepository(application: Application, db: AppDatabase,
             // udao.update(me)
         }
     }
+
+    fun putItemOnCharacter(item: ItemEntity) {
+        selectedCharacterWithStuff.character.items=selectedCharacterWithStuff.character.items.plus(item.iid)
+        val result = selectedCharacterWithStuff.inventory.add(item)
+        Log.d(TAG, "result is $result in generalRepo putItemOnCharacter")
+        CoroutineScope(Dispatchers.IO).launch {
+            save()
+            // udao.update(me)
+        }
+    }
         fun updateCharacterQuests(){
             selectedCharacterWithStuff.quests=getQuestsbyCharacter(selectedCharacterWithStuff.character)
             Log.d(TAG,"UPDATECHARACTERQUESTS")
@@ -253,6 +262,10 @@ class GeneralRepository(application: Application, db: AppDatabase,
     fun insertAbility(ability: AbilityEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
             aDao.save(ability)
+        }
+    fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = name, author =  getMe().user.uname)): Job =
+        CoroutineScope(Dispatchers.IO).launch {
+            iDao.save(item)
         }
     /*fun insertAbility(ae:AbilityEntity): AbilityEntity {
 

@@ -34,6 +34,9 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.entities.ItemEntity
+import com.instance.dataxbranch.destinations.ItemDetailScreenDestination
+import com.instance.dataxbranch.ui.components.AddItemEntityAlertDialog
+import com.instance.dataxbranch.ui.viewModels.ItemViewModel
 
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.instance.dataxbranch.utils.await
@@ -48,7 +51,7 @@ var recomposeState = mutableStateOf(false)*/
 @Destination
 @Composable
 fun ItemListScreen(
-    //viewModel: RoomitemViewModel = hiltViewModel(),
+    iViewModel: ItemViewModel = hiltViewModel(),
     uViewModel: UserViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
 
@@ -73,7 +76,7 @@ fun ItemListScreen(
             recomposeState.value =false
             }*/
         if (uViewModel.characterDialogState.value) {
-            //AddItemEntity()
+            AddItemEntityAlertDialog()
         }
         Column {
            /* Button(
@@ -94,7 +97,7 @@ fun ItemListScreen(
                 alertC(uViewModel,navigator)
             }*/
             Text("items are: ${uViewModel.getSelectedCharacter().character.items} --")
-            ItemListLocalLazyColumn( items = uViewModel.getItems()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel)
+            ItemListLocalLazyColumn( items = iViewModel.getItems()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel)
             Button(
                 onClick = { showDialogC.value = true },
                 modifier = Modifier.padding(2.dp)
@@ -154,7 +157,7 @@ fun AddItemEntityFloatingActionButton(uViewModel: UserViewModel = hiltViewModel(
 
 
 @Composable
-fun ItemListLocalLazyColumn(items: ArrayList<ItemEntity>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel){
+fun ItemListLocalLazyColumn(items: Array<ItemEntity>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index
     uViewModel.selectedItem=items[index]
@@ -214,7 +217,7 @@ fun LocalItemView(
         Text(
             text = "Index $index",
         )
-
+        Button(onClick = {navi.navigate(ItemDetailScreenDestination)}){Text("EDIT")}
 
             ItemCardContent(navi, item, uViewModel)
 
