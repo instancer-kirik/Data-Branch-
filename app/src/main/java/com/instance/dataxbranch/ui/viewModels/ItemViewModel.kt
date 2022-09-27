@@ -43,6 +43,11 @@ class ItemViewModel @Inject constructor(
 
     init {
         refresh()
+        selectedItem = if(getItems().isNotEmpty()){
+            getItems()[0]
+        } else{
+            ItemEntity()
+        }
     }
     fun refresh(){
         generalRepository.itemRepository.refresh()
@@ -53,7 +58,9 @@ class ItemViewModel @Inject constructor(
     fun addItemEntity(name:String){
         generalRepository.itemRepository.insertItemEntity(ItemEntity(name=name))
     }
-
+    fun addItemToInventory(item:ItemEntity=selectedItem){
+        generalRepository.putItemOnCharacter(item)
+    }
     fun getSelectedCharacter():CharacterWithStuff{
         return generalRepository.selectedCharacterWithStuff
     }

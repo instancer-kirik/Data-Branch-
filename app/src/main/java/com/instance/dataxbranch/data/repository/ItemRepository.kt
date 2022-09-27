@@ -3,6 +3,7 @@ package com.instance.dataxbranch.data.repository
 
 
 import android.app.Application
+import android.util.Log
 
 import com.instance.dataxbranch.data.daos.ItemDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
@@ -37,7 +38,8 @@ class ItemRepository @Inject constructor(application: Application, db: AppDataba
 
     fun insertItemEntity(item: ItemEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
-            itemDao.save(item)
+            val returnId = itemDao.save(item)
+            Log.d("ItemREPO","id on insert is $returnId")
         }
     /*fun newObjectiveEntity(item: ItemEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {

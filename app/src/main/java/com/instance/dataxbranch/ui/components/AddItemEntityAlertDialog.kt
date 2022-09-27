@@ -12,8 +12,11 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddItemEntityAlertDialog(
@@ -61,10 +64,13 @@ fun AddItemEntityAlertDialog(
                 TextButton(
                     onClick = {
                         if (viewModel.inventoryModeState.value) {
-                            viewModel.generalRepository.insertItem(name)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                viewModel.generalRepository.insertItem(name)
+                            }
                         }else {
                             viewModel.addNewItemEntityOnCharacter(name)
                         }
+
                         viewModel.characterDialogState.value = false
                     }
                 ) {

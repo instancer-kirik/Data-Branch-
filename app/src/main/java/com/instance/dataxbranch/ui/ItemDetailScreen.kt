@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
+import com.instance.dataxbranch.data.entities.ItemEntity
 
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.destinations.*
@@ -33,8 +34,10 @@ import io.getstream.chat.android.ui.ChatUI.navigator
 
 @Destination
 @Composable
-fun ItemDetailScreen (viewModel: UserViewModel =hiltViewModel(),
+fun ItemDetailScreen (
+    viewModel: UserViewModel =hiltViewModel(),
                       iViewModel: ItemViewModel = hiltViewModel(),
+    item:ItemEntity=iViewModel.selectedItem,
                                 navigator: DestinationsNavigator,
 
                                 ){
@@ -94,6 +97,7 @@ padding
         Row{
 
             Column {
+                Text(item.toString())
                 istringBlock(s = "name", name)
                 istringBlock(s = "desc", desc)
                 istringBlock(s = "notes", note)
@@ -107,15 +111,12 @@ padding
             }
             Column {
                 Row {
-                    Text("Completed")
+                    Text("Obtained")
                     Checkbox(
                         checked =hasState.value,
-                        onCheckedChange = { it ->
-                            hasState.value = it
-                            if(it){viewModel.getSelectedCharacter().inventory.add(iViewModel.selectedItem)}
-                            else{viewModel.getSelectedCharacter().inventory.removeIf{it.iid==iViewModel.selectedItem.iid }}
-                            iViewModel.selectedItem.apply { has = it }
-                            //viewModel.onCheckboxChecked(it)
+                        onCheckedChange = {status->
+                           hasState.value = status
+                           viewModel.invFlux(status ,iViewModel.selectedItem)
                         })
                 }
                 /*Row {
@@ -249,8 +250,8 @@ fun save3(context: Context,navigator: DestinationsNavigator,viewModel:UserViewMo
 
     viewModel.sync()
     //viewModel.generalRepository.save(me.user)
-    showToast(context, "Saved " + them[9].value.toString())
-    navigator.navigate(CharacterQuestsScreenDestination)
+    showToast(context, "Saved " + them[0].value.toString())
+    navigator.navigate(ItemListScreenDestination)
 
 }
 /*

@@ -51,7 +51,7 @@ class UserViewModel @Inject constructor(
     //var
 
     ): ViewModel() {
-    lateinit var selectedItem: ItemEntity
+    lateinit var selectedInventoryItem: ItemEntity
     lateinit var selectedAE: AbilityEntity
     lateinit var selectedQuest: QuestWithObjectives
     //var selectedCharacterWithStuff: CharacterWithStuff=generalRepository.selectedCharacterWithStuff
@@ -95,7 +95,7 @@ refresh()
         }else{
             QuestWithObjectives(QuestEntity(title="init"),listOf(ObjectiveEntity(obj="init")))
         }
-        selectedItem = if(getItems().isNotEmpty()){
+        selectedInventoryItem = if(getSelectedCharacter().inventory.isNotEmpty()){
             getItems()[0]
         } else{
             ItemEntity()
@@ -119,7 +119,8 @@ refresh()
         return meWithAbilities.user.uname
     }
     fun getItems():Array<ItemEntity>{
-        return generalRepository.itemRepository.getitems()
+        return getSelectedCharacter().inventory
+//        return generalRepository.itemRepository.getitems()
     }
     fun getAllCharacters():List<CharacterWithStuff>{
         return generalRepository.mcharacters
@@ -175,13 +176,25 @@ refresh()
     fun putAbilityOnCharacter(ae: AbilityEntity=selectedAE){
         generalRepository.putAbilityOnCharacter(ae)
     }
-    fun putItemOnCharacter(item: ItemEntity=selectedItem){
+    fun putItemOnCharacter(item: ItemEntity=selectedInventoryItem){
         generalRepository.putItemOnCharacter(item)
     }
     fun addNewItemEntityOnCharacter(name: String) {
-        val item = ItemEntity(name=name, author = generalRepository.getMe().user.uname)
-        putItemOnCharacter(item)
-        generalRepository.insertItem(item =item)
+        //ID SET STRATEGIES:
+        //set on insert
+        //generate manually beforehand
+        //return a fresh id from DAO
+        //insert a blank object to get an id
+        CoroutineScope(Dispatchers.IO).launch {
+            val anID = generalRepository.insertItem()
+            Log.d(TAG, "id is $anID")
+            val item =
+                ItemEntity(name = name, author = generalRepository.getMe().user.uname, iid = anID)
+            putItemOnCharacter(item)
+
+            generalRepository.insertItem(item = item)
+            Log.d(TAG, "AFTER.. item is now $item.iid")
+        }
     }
    /* fun addNewAbilityEntity() {
         CoroutineScope(Dispatchers.IO).launch { adao.insert(AbilityEntity()) }
@@ -445,7 +458,7 @@ refresh()
             char.character.xp += quest.quest.rewardxp
 
             //Plans: to handle other rewards, like tokens and items
-            // status updates
+            // s tatus updates
             //notification to QuestGiver
             save(char)
             return "Quest Complete!"
@@ -455,6 +468,18 @@ refresh()
 
     fun save(c: CharacterWithStuff) {
         generalRepository.save(c)
+    }
+
+    fun invFlux(pickUp:Boolean,item:ItemEntity) {
+        item.apply { has = pickUp }
+        if(pickUp){
+            getSelectedCharacter().inventory=getSelectedCharacter().inventory.plus(item)
+            getSelectedCharacter().character.items=getSelectedCharacter().character.items.plus(item.iid)
+        }else{
+            getSelectedCharacter().inventory= getSelectedCharacter().inventory.filter{it.iid !=item.iid}
+                .toTypedArray()
+            getSelectedCharacter().character.items=getSelectedCharacter().character.items.filter{it!=item.iid}
+        }
     }
 
 

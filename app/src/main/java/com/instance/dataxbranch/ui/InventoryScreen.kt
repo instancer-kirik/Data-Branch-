@@ -10,6 +10,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -32,7 +36,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.entities.ItemEntity
 import com.instance.dataxbranch.destinations.ItemDetailScreenDestination
-import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddItemEntityAlertDialog
 import com.instance.dataxbranch.ui.viewModels.ItemViewModel
 
@@ -48,7 +51,7 @@ var recomposeState = mutableStateOf(false)*/
 
 @Destination
 @Composable
-fun ItemListScreen(
+fun InventoryScreen(
     iViewModel: ItemViewModel = hiltViewModel(),
     uViewModel: UserViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
@@ -76,9 +79,6 @@ fun ItemListScreen(
         if (uViewModel.characterDialogState.value) {
             AddItemEntityAlertDialog()
         }
-        if (uViewModel.inventoryModeState.value){
-            showToast(context,"Inventory Mode")
-        }
         Column {
            /* Button(
                 onClick = { navigator.navigate(itemsScreenDestination) },
@@ -86,9 +86,9 @@ fun ItemListScreen(
             ) { Text("to Cloud items") }
 */
             Button(
-                onClick = { uViewModel.inventoryModeState.value=true},
+                onClick = { showDialogC.value = true },
                 modifier = Modifier.padding(2.dp)
-            ) { Text("Mode") }
+            ) { Text("Button") }
 
             //viewModel.additemEntity(item())
 
@@ -98,9 +98,9 @@ fun ItemListScreen(
                 alertC(uViewModel,navigator)
             }*/
             Text("items are: ${uViewModel.getSelectedCharacter().character.items} --")
-            ItemListLocalLazyColumn( items = iViewModel.getItems()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel)
+            InventoryGrid( them = uViewModel.getItems()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel)
             Button(
-                onClick = { showToast(context,"clicked") },
+                onClick = { showDialogC.value = true },
                 modifier = Modifier.padding(2.dp)
             ) { Text("End") }
 
@@ -136,33 +136,38 @@ fun alertC(uViewModel: UserViewModel,navi: DestinationsNavigator) {
 
     )
 }
-
 */
 
+
+
+
 @Composable
-fun AddItemEntityFloatingActionButton(uViewModel: UserViewModel = hiltViewModel()
-) {
-    FloatingActionButton(
-        onClick = {
-            uViewModel.characterDialogState.value = true
-        },
-        backgroundColor = MaterialTheme.colors.primary
+fun InventoryGrid(them: Array<ItemEntity>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel ){
+    var selectedIndex by remember { mutableStateOf(0) }
+    val onItemClick = { index: Int -> selectedIndex = index
+        uViewModel.selectedInventoryItem=them[index]
+        recomposeState.value=true}
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 128.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = Constants.ADD_QUEST
-        )
+        itemsIndexed(them) { ix ,item->
+            InventoryItemView( item = item,
+                index = ix,
+                selected = selectedIndex == ix,
+                onClick = onItemClick,
+                navi = navi,
+                uViewModel = uViewModel
+            )
+        }
     }
 }
 
-
-
+/*
 @Composable
 fun ItemListLocalLazyColumn(items: Array<ItemEntity>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index
-    uViewModel.selectedInventoryItem=items[index]
-        recomposeState.value=true
+
     }
 
     Text(
@@ -177,7 +182,7 @@ fun ItemListLocalLazyColumn(items: Array<ItemEntity>, modifier: Modifier,navi: D
         //val mObserver = Observer<List<ItemEntity>> { qwe->
         itemsIndexed(items) { index,item ->
             //Text(item.toString())//text = "Index $index",
-            LocalItemView(
+            InventoryItemView(
 
 
                 item = item,
@@ -194,10 +199,11 @@ fun ItemListLocalLazyColumn(items: Array<ItemEntity>, modifier: Modifier,navi: D
         "padding"//text = "Index $index",
     )
 }
+*/
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LocalItemView(
+fun InventoryItemView(
     navi: DestinationsNavigator,
 
     item: ItemEntity,
@@ -215,14 +221,16 @@ fun LocalItemView(
         .background(if (selected) MaterialTheme.colors.secondary else Color.Transparent)
         .fillMaxWidth()
         .padding(12.dp)) {
-        Text(
-            text = "Index $index",
-        )
+        Column{
+            Text(
+                text = "Index $index\n name: ${item.name} id: ${item.iid}")
+
+            InventoryItemCardContent(navi, item, uViewModel)
+
+            Button(onClick = {navi.navigate(ItemDetailScreenDestination)}){Text("EDIT")}
 
 
-            ItemCardContent(navi, item, uViewModel)
-
-    }
+    }}
     //Text("DEBUG2")
 }
 
@@ -242,7 +250,7 @@ fun LocalItemView(
 }*/
 
 @Composable
-fun ItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: UserViewModel) {
+fun InventoryItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: UserViewModel) {
 
         var expanded by remember { mutableStateOf(false) }
 
@@ -256,7 +264,7 @@ fun ItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: Us
                         stiffness = Spring.StiffnessLow
                     )
                 )
-                .fillMaxWidth()
+//                .fillMaxWidth()
         ) {
             Column(
                 modifier = Modifier
@@ -279,7 +287,6 @@ fun ItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: Us
                 //Text(item.objectives.toString())
                 if (expanded) {
                     Text("HI 2")
-                    Button(onClick = {navi.navigate(ItemDetailScreenDestination)}){Text("EDIT")}
                     //var listofObjectiveEntities: Array<ObjectiveEntity> = arrayOf(ObjectiveEntity(-5,"",-5,"",item.ObjectiveType.Default,0,0,""))
                     //var objective: item.itemObjective
                    /* run {
@@ -309,6 +316,7 @@ fun ItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: Us
                     onCheckedChange = {
                         checkedState.value = it
                         item.apply {has  = it }
+                        uViewModel.invFlux(it,item)
                         /*val result =uViewModel.onCheckboxChecked(item, it)
                         if (result != null) { showToast(context, result) }*/
                     })
@@ -485,12 +493,7 @@ fun LocalitemViewNoSel(viewModel: RoomitemViewModel, item: ItemEntity,navi: Dest
     }
 
 }*/
-suspend fun Characterwaitcomplete(context: Context, item: ItemEntity, viewModel: UserViewModel) :Boolean{
-return MaterialAlertDialogBuilder(context)
-.setTitle("Complete item?")
-.create()
-.await(positiveText = "Confirm", negativeText = "Cancel")
-}
+
 /*@Composable
 fun complete2(item: ItemEntity ,viewModel: UserViewModel) :Boolean{
     if(showDialogC2.value){

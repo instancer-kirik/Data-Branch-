@@ -40,7 +40,7 @@ data class CharacterWithStuff (
 
 
         )
-    var inventory: ArrayList<ItemEntity> = arrayListOf()
+    var inventory: Array<ItemEntity> = arrayOf()
     //val aidList: Array<String>
     var equipment: MutableMap<String, Long?> = mutableMapOf("L" to null, "R" to null,
         "Head" to null,"Necklace" to null, "Torso" to null,"Legs" to null,"Feets" to null,

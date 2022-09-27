@@ -92,6 +92,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
             //should save elsewhere, but whateev
             char.quests.forEach {qDao.save(it)}
             char.abilities.forEach{aDao.save(it)}
+            char.inventory.forEach{iDao.save(it)}
             //qDao.save(char.quests)
         }
     fun syncAE(): Job = CoroutineScope(Dispatchers.IO).launch {
@@ -107,17 +108,30 @@ class GeneralRepository(application: Application, db: AppDatabase,
     fun getAllCharacters():Job =
 
         CoroutineScope(Dispatchers.IO).launch {
+//            //mcharacters= CharacterWithStuff(uDao.getAllCharacters())
+            var seen: Int=0
             uDao.getAllCharacters().forEach{
                 if(mcharacters.any { character->character.character.character_id==it.character_id }){
-                    Log.d(TAG,"REPO CALLED, ALREADY IN LIST")
+                    seen++
                 }else {
                     mcharacters = mcharacters.plus(CharacterWithStuff(it))
                 }
+
             }
+            Log.d(TAG,"REPO CALLED, seen $seen ALREADY IN LIST")
         }
 
     private fun CharacterWithStuff(character: CharacterEntity,) : CharacterWithStuff {
         return CharacterWithStuff(character,mabilities,getQuestsbyCharacter(character))
+    }
+    private fun CharacterWithStuff(characters: List<CharacterEntity>) :List<CharacterWithStuff> {
+        val result : MutableList<CharacterWithStuff> = mutableListOf()
+        characters.forEach {character->
+            result.plus(CharacterWithStuff(character,mabilities,getQuestsbyCharacter(character)))
+        }
+
+        return result
+
     }
 
     fun getACharacter(id:Long ):Job =
@@ -204,8 +218,9 @@ class GeneralRepository(application: Application, db: AppDatabase,
 
     fun putItemOnCharacter(item: ItemEntity) {
         selectedCharacterWithStuff.character.items=selectedCharacterWithStuff.character.items.plus(item.iid)
-        val result = selectedCharacterWithStuff.inventory.add(item)
-        Log.d(TAG, "result is $result in generalRepo putItemOnCharacter")
+
+        selectedCharacterWithStuff.inventory= selectedCharacterWithStuff.inventory.plus(item)
+        Log.d("REPO_putItemOnCharacter", "item  is $item in generalRepo putItemOnCharacter")
         CoroutineScope(Dispatchers.IO).launch {
             save()
             // udao.update(me)
@@ -263,13 +278,29 @@ class GeneralRepository(application: Application, db: AppDatabase,
         CoroutineScope(Dispatchers.IO).launch {
             aDao.save(ability)
         }
-    fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = name, author =  getMe().user.uname)): Job =
+    suspend fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = name, author =  getMe().user.uname)):Long{
+        var id:Long= item.iid
+
+        id= withContext(Dispatchers.IO){
+            iDao.save(item)
+        }
+
+        if (id==0L) {
+            Log.d("REPO_insertItem", "RUH ROH id ==0 ")
+        }else{Log.d("REPO_insertItem", "id  is $id")}
+
+
+        return id
+    }
+/*WORKS
+*/
+    /*fun insertAbility(ae:AbilityEntity): AbilityEntity {
+
+fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = name, author =  getMe().user.uname)): Job =
+        val id:Long= item.iid
         CoroutineScope(Dispatchers.IO).launch {
             iDao.save(item)
         }
-    /*fun insertAbility(ae:AbilityEntity): AbilityEntity {
-
-
 
         CoroutineScope(Dispatchers.IO).launch {
             aDao.insert(ae)

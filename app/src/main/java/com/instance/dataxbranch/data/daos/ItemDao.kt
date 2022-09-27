@@ -6,8 +6,8 @@ import com.instance.dataxbranch.data.entities.ItemEntity
 
 @Dao
 abstract class ItemDao() {//:EntityDao<ItemEntity>
-    @Insert
-    abstract fun insert(vararg item: ItemEntity?)
+    @Insert(onConflict=OnConflictStrategy.REPLACE)
+    abstract fun insert(vararg item: ItemEntity?):List<Long>
 
     @Update
     abstract fun update(vararg item: ItemEntity?)
@@ -16,12 +16,12 @@ abstract class ItemDao() {//:EntityDao<ItemEntity>
     abstract fun delete(vararg item: ItemEntity?)
 
     @Transaction
-    @Insert
-    abstract fun save(item: ItemEntity)
+    @Insert(onConflict=OnConflictStrategy.REPLACE)
+    abstract fun save(item: ItemEntity):Long
     @Query("DELETE FROM quests")
     abstract fun deleteAllRows()
     @Insert
-    abstract fun insertAll(items: ArrayList<ItemEntity>)
+    abstract fun insertAll(items: Array<ItemEntity>)
 
     //@Insert(onConflict = OnConflictStrategy.REPLACE)
     //abstract fun save(items: Iterable<ItemEntity>)
