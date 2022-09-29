@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -49,13 +50,18 @@ fun UserDumpScreen(
         Spacer(Modifier.requiredHeight(20.dp))
         Row(modifier = Modifier
             .clickable {
-                showToast(context,"Clicked c; in userDumpscreen")
+                showToast(context, "Clicked c; in userDumpscreen")
             }
             .background(backgroundColor)//if (selected) MaterialTheme.user.colors.secondary else Color.Transparent)
             .fillMaxWidth()
             .padding(12.dp)
         )
         {
-            val me = viewModel.getMeWithAbilities()
-            Text(me.toString())
+            //val me = viewModel.getMeWithAbilities()
+            androidx.compose.foundation.lazy.LazyColumn(
+                   modifier = Modifier.padding(vertical = 4.dp)
+            ){ items(items=viewModel.getAllCharacters()){character->
+               Text(character.toString())
+            }
+            }
     }}}

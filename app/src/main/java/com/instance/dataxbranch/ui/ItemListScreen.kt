@@ -34,7 +34,7 @@ import com.instance.dataxbranch.data.entities.ItemEntity
 import com.instance.dataxbranch.destinations.ItemDetailScreenDestination
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddItemEntityAlertDialog
-import com.instance.dataxbranch.ui.viewModels.ItemViewModel
+
 
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.instance.dataxbranch.utils.await
@@ -49,7 +49,7 @@ var recomposeState = mutableStateOf(false)*/
 @Destination
 @Composable
 fun ItemListScreen(
-    iViewModel: ItemViewModel = hiltViewModel(),
+
     uViewModel: UserViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
 
@@ -98,7 +98,7 @@ fun ItemListScreen(
                 alertC(uViewModel,navigator)
             }*/
             Text("items are: ${uViewModel.getSelectedCharacter().character.items} --")
-            ItemListLocalLazyColumn( items = iViewModel.getItems()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel)
+            ItemListLocalLazyColumn( items = uViewModel.getItems()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel)
             Button(
                 onClick = { showToast(context,"clicked") },
                 modifier = Modifier.padding(2.dp)
@@ -161,15 +161,17 @@ fun AddItemEntityFloatingActionButton(uViewModel: UserViewModel = hiltViewModel(
 fun ItemListLocalLazyColumn(items: Array<ItemEntity>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index
-    uViewModel.selectedInventoryItem=items[index]
+
+
+        uViewModel.setSelectI(items[index])
         recomposeState.value=true
     }
 
     Text(
         "Selected Character: ${uViewModel.getSelectedCharacter().character.name}" +
-                "\n Selected item: ${uViewModel.selectedInventoryItem}\"" +
-                "\n inv_size = ${uViewModel.getSelectedCharacter().inventory.size} total_items = ${items.size}" +
-                "\n items: ${items.toString()} ##"//text = "Index $index"
+                "\n Selected item: ${uViewModel.getSelectI()}\"" +
+                "\n inv_size = ${uViewModel.getSelectedCharacter().inventory.size} total_items = ${items.size}"
+                //"\n items: ${items.toString()} ##"//text = "Index $index"
     )
     LazyColumn(
         modifier.fillMaxSize(),
@@ -185,7 +187,8 @@ fun ItemListLocalLazyColumn(items: Array<ItemEntity>, modifier: Modifier,navi: D
                 selected = selectedIndex == index,
                 onClick = onItemClick,
                 navi = navi,
-                uViewModel = uViewModel
+                uViewModel = uViewModel,
+
             )
 
         }
@@ -204,7 +207,8 @@ fun LocalItemView(
     index: Int,
     selected: Boolean,
     onClick: (Int) -> Unit,
-    uViewModel: UserViewModel
+    uViewModel: UserViewModel,
+
 
 ) {
     //Text("DEBUG")
@@ -279,7 +283,11 @@ fun ItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: Us
                 //Text(item.objectives.toString())
                 if (expanded) {
                     Text("HI 2")
-                    Button(onClick = {navi.navigate(ItemDetailScreenDestination)}){Text("EDIT")}
+                    Button(onClick = {
+
+
+                        uViewModel.setSelectI(item)
+                        navi.navigate(ItemDetailScreenDestination)}){Text("EDIT")}
                     //var listofObjectiveEntities: Array<ObjectiveEntity> = arrayOf(ObjectiveEntity(-5,"",-5,"",item.ObjectiveType.Default,0,0,""))
                     //var objective: item.itemObjective
                    /* run {
@@ -308,7 +316,7 @@ fun ItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: Us
                     checked = checkedState.value,
                     onCheckedChange = {
                         checkedState.value = it
-                        item.apply {has  = it }
+                        //item.apply {has  = it } is now handled by get button
                         /*val result =uViewModel.onCheckboxChecked(item, it)
                         if (result != null) { showToast(context, result) }*/
                     })
@@ -351,7 +359,7 @@ fun ItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: Us
 
                 }
             }
-                Button(onClick = { /*navi.navigate(ItemDetailScreenDestination)*/ }) { Text("EDIT") }
+                Button(onClick = { uViewModel.putItemOnCharacter(item) }) { Text("GET") }
         }}
 }
 
@@ -485,12 +493,12 @@ fun LocalitemViewNoSel(viewModel: RoomitemViewModel, item: ItemEntity,navi: Dest
     }
 
 }*/
-suspend fun Characterwaitcomplete(context: Context, item: ItemEntity, viewModel: UserViewModel) :Boolean{
+/*suspend fun Characterwaitcomplete(context: Context, item: ItemEntity, viewModel: UserViewModel) :Boolean{
 return MaterialAlertDialogBuilder(context)
 .setTitle("Complete item?")
 .create()
 .await(positiveText = "Confirm", negativeText = "Cancel")
-}
+}*/
 /*@Composable
 fun complete2(item: ItemEntity ,viewModel: UserViewModel) :Boolean{
     if(showDialogC2.value){

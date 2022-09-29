@@ -63,13 +63,7 @@ fun AddItemEntityAlertDialog(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        if (viewModel.inventoryModeState.value) {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                viewModel.generalRepository.insertItem(name)
-                            }
-                        }else {
-                            viewModel.addNewItemEntityOnCharacter(name)
-                        }
+                        viewModel.addItemOnClick(name)
 
                         viewModel.characterDialogState.value = false
                     }

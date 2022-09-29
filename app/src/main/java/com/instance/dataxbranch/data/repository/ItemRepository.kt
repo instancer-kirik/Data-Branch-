@@ -9,16 +9,23 @@ import com.instance.dataxbranch.data.daos.ItemDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.entities.ItemEntity
 import com.instance.dataxbranch.data.AppDatabase
+import com.instance.dataxbranch.data.entities.User
 
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.properties.Delegates
 
 
 @Singleton
 class ItemRepository @Inject constructor(application: Application, db: AppDatabase) {
     var itemDao: ItemDao
-    // lateinit var selecteditem: ItemEntity
+    var selectedItem: ItemEntity by Delegates.observable(ItemEntity()) { property, oldValue, newValue ->
+
+        Log.d("ITEMREPO"," CHANGED  $property and oldval ${oldValue.stringify()} and newval ${newValue.stringify()}")
+        //if (newValue.iid ==0L){ selectedItem =oldValue}// this prevents resetting to id=0 bug
+    }
+    var selectedID:Int = 0
     private var mitems: Array<ItemEntity> = arrayOf()//ArrayList<ItemEntity> = arrayOf()
 
     private fun initRepo(): Job =
@@ -27,7 +34,6 @@ class ItemRepository @Inject constructor(application: Application, db: AppDataba
             }
 
     fun refresh(): Job =
-
         CoroutineScope(Dispatchers.IO).launch {
             mitems=itemDao.getItems()
         }
@@ -35,7 +41,12 @@ class ItemRepository @Inject constructor(application: Application, db: AppDataba
         itemDao = db.itemDao()
         initRepo()
     }
-
+    fun sync() {
+        refresh()
+        /*CoroutineScope(Dispatchers.IO).launch {//this might cause issues with data not being loaded fast enough
+            mitems = itemDao.getItems()
+        }*/
+    }
     fun insertItemEntity(item: ItemEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
             val returnId = itemDao.save(item)
@@ -71,7 +82,7 @@ class ItemRepository @Inject constructor(application: Application, db: AppDataba
             itemDao.update(item)
             //qwo.objectives.forEach{obj->itemDao.update(obj)}
         }*/
-    fun getAllitemsAsync(): Deferred<Unit> =
+    fun getAllItemsAsync(): Deferred<Unit> =
         CoroutineScope(Dispatchers.IO).async {
             itemDao.getItems()
         }
@@ -122,12 +133,9 @@ class ItemRepository @Inject constructor(application: Application, db: AppDataba
 
 }
 
-
-
-
-
-
-
+private fun ItemEntity.stringify(): String {
+return "ITEM ${this.name} id: ${this.iid}"
+}
 
 
 /*

@@ -25,7 +25,7 @@ import com.instance.dataxbranch.data.entities.ItemEntity
 
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.destinations.*
-import com.instance.dataxbranch.ui.viewModels.ItemViewModel
+
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -36,52 +36,55 @@ import io.getstream.chat.android.ui.ChatUI.navigator
 @Composable
 fun ItemDetailScreen (
     viewModel: UserViewModel =hiltViewModel(),
-                      iViewModel: ItemViewModel = hiltViewModel(),
-    item:ItemEntity=iViewModel.selectedItem,
+//                      viewModel: ItemViewModel=hiltViewModel(),
+    item:ItemEntity=viewModel.getSelectI(),
                                 navigator: DestinationsNavigator,
 
                                 ){
 
-    /*iViewModel.selectedItem.name = them[0].value.toString()
-    iViewModel.selectedItem.desc =
+    /*itemToSave.name = them[0].value.toString()
+    itemToSave.desc =
         them[1].value.toString()//this isn't changing even though I clearly change it.
-    iViewModel.selectedItem.has = them[2].value as Boolean
+    itemToSave.has = them[2].value as Boolean
 
-    iViewModel.selectedItem.damage = them[3].value as Int
-    iViewModel.selectedItem.color =them[4].value as String
-    iViewModel.selectedItem.weight = them[5].value as Float
-    iViewModel.selectedItem.note = them[6].value as String
-    iViewModel.selectedItem.links =  them[7].value as List<String>
-    iViewModel.selectedItem.featuredImage = them[8].value as String*/
-    var desc = remember { mutableStateOf(iViewModel.selectedItem.desc + "") }
+    itemToSave.damage = them[3].value as Int
+    itemToSave.color =them[4].value as String
+    itemToSave.weight = them[5].value as Float
+    itemToSave.note = them[6].value as String
+    itemToSave.links =  them[7].value as List<String>
+    itemToSave.featuredImage = them[8].value as String*/
+    var desc = remember { mutableStateOf(item.desc + "") }
 
-    var name = remember { mutableStateOf(iViewModel.selectedItem.name + "") }
-    var damage = remember { mutableStateOf(iViewModel.selectedItem.damage) }
-    var color = remember { mutableStateOf(iViewModel.selectedItem.color) }
-    var links = remember { mutableStateOf(iViewModel.selectedItem.links) }
-    var featuredImage = remember { mutableStateOf(iViewModel.selectedItem.featuredImage) }
-    var weight = remember { mutableStateOf(iViewModel.selectedItem.weight) }
-    //var isHabitState = remember { mutableStateOf(iViewModel.selectedItem.isHabit) }
-    var note= remember {mutableStateOf(iViewModel.selectedItem.note) }
-    val hasState = remember { mutableStateOf(iViewModel.selectedItem.has) }
+    var name = remember { mutableStateOf(item.name + "") }
+    var damage = remember { mutableStateOf(item.damage) }
+    var color = remember { mutableStateOf(item.color) }
+    var links = remember { mutableStateOf(item.links) }
+    var featuredImage = remember { mutableStateOf(item.featuredImage) }
+    var weight = remember { mutableStateOf(item.weight) }
+    //var isHabitState = remember { mutableStateOf(item.isHabit) }
+    var note= remember {mutableStateOf(item.note) }
+    val hasState = remember { mutableStateOf(item.has) }
     val them =listOf(name,desc,hasState,damage,color,weight,note,links, featuredImage)
     val context = LocalContext.current
     Scaffold(
 
-        topBar = { ItemDetailToolbar(context,viewModel,iViewModel,navigator,them) },
+        topBar = { ItemDetailToolbar(context,viewModel,navigator,them) },
         floatingActionButton = {
             //AddQuestEntityFloatingActionButton()
             // EditQuestEntityFloatingActionButton()
         }
     ) { padding ->
 padding
+        if (recomposeState.value){
+            recomposeState.value =false
+        }
        //viewModel.getSelect()
 
-        //var Mcompleted = remember { mutableStateOf(iViewModel.selectedItem.completed) }
+        //var Mcompleted = remember { mutableStateOf(itemToSave.completed) }
 
         //INTS
 
-        //var requiredEnergy = remember { mutableStateOf(iViewModel.selectedItem.requiredEnergy ) }
+        //var requiredEnergy = remember { mutableStateOf(itemToSave.requiredEnergy ) }
         /*val m = mapOf("desc" to desc,
 
         "name" to name,
@@ -97,7 +100,9 @@ padding
         Row{
 
             Column {
-                Text(item.toString())
+                Button(onClick={recomposeState.value=true}){Text("recompose")}
+
+                Text(viewModel.getSelectI().toString())
                 istringBlock(s = "name", name)
                 istringBlock(s = "desc", desc)
                 istringBlock(s = "notes", note)
@@ -116,7 +121,7 @@ padding
                         checked =hasState.value,
                         onCheckedChange = {status->
                            hasState.value = status
-                           viewModel.invFlux(status ,iViewModel.selectedItem)
+                           viewModel.invFlux(status ,item)
                         })
                 }
                 /*Row {
@@ -126,10 +131,10 @@ padding
                         checked = isHabitState.value,
                         onCheckedChange = {
                             isHabitState.value = it
-                            iViewModel.selectedItem.apply { isHabit = it }
+                            itemToSave.apply { isHabit = it }
                         })
                 }*/
-                Button(onClick = {save3(context,navigator,viewModel,iViewModel,them)}){
+                Button(onClick = {save3(context,navigator,viewModel,them)}){
                     Icon(
                         imageVector = Icons.Default.Done,
                         contentDescription = Constants.SAVE
@@ -141,7 +146,7 @@ padding
 
 
 @Composable
-fun ItemDetailToolbar(context: Context, viewModel: UserViewModel,iViewModel: ItemViewModel, navigator: DestinationsNavigator,them: List<MutableState<out Any>>) {
+fun ItemDetailToolbar(context: Context, viewModel: UserViewModel, navigator: DestinationsNavigator,them: List<MutableState<out Any>>) {
     TopAppBar(
         title = { Text(text = "Edit Item") },
         actions = {ConfigChangeExample()
@@ -165,7 +170,7 @@ fun ItemDetailToolbar(context: Context, viewModel: UserViewModel,iViewModel: Ite
 
                     Button(onClick = {navigator.navigate( DevScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("DevScreen")}
                     Button(onClick = {navigator.navigate(CharacterQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("My Quests")}
-                    Button(onClick = {save3(context,navigator,viewModel,iViewModel,them)}, modifier=Modifier.padding(2.dp)){Text("save any changes")}
+                    Button(onClick = {save3(context,navigator,viewModel,them)}, modifier=Modifier.padding(2.dp)){Text("save any changes")}
                 } else Text("DEBUG")
 
             }
@@ -229,28 +234,32 @@ fun iFloatBlock(s: String = "", i: MutableState<Float>){
             }
         )}
 }
-fun save3(context: Context,navigator: DestinationsNavigator,viewModel:UserViewModel,iViewModel: ItemViewModel,them: List<MutableState<out Any>>){
+fun save3(context: Context,navigator: DestinationsNavigator,viewModel:UserViewModel,them: List<MutableState<out Any>>){
 //    val them =listOf(name,desc,checkedState,ingredients,color,colorxp,weight,sourceUrl, featuredImage)
   //  val them =listOf(name,desc,checkedState,ingredients,color,colorxp,weight,sourceUrl, featuredImage,isHabitState)
-    iViewModel.selectedItem.name = them[0].value.toString()
-    iViewModel.selectedItem.desc =
+    val itemToSave = viewModel.getSelectI()
+
+
+    itemToSave.name = them[0].value.toString()
+    itemToSave.desc =
         them[1].value.toString()//this isn't changing even though I clearly change it.
-    iViewModel.selectedItem.has = them[2].value as Boolean
+    itemToSave.has = them[2].value as Boolean
 
-    iViewModel.selectedItem.damage = them[3].value as Int
-    iViewModel.selectedItem.color =them[4].value as String
-    iViewModel.selectedItem.weight = them[5].value as Float
-    iViewModel.selectedItem.note = them[6].value as String
-    iViewModel.selectedItem.links =  them[7].value as List<String>
-    iViewModel.selectedItem.featuredImage = them[8].value as String
-    //iViewModel.selectedItem.isHabit = them[9].value as Boolean
-    /*iViewModel.selectedItem.
-    iViewModel.selectedItem.levels=levels*/
-    viewModel.update(viewModel.selectedQuest)
+    itemToSave.damage = them[3].value as Int
+    itemToSave.color =them[4].value as String
+    itemToSave.weight = them[5].value as Float
+    itemToSave.note = them[6].value as String
+    itemToSave.links =  them[7].value as List<String>
+    itemToSave.featuredImage = them[8].value as String
+    //itemToSave.isHabit = them[9].value as Boolean
+    /*itemToSave.
+    itemToSave.levels=levels*/
+    viewModel.update(itemToSave)
 
-    viewModel.sync()
+    //viewModel.syncI()
     //viewModel.generalRepository.save(me.user)
     showToast(context, "Saved " + them[0].value.toString())
+    viewModel.generalRepository.itemRepository.refresh()
     navigator.navigate(ItemListScreenDestination)
 
 }

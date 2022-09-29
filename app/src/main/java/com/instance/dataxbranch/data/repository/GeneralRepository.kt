@@ -25,7 +25,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
                         val itemRepository: ItemRepository
 ) {
 
-
+    var needsSync:Boolean= true
     private var cachedUsers: List<FirestoreUser> = listOf()
     val aDao: AbilityDao=db.abilityDao()
     val uDao: UserDao=db.userDao()
@@ -51,6 +51,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
 
     private lateinit var me:User
     lateinit var selectedAE: AbilityEntity
+    //var selectedItem: ItemEntity = ItemEntity()
     var selectedCharacterIndex: Int = 0
     var selectedCharacterWithStuff: CharacterWithStuff = mcharacters[selectedCharacterIndex]
     private var me_container= UserWithAbilities(User(),mabilities)
@@ -71,7 +72,10 @@ class GeneralRepository(application: Application, db: AppDatabase,
 
         }
     }
-    fun sync(){
+    fun sync(andItems:Boolean = false){
+
+        Log.d("REPO","SYNC CALLED")
+        if (needsSync){
         CoroutineScope(Dispatchers.IO).launch {//this might cause issues with data not being loaded fast enough
             uDao.prime(User())
             me = uDao.getMe()
@@ -80,10 +84,14 @@ class GeneralRepository(application: Application, db: AppDatabase,
             getAllCharacters()
 
         }
+        if(andItems){itemRepository.sync()}
+    }
+        needsSync=false
     }
     fun save(me: User): Job =
         CoroutineScope(Dispatchers.IO).launch {
             uDao.save(me)
+            needsSync=true
         }
     fun save(char: CharacterWithStuff =selectedCharacterWithStuff): Job =
         CoroutineScope(Dispatchers.IO).launch {
@@ -94,16 +102,16 @@ class GeneralRepository(application: Application, db: AppDatabase,
             char.abilities.forEach{aDao.save(it)}
             char.inventory.forEach{iDao.save(it)}
             //qDao.save(char.quests)
+            needsSync=true
         }
-    fun syncAE(): Job = CoroutineScope(Dispatchers.IO).launch {
-        aDao.update(selectedAE)
 
-
-    }
-    fun syncAE(ae:AbilityEntity): Job = CoroutineScope(Dispatchers.IO).launch {
+    fun syncAE(ae:AbilityEntity=selectedAE): Job = CoroutineScope(Dispatchers.IO).launch {
         aDao.update(ae)
-
-
+        needsSync=true
+    }
+    fun syncItem(item:ItemEntity=itemRepository.selectedItem): Job = CoroutineScope(Dispatchers.IO).launch {
+        iDao.update(item)
+        needsSync=true
     }
     fun getAllCharacters():Job =
 
@@ -142,19 +150,16 @@ class GeneralRepository(application: Application, db: AppDatabase,
         CoroutineScope(Dispatchers.IO).launch {
             selectedCharacterWithStuff=char
             uDao.update(char.character)
-
+            needsSync=true
         }
     fun makeACharacter(name: String):Job =
         CoroutineScope(Dispatchers.IO).launch {
             var character= CharacterWithStuff(CharacterEntity(name=name))
             mcharacters= mcharacters.plus(character)
             uDao.insertCharacter(character.character)
+            needsSync=true
         }
-    fun setUpSelectedWithMe():Job =
-        CoroutineScope(Dispatchers.IO).launch {
 
-
-        }
     //private lateinit var me_container: UserWithAbilities
         //lateinit var me_user: User
 
@@ -216,7 +221,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
         }
     }
 
-    fun putItemOnCharacter(item: ItemEntity) {
+    fun putItemOnCharacter(item: ItemEntity=itemRepository.selectedItem) {
         selectedCharacterWithStuff.character.items=selectedCharacterWithStuff.character.items.plus(item.iid)
 
         selectedCharacterWithStuff.inventory= selectedCharacterWithStuff.inventory.plus(item)
@@ -249,16 +254,13 @@ class GeneralRepository(application: Application, db: AppDatabase,
     }
 
 
-    fun pullMeFromCloud(fsid:String){
-
-    }
     fun getMe(): UserWithAbilities =me_container
     fun resetAndSet(new_me: UserWithAbilities){
         CoroutineScope(Dispatchers.IO).launch {
             uDao.nukeTable()
             uDao.setMe(me_container.user)
         }
-
+        needsSync=true
     }
     fun setMe(new_me: UserWithAbilities) {
         me_container= new_me
@@ -267,7 +269,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
 
            uDao.setMe(me_container.user)
         }
-
+        needsSync=true
     }
 
    /* withContext(Dispatchers.IO){
@@ -277,6 +279,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
     fun insertAbility(ability: AbilityEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
             aDao.save(ability)
+            needsSync=true
         }
     suspend fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = name, author =  getMe().user.uname)):Long{
         var id:Long= item.iid
@@ -289,7 +292,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
             Log.d("REPO_insertItem", "RUH ROH id ==0 ")
         }else{Log.d("REPO_insertItem", "id  is $id")}
 
-
+        needsSync=true
         return id
     }
 /*WORKS

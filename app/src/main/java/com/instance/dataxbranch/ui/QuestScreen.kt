@@ -184,10 +184,10 @@ fun QuestToolbar(navigator: DestinationsNavigator) {
     )
 }
 
-@Composable
+/*@Composable
 fun LazyColumn(viewModel: QuestsViewModel, questsResponse: List<Quest>, modifier: () -> Unit){
 
-}
+}*/
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun QuestView(viewModel: QuestsViewModel, quest: Quest, index: Int, selected: Boolean, onClick: (Int) -> Unit){

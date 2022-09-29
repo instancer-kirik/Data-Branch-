@@ -36,8 +36,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.random.Random
-
+//@Singleton
 @HiltViewModel
 class UserViewModel @Inject constructor(
     val appDatabase: AppDatabase,
@@ -51,7 +52,7 @@ class UserViewModel @Inject constructor(
     //var
 
     ): ViewModel() {
-    lateinit var selectedInventoryItem: ItemEntity
+    //lateinit var selectedItem: ItemEntity
     lateinit var selectedAE: AbilityEntity
     lateinit var selectedQuest: QuestWithObjectives
     //var selectedCharacterWithStuff: CharacterWithStuff=generalRepository.selectedCharacterWithStuff
@@ -83,6 +84,7 @@ class UserViewModel @Inject constructor(
     var attuned = mutableStateOf(getAttuned())
     var userContainer: User?=null
     init {
+        Log.d("USERVIEWMODEL","INIT CALLED")
 refresh()
         selectedAE = if(meWithAbilities.abilities.isNotEmpty()) {
             meWithAbilities.abilities[0]
@@ -95,13 +97,10 @@ refresh()
         }else{
             QuestWithObjectives(QuestEntity(title="init"),listOf(ObjectiveEntity(obj="init")))
         }
-        selectedInventoryItem = if(getSelectedCharacter().inventory.isNotEmpty()){
-            getItems()[0]
-        } else{
-            ItemEntity()
-        }
+        setSelectI()
     }
     fun refresh(andQuests:Boolean = false) : String {
+        Log.d("USERVIEWMODEL","REFRESH CALLED")
         generalRepository.sync()
         viewModelScope.launch {
            /* abilities = generalRepository.aDao.getAbilites()
@@ -118,9 +117,19 @@ refresh()
         fixattunement()
         return meWithAbilities.user.uname
     }
-    fun getItems():Array<ItemEntity>{
+    fun getInventory():Array<ItemEntity>{
         return getSelectedCharacter().inventory
 //        return generalRepository.itemRepository.getitems()
+    }
+    fun getItems():Array<ItemEntity>{
+        return generalRepository.itemRepository.getitems()
+    }
+
+    fun addItemEntity(name:String){
+        generalRepository.itemRepository.insertItemEntity(ItemEntity(name=name))
+    }
+    fun addItemToInventory(item:ItemEntity=getSelectI()){
+        generalRepository.putItemOnCharacter(item)
     }
     fun getAllCharacters():List<CharacterWithStuff>{
         return generalRepository.mcharacters
@@ -176,7 +185,7 @@ refresh()
     fun putAbilityOnCharacter(ae: AbilityEntity=selectedAE){
         generalRepository.putAbilityOnCharacter(ae)
     }
-    fun putItemOnCharacter(item: ItemEntity=selectedInventoryItem){
+    fun putItemOnCharacter(item: ItemEntity=getSelectI()){
         generalRepository.putItemOnCharacter(item)
     }
     fun addNewItemEntityOnCharacter(name: String) {
@@ -203,7 +212,8 @@ refresh()
     }*/
     fun update(ae: AbilityEntity){
         generalRepository.syncAE(ae)}
-
+    fun update(item: ItemEntity){
+        generalRepository.syncItem(item)}
     fun update(me:User){
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -234,7 +244,7 @@ refresh()
     }
 
     fun getMeWithAbilities(): UserWithAbilities {
-        refresh()
+        //refresh()
         return meWithAbilities
     }
     fun getFriends(): List<User>{//maybe do a simpler struct for friends
@@ -251,6 +261,9 @@ refresh()
         CoroutineScope(Dispatchers.IO).launch {
             qdao.update(quest.quest)
         }}
+    fun save(i:ItemEntity) {
+        generalRepository.itemRepository.updateitemEntity(i)
+    }
     fun getAllFirestoreUsers(context:Context, db: FirebaseFirestore=FirebaseFirestore.getInstance()):List<FirestoreUser>{
         var output :List<FirestoreUser> =listOf()
         var cachedUsers = generalRepository.getCachedUsers()
@@ -292,16 +305,23 @@ refresh()
             }
         }
     }*/
-    fun syncSelectedAE(){
-        update(selectedAE)
+    fun syncSelectedAE(ae: AbilityEntity=selectedAE){
+        update(ae)
         updateAttuned()
     }
     fun sync(a:Int=attuned.value){
-
+Log.d("USERVIEWMODEL","SYNC CALLED")
         //meWithAbilities.abilities.forEach { update(it) }
         update(meWithAbilities.user.apply{attuned=a})
         setSelect()
         generalRepository.sync()
+        refresh()
+    }
+    fun syncI(){
+        setSelectI()
+        //this bypasses generalRepo.sync() because unnecessary
+        //unecess_array
+        generalRepository.itemRepository.sync()
         refresh()
     }
     fun syncAttunement(){
@@ -318,15 +338,35 @@ refresh()
     fun getSelect() {
         selectedAE=generalRepository.selectedAE
     }
-    private fun setSelect(it:AbilityEntity?=null) {
-        if (it==null) {
+    fun getSelectI():ItemEntity =  generalRepository.itemRepository.selectedItem
+
+    private fun setSelect(item:AbilityEntity?=null) {
+        if (item==null) {
             generalRepository.selectedAE = selectedAE
         }
         else{
-            generalRepository.selectedAE=it
+            generalRepository.selectedAE=item
 
         }
         getSelect()
+    }
+
+    fun setSelectI(item: ItemEntity?=null):ItemEntity{
+        if (item==null) {
+            if(getSelectI().iid!=0L){
+                //when ID IN GETSELECT IS NOT 0
+            return generalRepository.itemRepository.selectedItem
+            }else{
+                //wjem ID IN GETSELECT IS 0
+                Log.d(TAG,"gotten invalid id. ${getSelectI().iid} ...ignoring")
+                return generalRepository.itemRepository.selectedItem
+            }
+        }
+        else{
+            generalRepository.itemRepository.selectedItem=item
+
+        }
+        return getSelectI()
     }
     fun whoAmI(): String? {
         val auth = FirebaseAuth.getInstance()
@@ -466,7 +506,7 @@ refresh()
         }
 
 
-    fun save(c: CharacterWithStuff) {
+    fun save(c: CharacterWithStuff=getSelectedCharacter()) {
         generalRepository.save(c)
     }
 
@@ -479,6 +519,16 @@ refresh()
             getSelectedCharacter().inventory= getSelectedCharacter().inventory.filter{it.iid !=item.iid}
                 .toTypedArray()
             getSelectedCharacter().character.items=getSelectedCharacter().character.items.filter{it!=item.iid}
+        }
+    }
+
+    fun addItemOnClick(name:String) {
+        if (inventoryModeState.value) {
+            CoroutineScope(Dispatchers.IO).launch {
+                generalRepository.insertItem(name)
+            }
+        }else {
+            addNewItemEntityOnCharacter(name)
         }
     }
 

@@ -36,8 +36,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.entities.ItemEntity
 import com.instance.dataxbranch.destinations.ItemDetailScreenDestination
+import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddItemEntityAlertDialog
-import com.instance.dataxbranch.ui.viewModels.ItemViewModel
+
 
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.instance.dataxbranch.utils.await
@@ -52,7 +53,7 @@ var recomposeState = mutableStateOf(false)*/
 @Destination
 @Composable
 fun InventoryScreen(
-    iViewModel: ItemViewModel = hiltViewModel(),
+//    iViewModel: ItemViewModel = hiltViewModel(),
     uViewModel: UserViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
 
@@ -79,6 +80,11 @@ fun InventoryScreen(
         if (uViewModel.characterDialogState.value) {
             AddItemEntityAlertDialog()
         }
+        if (showDialogC.value){
+            uViewModel.save()
+            showToast(context,"saved selected or set popup here")
+            showDialogC.value=false
+        }
         Column {
            /* Button(
                 onClick = { navigator.navigate(itemsScreenDestination) },
@@ -98,7 +104,7 @@ fun InventoryScreen(
                 alertC(uViewModel,navigator)
             }*/
             Text("items are: ${uViewModel.getSelectedCharacter().character.items} --")
-            InventoryGrid( them = uViewModel.getItems()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel)
+            InventoryGrid( them = uViewModel.getInventory()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel)
             Button(
                 onClick = { showDialogC.value = true },
                 modifier = Modifier.padding(2.dp)
@@ -145,7 +151,9 @@ fun alertC(uViewModel: UserViewModel,navi: DestinationsNavigator) {
 fun InventoryGrid(them: Array<ItemEntity>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel ){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index
-        uViewModel.selectedInventoryItem=them[index]
+
+//        iViewModel.selectedItem= them[index]
+        uViewModel.setSelectI(them[index])
         recomposeState.value=true}
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp)
@@ -227,7 +235,10 @@ fun InventoryItemView(
 
             InventoryItemCardContent(navi, item, uViewModel)
 
-            Button(onClick = {navi.navigate(ItemDetailScreenDestination)}){Text("EDIT")}
+            Button(onClick = {
+                uViewModel.setSelectI(item)
+                navi.navigate(ItemDetailScreenDestination)
+            }){Text("EDIT")}
 
 
     }}
@@ -315,8 +326,11 @@ fun InventoryItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uView
                     checked = checkedState.value,
                     onCheckedChange = {
                         checkedState.value = it
-                        item.apply {has  = it }
-                        uViewModel.invFlux(it,item)
+                        showToast(context, "STUB")
+                        /*item.apply {has  = it }
+                        uViewModel.invFlux(it,item)*/
+                        //WHY WOULD THIS BE IN THE INVENTORY SCREEN LOL
+
                         /*val result =uViewModel.onCheckboxChecked(item, it)
                         if (result != null) { showToast(context, result) }*/
                     })
@@ -359,7 +373,7 @@ fun InventoryItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uView
 
                 }
             }
-                Button(onClick = { /*navi.navigate(ItemDetailScreenDestination)*/ }) { Text("EDIT") }
+               /* Button(onClick = { *//*navi.navigate(ItemDetailScreenDestination)*//* }) { Text("EDIT") }*/
         }}
 }
 

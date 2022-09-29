@@ -347,7 +347,7 @@ fun UserSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, me: Use
 }*/
 
     @Composable
-    fun LazyColumn(viewModel: UserViewModel, modifier: Modifier){// questsResponse: List<Quest>
+    fun LazyColumn2(viewModel: UserViewModel, modifier: Modifier){// questsResponse: List<Quest>
         var selectedIndex by remember { mutableStateOf(0) }
         val onItemClick = { index: Int -> selectedIndex = index}
         Column(

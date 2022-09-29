@@ -6,7 +6,7 @@ import com.instance.dataxbranch.data.entities.AbilityEntity
 
 @Dao
 abstract class AbilityDao() {//:EntityDao<AbilityEntity>
-    @Insert
+    @Insert(onConflict=OnConflictStrategy.REPLACE)
     abstract fun insert(vararg ability: AbilityEntity?)
 
     @Update
@@ -16,10 +16,10 @@ abstract class AbilityDao() {//:EntityDao<AbilityEntity>
     abstract fun delete(vararg ability: AbilityEntity?)
 
     @Transaction
-    @Insert
+    @Insert(onConflict=OnConflictStrategy.REPLACE)
     abstract fun save(ability: AbilityEntity)
 
-    @Insert
+    @Insert(onConflict=OnConflictStrategy.REPLACE)
     abstract fun insertAll(abilities: List<AbilityEntity>)
 
     //@Insert(onConflict = OnConflictStrategy.REPLACE)
