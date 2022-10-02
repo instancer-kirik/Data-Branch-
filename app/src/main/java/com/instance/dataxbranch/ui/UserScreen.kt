@@ -134,13 +134,13 @@ fun UserToolbar(navigator: DestinationsNavigator,viewModel:UserViewModel,context
                         //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                         //only room for 3 buttons this way
                         Row(modifier = Modifier.fillMaxSize()) {
-                            val myfsid = viewModel.getMeWithAbilities().user.fsid
+                           /* val myfsid = viewModel.getMeWithAbilities().user.fsid
                             if( myfsid!="-1"){
                             Button(
                                 onClick = {viewModel.readUserData(context, FirebaseFirestore.getInstance(),myfsid)
                                     navigator.navigate(DevScreenDestination) },
                                 modifier = Modifier.padding(2.dp)
-                            ) { Text("sync with valid fsid") }}
+                            ) { Text("sync with valid fsid") }}*/
                             Button(
                                 onClick = { navigator.navigate(DevScreenDestination) },
                                 modifier = Modifier.padding(2.dp)
@@ -250,7 +250,7 @@ fun UserSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, me: Use
                     var name = "init"
                     name = viewModel.refresh()
                     val prefix = ""
-
+/*
                     if(me.user.fsid!="-1"){
 
                         if(me.user.fsid=="-2"){
@@ -258,7 +258,7 @@ fun UserSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, me: Use
                         }else{
                             if(me.user.cloud){viewModel.writeUserData(context,db= FirebaseFirestore.getInstance(),me.user.fsid)}
                         }
-                    }
+                    }*/
                     showToast(context = context, msg = " USER IS NOW $name")
                 },
                 modifier = Modifier.padding(2.dp)
@@ -322,7 +322,7 @@ fun UserSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, me: Use
             ),
             modifier = Modifier.padding(8.dp)
         )
-        stringblock("fsid: " ,me.user.fsid +"")
+       // stringblock("fsid: " ,me.user.fsid +"")
         stringblock("active/selected quest: " ,   roomQuestViewModel.selectedQuest(me.user.getActiveQuest()))
         stringblock("rating: " ,me.user.rating.toString() +"/"+ me.user.rating_denominator.toString())
         stringblock("id:  " ,me.user.me_id.toString())

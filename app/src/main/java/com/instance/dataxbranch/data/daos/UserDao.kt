@@ -8,6 +8,7 @@ import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
 
 @Dao
@@ -17,6 +18,12 @@ abstract class UserDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     abstract fun prime(user: User)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    abstract fun prime(characterEntity: CharacterEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    abstract fun prime(vararg characterEntity: CharacterEntity?)
     @Update
     abstract fun update(vararg user: User?)
 
@@ -44,10 +51,11 @@ abstract class UserDao {
      }
 
     @Transaction
-   @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun save(user: User)
-    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun save(user: User)
+
+    @Transaction
+    @Upsert
     abstract fun save(char: CharacterEntity)
 
     @Transaction
@@ -59,8 +67,8 @@ abstract class UserDao {
     @Query("SELECT * FROM characters")
     abstract fun getAllCharacters(): List<CharacterEntity>
 
-    @Query("SELECT * FROM characters WHERE id =:id")
-    abstract fun getCharacterEntity(id: Long): CharacterEntity
+    @Query("SELECT * FROM characters WHERE uuid =:uuid")
+    abstract fun getCharacterEntity(uuid: UUID): CharacterEntity
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     abstract fun insertCharacter(vararg char: CharacterEntity?)
@@ -79,7 +87,11 @@ abstract class UserDao {
     @Query("SELECT * FROM abilities WHERE aid =:id")
     abstract fun getAbilityEntityList(id: Long): List<AbilityEntity>
 
-
+    /*
+    Cannot figure out how to read this field from a cursor. - equipment in com.instance.dataxbranch.data.local.CharacterWithStuff
+    @Transaction
+    @Query("SELECT * FROM characters")
+    abstract fun loadAll(): List<CharacterWithStuff>*/
 
     open fun getMeAbilities(): UserWithAbilities? {
         val me = getMe()

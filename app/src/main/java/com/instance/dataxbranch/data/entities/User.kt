@@ -23,11 +23,11 @@ import java.util.*
 @TypeConverters(Converters::class)
 @JsonClass(generateAdapter=true)
 data class User @JvmOverloads constructor(
-    @ColumnInfo(name = "me_id")@PrimaryKey(autoGenerate = true) val me_id: Long=0,
+    @ColumnInfo(name = "me_id")@PrimaryKey val me_id: String = java.util.UUID.randomUUID().toString(),
     @ColumnInfo(name = "firestore_id") var fsid: String = "-1",
    // @ColumnInfo(name = "title") var title: String? = null,
     @ColumnInfo(name = "uid")val uid: Long = 1L,
-    @ColumnInfo(name = "id") var id: Long=0,
+    //@ColumnInfo(name = "id") var id: Long=0,
     @ColumnInfo(name = "uname")var uname: String = DEFAULT_UNAME,
     @ColumnInfo(name = "name")var name: String = "name",
     @ColumnInfo(name = "imageUrl") var imageUrl: String = "",
@@ -38,6 +38,7 @@ data class User @JvmOverloads constructor(
     @ColumnInfo(name = "rating_denominator") var rating_denominator: Int = 1,
     @ColumnInfo(name = "traits") var traits: List<String> =listOf("remarkable"),
     @ColumnInfo(name = "dateAdded")val dateAdded: String= "07-01-2022",//"June 14,2022",
+
     //val sourceUrl: String = ""
     //@field:JvmField // use this annotation if your Boolean field is prefixed with 'is'
 
@@ -96,7 +97,7 @@ data class User @JvmOverloads constructor(
     @ColumnInfo(name = "status")var status: String = "intrepid.. curious",
     @ColumnInfo(name = "terms_status")var terms_status: String = "",//update this on accepting terms
     var xp: Int = 0,
-
+    @ColumnInfo(name = "characters") var characters: List<String> = listOf(),
 //store list of authored quests, nuggets,abilities,items etc
     ) {
 
@@ -159,7 +160,7 @@ data class User @JvmOverloads constructor(
             dockedCloudQuests += tangent.dockedCloudQuests
             rating = tangent.rating
             rating_denominator = tangent.rating_denominator
-            fsid =tangent.fsid
+            //fsid =tangent.fsid
             //uid=tangent.uid
             uname = tangent.uname
             name = tangent.name

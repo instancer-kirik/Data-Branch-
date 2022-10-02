@@ -57,7 +57,8 @@ fun UserDumpScreen(
             .padding(12.dp)
         )
         {
-            //val me = viewModel.getMeWithAbilities()
+            val me = viewModel.getMeWithAbilities()
+            Text(me.toString())
             androidx.compose.foundation.lazy.LazyColumn(
                    modifier = Modifier.padding(vertical = 4.dp)
             ){ items(items=viewModel.getAllCharacters()){character->

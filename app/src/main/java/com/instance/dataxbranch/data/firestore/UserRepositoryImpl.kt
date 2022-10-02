@@ -1,7 +1,9 @@
 package com.instance.dataxbranch.data.firestore
 
 //import com.google.firebase.firestore.auth.User
+import android.util.Log
 import com.google.firebase.firestore.CollectionReference
+import com.instance.dataxbranch.core.Constants.TAG
 
 import com.instance.dataxbranch.core.Constants.TITLE
 import com.instance.dataxbranch.data.entities.User
@@ -88,14 +90,15 @@ class UserRepositoryImpl @Inject constructor(
         }
     }*/
 
-
     override fun addUserToFirestore(user: User): Flow<Response<Void?>> = flow {
         try {
-            emit(Response.Loading)
+
+            Log.d(TAG,"STUB in userrepimpl")
+           /* emit(Response.Loading)
             val id = user.fsid
 
             val addition = id?.let { usersRef.document(it).set(user).await() }
-            emit(Response.Success(addition))
+            emit(Response.Success(addition))*/
         } catch (e: Exception) {
             emit(Response.Error(e.message ?: e.toString()))
         }
@@ -114,11 +117,13 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun addLocalUserToFirestore(user: com.instance.dataxbranch.data.entities.User) = flow {
         try {
-            emit(Response.Loading)
+
+            Log.d(TAG,"STUB in userrepimpl")
+            /*emit(Response.Loading)
             val id = user.fsid
 
             val addition = id?.let { usersRef.document(it).set(user).await() }
-            emit(Response.Success(addition))
+            emit(Response.Success(addition))*/
         } catch (e: Exception) {
             emit(Response.Error(e.message ?: e.toString()))
         }

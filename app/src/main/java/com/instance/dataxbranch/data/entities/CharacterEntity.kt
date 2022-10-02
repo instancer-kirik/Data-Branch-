@@ -1,33 +1,54 @@
 package com.instance.dataxbranch.data.entities
 
 //import android.util.Log
-import androidx.room.*
-import com.instance.dataxbranch.core.Constants.TAG
 
+import androidx.room.*
 import com.instance.dataxbranch.utils.Converters
-import com.instance.dataxbranch.utils.constants.DEFAULT_UNAME
 import com.squareup.moshi.JsonClass
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
+
+
+/*
+@Entity(
+    tableName = "categories",
+    foreignKeys = [
+        ForeignKey(
+            entity = Category::class,//this means that category is connected to other categories. and that parent cats are marked with
+            parentColumns = ["id"],
+            childColumns = ["parentId"],
+            onDelete = CASCADE
+        )],
+    indices = [Index(value = ["parentId"])]
+)
+class Category(@field:PrimaryKey val id: String, val title: String?, val parentId: String?) {
+    @Ignore
+    constructor(title: String?) : this(title, null) {
+    }
+
+    @Ignore
+    constructor(title: String?, parentId: String?) : this(
+        UUID.randomUUID().toString(),
+        title,
+        parentId
+    ) {
+    }
+}
+*/
 
 @Entity(
     tableName = "characters",//my_resources_attributes_stats
     indices = [
-        Index(value = ["id"], unique = true)//character_
-
-
-
+        Index(value = ["uuid"], unique = true)//character_
 
     ],
     foreignKeys = [
         ForeignKey(
             entity = User::class,
             parentColumns = arrayOf("me_id"),
-            childColumns = arrayOf("id"),
-            onUpdate = ForeignKey.CASCADE,
-            onDelete = ForeignKey.CASCADE
+            childColumns = arrayOf("user_id"),//"uuid"
+            /*onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE*/
 
         ),
 
@@ -37,22 +58,23 @@ import java.util.*
 @TypeConverters(Converters::class)
 @JsonClass(generateAdapter=true)
 data class CharacterEntity @JvmOverloads constructor(
-    @ColumnInfo(name = "character_id") val character_id: Long=0,
-    @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) var id: Long=0,
-    @ColumnInfo(name = "firestore_id") var fsid: String = "-1",
+   // @ColumnInfo(name = "character_id") val character_id: Long=0,
+    //@ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) var id: Long=0,
+    @ColumnInfo(name = "uuid") @PrimaryKey var uuid: String =UUID.randomUUID().toString(),
+    //@ColumnInfo(name = "firestore_id") var fsid: String = "-1",
    // @ColumnInfo(name = "title") var title: String? = null,
-    @ColumnInfo(name = "uid")val uid: Long = 1L,
-
+    //@ColumnInfo(name = "uid") val uid: Long = 1L,
+    @ColumnInfo(name = "user_id")var user_id: String?=null,
     //@ColumnInfo(name = "uname")var uname: String = DEFAULT_UNAME,
-    @ColumnInfo(name = "name")var name: String = "name",
+    @ColumnInfo(name = "name") var name: String = "name",
     @ColumnInfo(name = "imageUrl") var imageUrl: String = "",
     //val price: Long = 100L,
-    @ColumnInfo(name = "tagline")var tagline: String = "like an email signature",
+    @ColumnInfo(name = "tagline") var tagline: String = "like an email signature",
     @ColumnInfo(name = "bio") var bio: String = "bio",
-    @ColumnInfo(name = "rating")var rating: Int = 1,
+    @ColumnInfo(name = "rating") var rating: Int = 1,
     @ColumnInfo(name = "rating_denominator") var rating_denominator: Int = 1,
     @ColumnInfo(name = "traits") var traits: List<String> =listOf("remarkable"),
-    @ColumnInfo(name = "dateAdded")val dateAdded: String= "07-01-2022",//"June 14,2022",
+    @ColumnInfo(name = "dateAdded") val dateAdded: String= "07-01-2022",//"June 14,2022",
     //val sourceUrl: String = ""
     //@field:JvmField // use this annotation if your Boolean field is prefixed with 'is'
 
@@ -95,26 +117,26 @@ data class CharacterEntity @JvmOverloads constructor(
     var friends: List<Int> = listOf(),//just use ids
     @ColumnInfo(name = "dob") var dob: String= "",
     @ColumnInfo(name = "dateUpdated") var dateUpdated: String= "",
-    @ColumnInfo(name = "completedQuests")var completedQuests: List<Int> =listOf(),
-    @ColumnInfo(name = "completedCloudQuests")var completedCloudQuests: List<String> =listOf(),//listof fsid
+    @ColumnInfo(name = "completedQuests") var completedQuests: List<Int> =listOf(),
+    @ColumnInfo(name = "completedCloudQuests") var completedCloudQuests: List<String> =listOf(),//listof fsid
 
 
-    @ColumnInfo(name = "abilities")var abilities: List<Long> =listOf(),
-    @ColumnInfo(name = "cloudAbilities")var cloudAbilities: List<String> =listOf(),
+    @ColumnInfo(name = "abilities") var abilities: List<Long> =listOf(),
+    @ColumnInfo(name = "cloudAbilities") var cloudAbilities: List<String> =listOf(),
 
-    @ColumnInfo(name = "activeCloudQuests")var activeCloudQuests: List<String> =listOf(),
-    @ColumnInfo(name = "activeQuests")var activeQuests: List<Long> =listOf(),
+    @ColumnInfo(name = "activeCloudQuests") var activeCloudQuests: List<String> =listOf(),
+    @ColumnInfo(name = "activeQuests") var activeQuests: List<Long> =listOf(),
     @ColumnInfo(name = "quests") var quests: List<Long> =listOf(),//dockedQuests
     @ColumnInfo(name = "dockedCloudQuests") var dockedCloudQuests: List<String> =listOf(),
 
 
-    @ColumnInfo(name = "status")var status: String = "intrepid.. curious",
-    @ColumnInfo(name = "terms_status")var terms_status: String = "",//update this on accepting terms
+    @ColumnInfo(name = "status") var status: String = "intrepid.. curious",
+    @ColumnInfo(name = "terms_status") var terms_status: String = "",//update this on accepting terms
     var xp: Int = 0,
-    @ColumnInfo(name = "race")var race: String = "Generic",
-    @ColumnInfo(name = "class")var className: String = "Nothing",
+    @ColumnInfo(name = "race") var race: String = "Generic",
+    @ColumnInfo(name = "class") var className: String = "Nothing",
 
-    @ColumnInfo(name = "inventory")var items: List<Long> = listOf(),
+    @ColumnInfo(name = "inventory") var items: List<Long> = listOf(),
 //store list of authored quests, nuggets,abilities,items etc
     ) {
 
@@ -177,7 +199,7 @@ data class CharacterEntity @JvmOverloads constructor(
             dockedCloudQuests += tangent.dockedCloudQuests
             rating = tangent.rating
             rating_denominator = tangent.rating_denominator
-            fsid =tangent.fsid
+            uuid =tangent.uuid
             //uid=tangent.uid
             //uname = tangent.uname characters don't have usernames
             name = tangent.name

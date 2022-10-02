@@ -2,6 +2,7 @@ package com.instance.dataxbranch.data.repository
 
 import android.app.Application
 import android.util.Log
+import com.google.common.collect.Iterables.size
 import com.instance.dataxbranch.core.Constants.TAG
 
 import com.instance.dataxbranch.data.daos.AbilityDao
@@ -17,53 +18,50 @@ import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import kotlinx.coroutines.*
+import java.util.*
 
 import javax.inject.Singleton
+import kotlin.properties.Delegates
+
 @Singleton
 class GeneralRepository(application: Application, db: AppDatabase,
                         val questsRepository: LocalQuestsRepository,
                         val itemRepository: ItemRepository
 ) {
 
-    var needsSync:Boolean= true
+    var needsSync: Boolean = true
     private var cachedUsers: List<FirestoreUser> = listOf()
-    val aDao: AbilityDao=db.abilityDao()
-    val uDao: UserDao=db.userDao()
-    val qDao: QuestDao =db.questDao()
+    val aDao: AbilityDao = db.abilityDao()
+    val uDao: UserDao = db.userDao()
+    val qDao: QuestDao = db.questDao()
     val iDao: ItemDao = db.itemDao()
     var mabilities: List<AbilityEntity> = listOf()
-    var mcharacters: List<CharacterWithStuff> = listOf(
-        CharacterWithStuff(
-            CharacterEntity(name="ME"),
-            listOf(AbilityEntity(title = "my_ability1")),
-            arrayOf(QuestWithObjectives(QuestEntity(title="my_quest1") ,listOf()))
-        ),
-        CharacterWithStuff(
-            CharacterEntity(name="PRIME1"),
-            listOf(AbilityEntity(title = "APRIME1")),
-            arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME1") ,listOf()))
-        ),
-        CharacterWithStuff(
-            CharacterEntity(name="PRIME2"),
-            listOf(AbilityEntity(title = "APRIME2")),
-            arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME2") ,listOf()))
-        ))
+    var mcharacters: List<CharacterWithStuff> by Delegates.observable(listOf()) { property, oldValue, newValue ->
 
-    private lateinit var me:User
+        Log.d("ITEMREPO"," CHANGED  $property and  oldval len=${size(oldValue)}, ${oldValue.toString()} and newval len=${size(newValue)}, ${newValue.toString()}")
+        //if (newValue.iid ==0L){ selectedItem =oldValue}// this prevents resetting to id=0 bug
+    }
+    var ncharacters:List<CharacterEntity> = listOf()
+    private lateinit var me: User
     lateinit var selectedAE: AbilityEntity
+
     //var selectedItem: ItemEntity = ItemEntity()
     var selectedCharacterIndex: Int = 0
-    var selectedCharacterWithStuff: CharacterWithStuff = mcharacters[selectedCharacterIndex]
-    private var me_container= UserWithAbilities(User(),mabilities)
+    var selectedCharacterWithStuff: CharacterWithStuff = CharacterWithStuff(CharacterEntity())
+    private var me_container = UserWithAbilities(User(), mabilities)
+
     init {
         sync()
+
         //CoroutineScope(Dispatchers.IO).launch {}//on conflict abort
     }
-    private fun getMeWithAbilities(){
+
+    private fun getMeWithAbilities() {
         CoroutineScope(Dispatchers.IO).launch {
             //.d(TAG, "in GENERALREPO with $me")
             me_container =
-                if (me!=null) {me.initflag =true
+                if (me != null) {
+                    me.initflag = true
                     UserWithAbilities(me, mabilities)
 
                 } else {
@@ -72,28 +70,64 @@ class GeneralRepository(application: Application, db: AppDatabase,
 
         }
     }
-    fun sync(andItems:Boolean = false){
 
-        Log.d("REPO","SYNC CALLED")
+    fun primeCharacters() {
+    mcharacters = listOf(
+        CharacterWithStuff(
+        CharacterEntity(name ="ME"),
+        listOf(AbilityEntity(title = "my_ability1")),
+        arrayOf(QuestWithObjectives(QuestEntity(title="my_quest1") ,listOf()))
+        ),
+        CharacterWithStuff(
+        CharacterEntity(name ="PRIME1"),
+        listOf(AbilityEntity(title = "APRIME1")),
+        arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME1") ,listOf()))
+        ),
+        CharacterWithStuff(
+        CharacterEntity(name ="PRIME2"),
+        listOf(AbilityEntity(title = "APRIME2")),
+        arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME2") ,listOf()))
+        )
+    )
+        CoroutineScope(Dispatchers.IO).launch {
+            mcharacters.forEach{uDao.prime(it.character)}  }
+}
+    fun sync(andItems:Boolean = false, andQuests:Boolean = false){
+
+        Log.d("REPO","SYNC CALLED with ${needsSync}")
         if (needsSync){
         CoroutineScope(Dispatchers.IO).launch {//this might cause issues with data not being loaded fast enough
             uDao.prime(User())
+
             me = uDao.getMe()
+            mcharacters = CharacterWithStuff(uDao.getAllCharacters())
             mabilities = aDao.getAbilites()
             getMeWithAbilities()
             getAllCharacters()
 
         }
-        if(andItems){itemRepository.sync()}
+            if(andItems){
+                itemRepository.sync()}
+
+            if(andQuests){
+                questsRepository.refresh()
+                updateCharacterQuests()
+            }
     }
         needsSync=false
     }
+    fun refresh(): Job =
+
+        CoroutineScope(Dispatchers.IO).launch {
+            mabilities =aDao.getAbilites()
+            me=uDao.getMe()
+        }
     fun save(me: User): Job =
         CoroutineScope(Dispatchers.IO).launch {
             uDao.save(me)
             needsSync=true
         }
-    fun save(char: CharacterWithStuff =selectedCharacterWithStuff): Job =
+    fun save2(char: CharacterWithStuff =selectedCharacterWithStuff): Job =
         CoroutineScope(Dispatchers.IO).launch {
             uDao.save(char.character)
             //char.abilities.forEach {aDao.save(it)}
@@ -104,7 +138,17 @@ class GeneralRepository(application: Application, db: AppDatabase,
             //qDao.save(char.quests)
             needsSync=true
         }
-
+    fun save(char: CharacterWithStuff=selectedCharacterWithStuff):Job =
+        CoroutineScope(Dispatchers.IO).launch {
+            Log.d(TAG,"FUCKING SAVED ${char.character}" )
+//            selectedCharacterWithStuff=char
+            uDao.save(char.character)
+            updateByCharacterList(char)
+            /*char.quests.forEach {qDao.update(it)}
+            char.abilities.forEach{aDao.update(it)}
+            char.inventory.forEach{iDao.update(it)}*/
+            needsSync=true
+        }
     fun syncAE(ae:AbilityEntity=selectedAE): Job = CoroutineScope(Dispatchers.IO).launch {
         aDao.update(ae)
         needsSync=true
@@ -116,45 +160,54 @@ class GeneralRepository(application: Application, db: AppDatabase,
     fun getAllCharacters():Job =
 
         CoroutineScope(Dispatchers.IO).launch {
-//            //mcharacters= CharacterWithStuff(uDao.getAllCharacters())
-            var seen: Int=0
-            uDao.getAllCharacters().forEach{
-                if(mcharacters.any { character->character.character.character_id==it.character_id }){
+            if (mcharacters.isEmpty()){ primeCharacters() }
+            ncharacters = uDao.getAllCharacters()
+            Log.d(TAG,"REPO BUILT, ${ncharacters} IN LIST")
+            mcharacters = CharacterWithStuff(ncharacters)
+            mcharacters.forEach {Log.d(TAG,"REPO BUILT, ${it.toString()} IN LIST")}
+
+
+        }
+
+
+          /*  var seen: Int=0
+            val gotten = uDao.getAllCharacters()
+            Log.d(TAG,"REPO CALLED, seen $seen ALREADY IN LIST")
+                gotten.forEach{
+
+                    Log.d(TAG,"gotten $it ")
+                    if (it.id!=0L){Log.d(TAG,"actual gotten $it ")}
+                if(mcharacters.any { character->character.character.id==it.id }){
                     seen++
                 }else {
                     mcharacters = mcharacters.plus(CharacterWithStuff(it))
                 }
 
             }
-            Log.d(TAG,"REPO CALLED, seen $seen ALREADY IN LIST")
-        }
+            Log.d(TAG,"REPO CALLED, seen $seen ALREADY IN LIST")*/
+
 
     private fun CharacterWithStuff(character: CharacterEntity,) : CharacterWithStuff {
         return CharacterWithStuff(character,mabilities,getQuestsbyCharacter(character))
     }
     private fun CharacterWithStuff(characters: List<CharacterEntity>) :List<CharacterWithStuff> {
-        val result : MutableList<CharacterWithStuff> = mutableListOf()
+        var result : MutableList<CharacterWithStuff> = mutableListOf()
         characters.forEach {character->
-            result.plus(CharacterWithStuff(character,mabilities,getQuestsbyCharacter(character)))
+            result.add(CharacterWithStuff(character,mabilities,getQuestsbyCharacter(character)))
         }
 
-        return result
+        return result.toList()
 
     }
 
-    fun getACharacter(id:Long ):Job =
+    fun getACharacter(uuid:UUID ):Job =
         CoroutineScope(Dispatchers.IO).launch {
-            selectedCharacterWithStuff=getCharacterWithStuff(id)
+            selectedCharacterWithStuff=getCharacterWithStuff(uuid)
         }
-    fun syncCharacter(char: CharacterWithStuff):Job =
-        CoroutineScope(Dispatchers.IO).launch {
-            selectedCharacterWithStuff=char
-            uDao.update(char.character)
-            needsSync=true
-        }
+
     fun makeACharacter(name: String):Job =
         CoroutineScope(Dispatchers.IO).launch {
-            var character= CharacterWithStuff(CharacterEntity(name=name))
+            var character= CharacterWithStuff(CharacterEntity(name =name))
             mcharacters= mcharacters.plus(character)
             uDao.insertCharacter(character.character)
             needsSync=true
@@ -182,10 +235,10 @@ class GeneralRepository(application: Application, db: AppDatabase,
                     // do something else
 
             }*/
-     fun getCharacterWithStuff(id: Long): CharacterWithStuff {
+     fun getCharacterWithStuff(uuid: UUID): CharacterWithStuff {
         //var abilities: List<AbilityEntity> =listOf()
         //var qwos: Array<QuestWithObjectives> =questsRepository.getQuests()
-           val character = uDao.getCharacterEntity(id)
+           val character = uDao.getCharacterEntity(uuid)
             //character.abilities.forEach{ abilities=abilities.plus(aDao.getAbilitesByaid(it))}
            // abilities =
             //character.quests.forEach{qwos = qwos.plus(questsRepository.questById(it))}
@@ -235,16 +288,9 @@ class GeneralRepository(application: Application, db: AppDatabase,
             selectedCharacterWithStuff.quests=getQuestsbyCharacter(selectedCharacterWithStuff.character)
             Log.d(TAG,"UPDATECHARACTERQUESTS")
         }
-        fun refresh(): Job =
 
-            CoroutineScope(Dispatchers.IO).launch {
-                mabilities =aDao.getAbilites()
-                me=uDao.getMe()
-            }
     fun getAbilities(): List<AbilityEntity> = mabilities
-    /*fun sync(){
 
-    }*/
     fun getUserFromRoom():User{
         CoroutineScope(Dispatchers.IO).launch {
 
@@ -320,7 +366,24 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
     fun getCachedUsers(): List<FirestoreUser> {
        return cachedUsers
     }
+  /*  fun addButDontOverride(news: List<CharacterWithStuff>){
+    news.forEach{it->
 
+        mcharacters = mcharacters.plus(it)
+    }
+
+    if(mcharacters.isNotEmpty()){
+
+    }}
+    */
+
+    fun updateByCharacterList(selectedCharacter: CharacterWithStuff=selectedCharacterWithStuff) {
+        val old = mcharacters[selectedCharacterIndex].toString()
+        mcharacters = mcharacters.toMutableList().apply {
+            this[selectedCharacterIndex] = selectedCharacter
+        }
+        Log.d("REPO", "mcharacters updated index $selectedCharacterIndex with $selectedCharacter ================================from --------------OLD--------------- $old")
+    }
 
 
     /*fun sync(): Job =

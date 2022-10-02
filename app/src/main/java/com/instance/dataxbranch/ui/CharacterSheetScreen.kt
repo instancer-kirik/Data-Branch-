@@ -275,14 +275,14 @@ fun CharacterSpielStatic(navigator:DestinationsNavigator, viewModel: UserViewMod
                     name = viewModel.refresh()
                     val prefix = ""
 
-                    if(c.character.fsid!="-1"){
+                   /* if(c.character.fsid!="-1"){
 
                         if(c.character.fsid=="-2"){
                             showToast(context = context, msg = "fsid= -2. unusual, report this to dev.")
                         }else{
                             if(c.character.cloud){viewModel.writeUserData(context,db= FirebaseFirestore.getInstance(),c.character.fsid)}
                         }
-                    }
+                    }*/
                     showToast(context = context, msg = " USER IS NOW $name")
                 },
                 modifier = Modifier.padding(2.dp)
@@ -311,11 +311,11 @@ fun CharacterSpielStatic(navigator:DestinationsNavigator, viewModel: UserViewMod
         Text(status,
             modifier = Modifier.padding(8.dp)
         )
-        stringblock("fsid: " ,c.character.fsid +"")
+        //stringblock("fsid: " ,c.character.fsid +"")
         stringblock("active/selected quest: " ,   roomQuestViewModel.selectedQuest(c.character.getActiveQuest()))
         stringblock("rating: " ,c.character.rating.toString() +"/"+ c.character.rating_denominator.toString())
-        stringblock("id:  " ,c.character.character_id.toString())
-        stringblock("uid: " ,c.character.uid.toString())
+        //stringblock("id:  " ,c.character.id.toString())
+        stringblock("uid: " ,c.character.uuid.toString())
 
         stringblock("level: " ,c.character.level.toString())
 

@@ -85,7 +85,8 @@ class UserViewModel @Inject constructor(
     var userContainer: User?=null
     init {
         Log.d("USERVIEWMODEL","INIT CALLED")
-refresh()
+
+        refresh()
         selectedAE = if(meWithAbilities.abilities.isNotEmpty()) {
             meWithAbilities.abilities[0]
         }else{
@@ -97,23 +98,14 @@ refresh()
         }else{
             QuestWithObjectives(QuestEntity(title="init"),listOf(ObjectiveEntity(obj="init")))
         }
-        setSelectI()
+        //setSelectI()
     }
-    fun refresh(andQuests:Boolean = false) : String {
+    fun refresh(andQuests:Boolean = false,andItems:Boolean = false) : String {
         Log.d("USERVIEWMODEL","REFRESH CALLED")
-        generalRepository.sync()
-        viewModelScope.launch {
-           /* abilities = generalRepository.aDao.getAbilites()
-            // Coroutine that will be canceled when the ViewModel is cleared.*/
+        generalRepository.sync(andItems, andQuests)
+        viewModelScope.launch {// Coroutine that will be canceled when the ViewModel is cleared.
             meWithAbilities=generalRepository.getMe()
-            if(andQuests){
-                generalRepository.questsRepository.refresh()
-                generalRepository.updateCharacterQuests()
-            }
         }
-
-
-
         fixattunement()
         return meWithAbilities.user.uname
     }
@@ -318,7 +310,7 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
         refresh()
     }
     fun syncI(){
-        setSelectI()
+        //setSelectI()
         //this bypasses generalRepo.sync() because unnecessary
         //unecess_array
         generalRepository.itemRepository.sync()
@@ -327,10 +319,10 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
     fun syncAttunement(){
         meWithAbilities.user.attuned=attuned.value
     }
-
     fun updateAttuned(){
         meWithAbilities.user.attuned= meWithAbilities.abilities.filter{it.inloadout}.size
     }
+
     fun fixattunement(){
         updateAttuned()
         meWithAbilities.fixattunement()
@@ -351,21 +343,22 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
         getSelect()
     }
 
-    fun setSelectI(item: ItemEntity?=null):ItemEntity{
-        if (item==null) {
+    fun setSelectI(item: ItemEntity):ItemEntity{
+      /*  if (item==null) {//if you cast setSelect with no item
             if(getSelectI().iid!=0L){
                 //when ID IN GETSELECT IS NOT 0
-            return generalRepository.itemRepository.selectedItem
+                return generalRepository.itemRepository.selectedItem
             }else{
-                //wjem ID IN GETSELECT IS 0
+                //when ID IN GETSELECT IS 0
                 Log.d(TAG,"gotten invalid id. ${getSelectI().iid} ...ignoring")
                 return generalRepository.itemRepository.selectedItem
             }
-        }
-        else{
-            generalRepository.itemRepository.selectedItem=item
 
         }
+        else{*/
+        generalRepository.itemRepository.selectedItem=item
+
+
         return getSelectI()
     }
     fun whoAmI(): String? {
@@ -412,7 +405,8 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
         showToast(context, "disregards container, keeps cloud user in local")
     }
     fun createAndLogMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//happens after a valid login with fsid
-        writeUserData(context,db,fsid)
+//        writeUserData(context,db,fsid)
+        Log.d("USERVIEWMODEL","CREATE AND LOGIN STUB")
  /*if(meWithAbilities.user.isreal){//merge with cloud one if cloud one is newer
 
 
@@ -439,7 +433,7 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
                 generalRepository.getMe()
                 showToast(context,e.toString())
             })
-        meWithAbilities.user.fsid = fsid
+        //meWithAbilities.user.fsid = fsid
         generalRepository.setMe(meWithAbilities)
         return meWithAbilities
     }
@@ -447,7 +441,7 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
     db.ref('users/' + user.uid).set(user).catch(error => {
         console.log(error.message)
     });*/
-    fun writeUserData(context: Context, db:FirebaseFirestore,fsid: String = meWithAbilities.user.fsid){//to firestore
+    /*fun writeUserData(context: Context, db:FirebaseFirestore,fsid: String = meWithAbilities.user.fsid){//to firestore
 
         db.collection("users")
             .document(fsid)
@@ -455,7 +449,7 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
             .addOnSuccessListener { showToast(context,"wrote to firestore! c;") }
             .addOnFailureListener { e -> showToast(context, "Error writing document $e") }
 
-    }
+    }*/
     fun onCheckboxChecked(quest: QuestWithObjectives, checked: Boolean,):String? {
         //Log.d(TAG, "$quest is is $checked   "+quest.quest.completed.toString())
         //dateLastDone = getNow()
@@ -506,8 +500,10 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
         }
 
 
-    fun save(c: CharacterWithStuff=getSelectedCharacter()) {
-        generalRepository.save(c)
+    fun save(c: CharacterWithStuff) {
+        generalRepository.save()
+        generalRepository.updateByCharacterList()
+
     }
 
     fun invFlux(pickUp:Boolean,item:ItemEntity) {

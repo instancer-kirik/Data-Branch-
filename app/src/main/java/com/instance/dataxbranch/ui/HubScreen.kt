@@ -55,10 +55,10 @@ fun HubScreen(viewModel: UserViewModel = hiltViewModel(),
         //startActivity(context, StartupActivity.createIntent(context),null)
         var me = viewModel.getMeWithAbilities()
         if (me.user.fsid=="-1")
-        if (me.user.uname ==DEFAULT_UNAME && !me.user.initflag){viewModel.generalRepository.refresh()
+        if (me.user.uname ==DEFAULT_UNAME && !me.user.initflag){viewModel.refresh(true,true)
             //Log.d(TAG,"REPEATER")
-            navigator.navigate(
-                HubScreenDestination)}
+            /*navigator.navigate(
+                HubScreenDestination)*/}
         me = viewModel.getMeWithAbilities()
 
        // val which = me.user.defaultScreen

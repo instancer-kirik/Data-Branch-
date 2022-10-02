@@ -80,7 +80,7 @@ var xp: Int = 0,
 ){
     fun toLocalUser():User{
     return User(//notice how these are all cloud data
-        fsid =this.fsid,
+        //fsid =this.fsid,
         uid=this.uid,
         uname = this.uname,
         name = this.name,

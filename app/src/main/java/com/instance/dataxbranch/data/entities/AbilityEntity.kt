@@ -4,6 +4,7 @@ import androidx.room.*
 import com.instance.dataxbranch.quests.Quest
 import com.instance.dataxbranch.utils.Converters
 import com.squareup.moshi.JsonClass
+import java.util.*
 
 
 @Entity(
@@ -14,7 +15,7 @@ import com.squareup.moshi.JsonClass
     foreignKeys = [
         ForeignKey(
             entity= CharacterEntity::class,
-            parentColumns = arrayOf("id"),
+            parentColumns = arrayOf("uuid"),
             childColumns = arrayOf("aid"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
@@ -34,7 +35,7 @@ import com.squareup.moshi.JsonClass
 @TypeConverters(Converters::class)
 @JsonClass(generateAdapter=true)
 data class AbilityEntity @JvmOverloads constructor(
-    @ColumnInfo(name = "aid")@PrimaryKey(autoGenerate = true) val aid: Long=0,
+    @ColumnInfo(name = "aid")@PrimaryKey(autoGenerate=true) val aid: Long=0,
     @ColumnInfo(name = "title") var title: String? = "Ability1",
     @ColumnInfo(name = "casted") var casted: Boolean=false,
     @ColumnInfo(name = "desc") var desc: String? = null,

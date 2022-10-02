@@ -43,7 +43,7 @@ data class UserWithAbilities (
     }
     fun toFireStoreUser(fsid:String?=null):FirestoreUser{
         if(fsid != null){
-            user.fsid=fsid
+           // user.fsid=fsid
         }
         return FirestoreUser(//notice how these are all cloud data
             activeCloudQuests =user.activeCloudQuests,
@@ -52,7 +52,7 @@ data class UserWithAbilities (
             dockedCloudQuests = user.dockedCloudQuests,
             rating = user.rating,
             rating_denominator = user.rating_denominator,
-            fsid =user.fsid,
+            //fsid =user.fsid,
             uid=user.uid,
             uname = user.uname,
             name = user.name,
