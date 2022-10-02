@@ -33,12 +33,12 @@ import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.destinations.CharacterQuestDetailScreenDestination
-import com.instance.dataxbranch.destinations.CharacterQuestsScreenDestination
+
+import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
-import com.instance.dataxbranch.destinations.QuestDetailScreenDestination
+
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddQuestEntityOnCharacterAlertDialog
 import com.instance.dataxbranch.ui.viewModels.UserViewModel

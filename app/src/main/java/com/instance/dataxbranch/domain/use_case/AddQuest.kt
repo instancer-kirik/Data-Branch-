@@ -1,6 +1,6 @@
 package com.instance.dataxbranch.domain.use_case
 
-import com.instance.dataxbranch.data.firestore.QuestsRepository
+import com.instance.dataxbranch.data.cloud.QuestsRepository
 
 
 class AddQuest(
@@ -10,5 +10,5 @@ class AddQuest(
         title: String,
         description: String,
         author: String
-    ) = repo.addQuestToFirestore(title, description, author)
+    ) = repo.addQuestToCloud(title, description, author)
 }

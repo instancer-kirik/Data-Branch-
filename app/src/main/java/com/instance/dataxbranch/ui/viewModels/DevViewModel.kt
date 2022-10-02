@@ -1,11 +1,11 @@
 package com.instance.dataxbranch.ui.viewModels
 
-import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.instance.dataxbranch.data.firestore.FirestoreResponse
+import com.instance.dataxbranch.data.cloud.CloudResponse
+
 import com.instance.dataxbranch.domain.Response
 import com.instance.dataxbranch.domain.use_case.UseCases
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -20,8 +20,8 @@ class DevViewModel @Inject constructor(
    // val navigator: DestinationsNavigator this requires an @Provides method
 ): ViewModel()  {
 
-    private val _rState = mutableStateOf<Response<List<FirestoreResponse>>>(Response.Loading)
-    val responseState: State<Response<List<FirestoreResponse>>> = _rState
+    private val _rState = mutableStateOf<Response<List<CloudResponse>>>(Response.Loading)
+    val responseState: State<Response<List<CloudResponse>>> = _rState
 
     private val _isResponseAddedState = mutableStateOf<Response<Void?>>(Response.Success(null))
     val isResponseAddedState: State<Response<Void?>> = _isResponseAddedState

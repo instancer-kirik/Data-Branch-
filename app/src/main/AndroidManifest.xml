@@ -28,7 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
+        <!--<activity
             android:name=".social.StreamChat.StartupActivity"
             android:exported="true"
             android:theme="@style/Theme.DataXBranch">
@@ -39,8 +39,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-        </activity>
-        <activity
+        </activity>-->
+       <!-- <activity
             android:name=".social.StreamChat.MessagesActivity"
             android:exported="true"
             android:theme="@style/Theme.DataXBranch">
@@ -50,8 +50,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
+        </activity>-->
+       <!-- <activity
         android:name=".social.StreamChat.login.CustomLoginActivity"
         android:exported="true"
         android:theme="@style/Theme.DataXBranch">
@@ -61,8 +61,8 @@
 
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
-    </activity>
-        <activity
+    </activity>-->
+       <!-- <activity
             android:name=".social.StreamChat.login.UserLoginActivity"
             android:exported="true"
             android:theme="@style/Theme.DataXBranch">
@@ -72,7 +72,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>-->
     </application>
 
 </manifest>

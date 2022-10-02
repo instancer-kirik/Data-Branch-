@@ -15,13 +15,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+//import com.google.firebase.auth.FirebaseAuth
+//import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.AppDatabase
+import com.instance.dataxbranch.data.cloud.CloudUser
 import com.instance.dataxbranch.data.entities.*
-import com.instance.dataxbranch.data.firestore.FirestoreUser
+
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
@@ -36,7 +37,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.random.Random
 //@Singleton
 @HiltViewModel
@@ -256,8 +256,8 @@ class UserViewModel @Inject constructor(
     fun save(i:ItemEntity) {
         generalRepository.itemRepository.updateitemEntity(i)
     }
-    fun getAllFirestoreUsers(context:Context, db: FirebaseFirestore=FirebaseFirestore.getInstance()):List<FirestoreUser>{
-        var output :List<FirestoreUser> =listOf()
+   /* fun getAllFirestoreUsers(context:Context, db: FirebaseFirestore=FirebaseFirestore.getInstance()):List<CloudUser>{
+        var output :List<CloudUser> =listOf()
         var cachedUsers = generalRepository.getCachedUsers()
         if (cachedUsers.isNotEmpty()){
             showToast(context, "Cache fetched success in uViewModel")
@@ -266,7 +266,7 @@ class UserViewModel @Inject constructor(
         db.collection("users").get().addOnSuccessListener {
 
             if (it != null) {
-                output = it.toObjects(FirestoreUser::class.java)
+                output = it.toObjects(CloudUser::class.java)
                 generalRepository.setUsers(output)
             } else {
                 showToast(context, "GOT NULL")
@@ -278,7 +278,7 @@ class UserViewModel @Inject constructor(
 
             showToast(context, "returning with length ${output.size}")
         return output
-    }}
+    }}*/
 /*db.collection("cities")
         .whereEqualTo("capital", true)
         .get()
@@ -362,12 +362,12 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
         return getSelectI()
     }
     fun whoAmI(): String? {
-        val auth = FirebaseAuth.getInstance()
-
-       return ( auth.currentUser?.uid )
-
+//        val auth = FirebaseAuth.getInstance()
+//
+//       return ( auth.currentUser?.uid )
+return "me @ userViewModel"
     }
-    fun logMeIn(context:Context,db:FirebaseFirestore) {//happens after a valid login uses auth
+  /*  fun logMeIn(context:Context,db:FirebaseFirestore) {//happens after a valid login uses auth
 
         val auth = FirebaseAuth.getInstance()
 
@@ -378,65 +378,65 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
 
             }
 
-        }
-    fun logMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//ALready has account happens after a valid login with fsid
-        if(meWithAbilities.user.isreal){//merge with cloud one if cloud one is newer
-            userContainer=meWithAbilities.copy().user
-            readUserData(context,db,fsid)
-
-            val newer= userContainer!!.whichNewer(qDate=meWithAbilities.user.dateUpdated)
-            if (newer==1){
-                showToast(context, userContainer!!.dateUpdated +"\n >meWithAbilities.user.dateUpdated \n"+meWithAbilities.user.dateUpdated)
-
-            }else if (newer ==0){
-               // meWithAbilities = oldme
-               // Log.d(TAG,"This may eat 2 reads per overwrite, reduce to 1")
-                showToast(context, "cloud is in local, old local in container")
-
-                downloadCloudDialog.value =true
-            }else if (newer ==-1){
-                showToast(context,"TIME COMPARE EXCEPTION GOT TO LOGMEIN")}
-        }else{//clear data
-            readUserData(context,db,fsid)}
-
-    }
-    fun overwriteLogIn(context:Context,db:FirebaseFirestore,fsid: String) {//ALready has account happens after a valid login with fsid
-            //readUserData(context,db,fsid) this is too many reads. already have data
-        showToast(context, "disregards container, keeps cloud user in local")
-    }
-    fun createAndLogMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//happens after a valid login with fsid
-//        writeUserData(context,db,fsid)
-        Log.d("USERVIEWMODEL","CREATE AND LOGIN STUB")
- /*if(meWithAbilities.user.isreal){//merge with cloud one if cloud one is newer
-
-
-        }else{//clear data
-            readUserData(context,db,fsid)}
-*/
-    }
-
-    fun readUserData(context:Context,db: FirebaseFirestore,fsid:String):UserWithAbilities{
-        val me = db.collection("users").document(fsid).get().addOnSuccessListener {
-            //userRepository
-
-            if (it != null) {
-
-                it.toObject(FirestoreUser::class.java)?.let { it1 ->
-                    meWithAbilities.user.combine(it1.toLocalUser())
-                }//does not yet support cloud abilities as I do not have cloud abilities
-                meWithAbilities.user.cloud = true
-            }//If this works, awesome. otherwise, I use FirestoreUser.toLocalUser
-
-            //meWithAbilities.user.initflag = true
-            meWithAbilities.user.isreal = true }
-            .addOnFailureListener({e->
-                generalRepository.getMe()
-                showToast(context,e.toString())
-            })
-        //meWithAbilities.user.fsid = fsid
-        generalRepository.setMe(meWithAbilities)
-        return meWithAbilities
-    }
+        }*/
+//    fun logMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//ALready has account happens after a valid login with fsid
+//        if(meWithAbilities.user.isreal){//merge with cloud one if cloud one is newer
+//            userContainer=meWithAbilities.copy().user
+//            readUserData(context,db,fsid)
+//
+//            val newer= userContainer!!.whichNewer(qDate=meWithAbilities.user.dateUpdated)
+//            if (newer==1){
+//                showToast(context, userContainer!!.dateUpdated +"\n >meWithAbilities.user.dateUpdated \n"+meWithAbilities.user.dateUpdated)
+//
+//            }else if (newer ==0){
+//               // meWithAbilities = oldme
+//               // Log.d(TAG,"This may eat 2 reads per overwrite, reduce to 1")
+//                showToast(context, "cloud is in local, old local in container")
+//
+//                downloadCloudDialog.value =true
+//            }else if (newer ==-1){
+//                showToast(context,"TIME COMPARE EXCEPTION GOT TO LOGMEIN")}
+//        }else{//clear data
+//            readUserData(context,db,fsid)}
+//
+//    }
+//    fun overwriteLogIn(context:Context,db:FirebaseFirestore,fsid: String) {//ALready has account happens after a valid login with fsid
+//            //readUserData(context,db,fsid) this is too many reads. already have data
+//        showToast(context, "disregards container, keeps cloud user in local")
+//    }
+//    fun createAndLogMeIn(context:Context,db:FirebaseFirestore,fsid: String) {//happens after a valid login with fsid
+////        writeUserData(context,db,fsid)
+//        Log.d("USERVIEWMODEL","CREATE AND LOGIN STUB")
+// /*if(meWithAbilities.user.isreal){//merge with cloud one if cloud one is newer
+//
+//
+//        }else{//clear data
+//            readUserData(context,db,fsid)}
+//*/
+//    }
+//
+//    fun readUserData(context:Context,db: FirebaseFirestore,fsid:String):UserWithAbilities{
+//        val me = db.collection("users").document(fsid).get().addOnSuccessListener {
+//            //userRepository
+//
+//            if (it != null) {
+//
+//                it.toObject(CloudUser::class.java)?.let { it1 ->
+//                    meWithAbilities.user.combine(it1.toLocalUser())
+//                }//does not yet support cloud abilities as I do not have cloud abilities
+//                meWithAbilities.user.cloud = true
+//            }//If this works, awesome. otherwise, I use CloudUser.toLocalUser
+//
+//            //meWithAbilities.user.initflag = true
+//            meWithAbilities.user.isreal = true }
+//            .addOnFailureListener({e->
+//                generalRepository.getMe()
+//                showToast(context,e.toString())
+//            })
+//        //meWithAbilities.user.fsid = fsid
+//        generalRepository.setMe(meWithAbilities)
+//        return meWithAbilities
+//    }
   /*
     db.ref('users/' + user.uid).set(user).catch(error => {
         console.log(error.message)
@@ -500,8 +500,10 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
         }
 
 
-    fun save(c: CharacterWithStuff) {
-        generalRepository.save()
+    fun save(c: CharacterWithStuff?=null) {
+        if (c != null) {
+            generalRepository.save(c)
+        }else{generalRepository.save()}//by default uses selected in repo
         generalRepository.updateByCharacterList()
 
     }

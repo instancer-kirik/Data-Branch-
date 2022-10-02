@@ -4,11 +4,11 @@ import com.instance.dataxbranch.data.daos.QuestDao
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+//import com.google.firebase.firestore.CollectionReference
+//import com.google.firebase.firestore.FirebaseFirestore
+//import com.google.firebase.firestore.Query
+//import com.google.firebase.firestore.ktx.firestore
+//import com.google.firebase.ktx.Firebase
 import com.instance.dataxbranch.core.Constants.QUESTS
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.UserDao
@@ -16,8 +16,10 @@ import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.quests.QuestWithObjectives
 
 import com.instance.dataxbranch.data.AppDatabase
+
+import com.instance.dataxbranch.data.cloud.*
 import com.instance.dataxbranch.data.daos.ItemDao
-import com.instance.dataxbranch.data.firestore.*
+
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.data.repository.GeneralRepository
 import com.instance.dataxbranch.data.repository.ItemRepository
@@ -36,22 +38,22 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    @Provides
-    @Singleton
-    fun provideQueryQuestsByName() = FirebaseFirestore.getInstance()
-        .collection(FIRESTORE_COLLECTION)
-        .orderBy(NAME_PROPERTY, Query.Direction.ASCENDING)
+//    @Provides
+//    @Singleton
+//    fun provideQueryQuestsByName() = FirebaseFirestore.getInstance()
+//        .collection(FIRESTORE_COLLECTION)
+//        .orderBy(NAME_PROPERTY, Query.Direction.ASCENDING)
 
-    @Provides
-    fun provideFirebaseFirestore() = Firebase.firestore
+//    @Provides
+//    fun provideFirebaseFirestore() = Firebase.firestore
 
     @Provides
     fun provideApplication(app: Application): Context = app
 
-    @Provides
-    fun provideQuestsRef(
-        db: FirebaseFirestore
-    ) = db.collection(QUESTS)
+//    @Provides
+//    fun provideQuestsRef(
+//        db: FirebaseFirestore
+//    ) = db.collection(QUESTS)
 
 
    /* @Provides
@@ -69,7 +71,7 @@ object AppModule {
         db: FirebaseFirestore
     ) = db.collection(RESPONSES)*/
 
-
+/*
     @Provides
     @Named("questsRef")
     fun provideQuestCollRef(db: FirebaseFirestore): CollectionReference {
@@ -89,23 +91,23 @@ object AppModule {
     @Named("chatRoomRef")
     fun provideChatRoomCollRef(db: FirebaseFirestore): CollectionReference {
         return db.collection("chatRooms")
-    }
+    }*/
     @Provides
     fun provideSocialRepository(
-        chatRoomRef: CollectionReference
-    ): SocialRepository = SocialRepositoryImpl(chatRoomRef)
+        //chatRoomRef: CollectionReference
+    ): SocialRepository = SocialRepositoryImpl()
     @Provides
     fun provideQuestsRepository(
-        questsRef: CollectionReference
-    ): QuestsRepository = QuestRepositoryImpl(questsRef)
+        //questsRef: CollectionReference
+    ): QuestsRepository = QuestRepositoryImpl()
     @Provides
     fun provideUserRepository(
-        usersRef: CollectionReference
-    ): UsersRepository = UserRepositoryImpl(usersRef)
+        //usersRef: CollectionReference
+    ): UsersRepository = UserRepositoryImpl()
     @Provides
     fun provideResponsesRepository(
-        responsesRef: CollectionReference
-    ): ResponseRepository = ResponseRepositoryImpl(responsesRef)
+        //responsesRef: CollectionReference
+    ): ResponseRepository = ResponseRepositoryImpl()//responsesRef
     @Singleton
     @Provides
     fun provideDb(app: Application): AppDatabase {

@@ -11,17 +11,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.FirebaseFirestore
+
 import com.instance.dataxbranch.data.entities.User
-import com.instance.dataxbranch.data.firestore.FirestoreResponse
+import com.instance.dataxbranch.data.cloud.CloudResponse
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
-import com.instance.dataxbranch.social.StreamChat.ChannelsActivityScreen
 import com.instance.dataxbranch.ui.components.AddResponseAlertDialog
-import com.instance.dataxbranch.destinations.*
+import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -34,7 +31,7 @@ fun DevScreen (viewModel: UserViewModel =hiltViewModel(),
                devViewModel: DevViewModel =hiltViewModel(),
                navigator: DestinationsNavigator,
               ){
-val db = FirebaseFirestore.getInstance()
+
         val me = viewModel.getMeWithAbilities()
         val context = LocalContext.current
 
@@ -57,7 +54,7 @@ val db = FirebaseFirestore.getInstance()
 
 
             PayMeBlock()
-            ResponseBlock(context=context, me = me, db=db)
+            ResponseBlock(context=context, me = me, )
                 Button(onClick = {navigator.navigate(HubScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Default screen")}
 }
 }}
@@ -85,7 +82,7 @@ fun PayMeBlock() {
 
 
 @Composable
-fun ResponseBlock(context: Context, me: UserWithAbilities,db: FirebaseFirestore) {
+fun ResponseBlock(context: Context, me: UserWithAbilities,db: String="database") {
 
     var text = remember { mutableStateOf("") }
     var subjecttext = remember { mutableStateOf("") }
@@ -98,57 +95,57 @@ fun ResponseBlock(context: Context, me: UserWithAbilities,db: FirebaseFirestore)
 
         if(isVisible.value){
     Button( onClick = {
-
-        db.collection("responses")
-            .add(FirestoreResponse(
+        showToast(context,"NOT YET IMPLEMENTED. TBD adds to $db $text")
+        /*db.collection("responses")
+            .add(CloudResponse(
                 subject = subjecttext.value,
                 description = text.value,
                 author = me.user.uname,
                 authorid = me.user.fsid + ""
             ))
             .addOnSuccessListener { showToast(context,"Response submitted! c;") }
-            .addOnFailureListener { e -> showToast(context, "Error writing document $e") }
+            .addOnFailureListener { e -> showToast(context, "Error writing document $e") }*/
         isVisible.value=false
         //showToast(context,"c;")
     }) {
         Text("Submit Response")
     }}
 }}
-
-fun firestorePlayground(context:Context,db: FirebaseFirestore){
-    val docData = hashMapOf(
-        "stringExample" to "Hello world!",
-        "booleanExample" to true,
-        "numberExample" to 3.14159265,
-        "dateExample" to Timestamp(java.util.Date()),
-        "listExample" to arrayListOf(1, 2, 3),
-        "nullExample" to null
-    )
-
-    val nestedData = hashMapOf(
-        "a" to 5,
-        "b" to true
-    )
-
-    docData["objectExample"] = nestedData
-
-    db.collection("data").document("one")
-        .set(docData)
-        .addOnSuccessListener { showToast(context,"DocumentSnapshot successfully written!") }
-        .addOnFailureListener { e -> showToast(context,"Error writing document $e") }
-
-
-    val city = hashMapOf(
-        "name" to "Los Angeles",
-        "state" to "CA",
-        "country" to "USA"
-    )
-
-    db.collection("responses").document("LA")
-        .set(city)
-        .addOnSuccessListener { showToast(context, "DocumentSnapshot successfully written!") }
-        .addOnFailureListener { e -> showToast(context,"Error writing document $e") }
-}
+//
+//fun firestorePlayground(context:Context,db: FirebaseFirestore){
+//    val docData = hashMapOf(
+//        "stringExample" to "Hello world!",
+//        "booleanExample" to true,
+//        "numberExample" to 3.14159265,
+//        "dateExample" to Timestamp(java.util.Date()),
+//        "listExample" to arrayListOf(1, 2, 3),
+//        "nullExample" to null
+//    )
+//
+//    val nestedData = hashMapOf(
+//        "a" to 5,
+//        "b" to true
+//    )
+//
+//    docData["objectExample"] = nestedData
+//
+//    db.collection("data").document("one")
+//        .set(docData)
+//        .addOnSuccessListener { showToast(context,"DocumentSnapshot successfully written!") }
+//        .addOnFailureListener { e -> showToast(context,"Error writing document $e") }
+//
+//
+//    val city = hashMapOf(
+//        "name" to "Los Angeles",
+//        "state" to "CA",
+//        "country" to "USA"
+//    )
+//
+//    db.collection("responses").document("LA")
+//        .set(city)
+//        .addOnSuccessListener { showToast(context, "DocumentSnapshot successfully written!") }
+//        .addOnFailureListener { e -> showToast(context,"Error writing document $e") }
+//}
 
 @Composable
 fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator,context:Context) {
@@ -186,7 +183,7 @@ fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator,contex
 
             }
             //startActivity(context, ChannelsActivity.createIntent(context),null)}
-            Button(onClick = {navigator.navigate(ChannelsActivityScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Channels")}
+            Button(onClick = {showToast(context,"CLICK c:")}, modifier=Modifier.padding(2.dp)){Text("click")}
             OutlinedButton(
                 onClick = {
                     expanded = !expanded

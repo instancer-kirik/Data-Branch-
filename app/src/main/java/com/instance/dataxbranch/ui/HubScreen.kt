@@ -17,12 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.instance.dataxbranch.NavGraphs
+import com.instance.dataxbranch.ui.NavGraphs
 import com.instance.dataxbranch.data.local.UserWithAbilities
 
 import com.instance.dataxbranch.ui.components.TermsPopupAlertDialog
-import com.instance.dataxbranch.destinations.HubScreenDestination
-import com.instance.dataxbranch.destinations.TypedDestination
+import com.instance.dataxbranch.ui.destinations.*
 
 
 //import com.instance.dataxbranch.ui.destinations.Destination

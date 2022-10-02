@@ -45,19 +45,16 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.instance.dataxbranch.data.PredefinedUserCredentials
-import com.instance.dataxbranch.quests.Quest
-import com.instance.dataxbranch.social.StreamChat.ChannelsActivityScreen
 
-import com.instance.dataxbranch.social.StreamChat.ChatHelper
-import com.instance.dataxbranch.social.StreamChat.MessageListScreen
+import com.google.accompanist.pager.ExperimentalPagerApi
+
+//import com.instance.dataxbranch.data.PredefinedUserCredentials
+import com.instance.dataxbranch.quests.Quest
+import com.instance.dataxbranch.ui.NavGraphs
+//import com.instance.dataxbranch.social.StreamChat.ChannelsActivityScreen
+
+//import com.instance.dataxbranch.social.StreamChat.ChatHelper
+//import com.instance.dataxbranch.social.StreamChat.MessageListScreen
 
 
 //import com.instance.dataxbranch.destinations.QuestsScreenDestination
@@ -83,13 +80,7 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.AndroidEntryPoint
-import io.getstream.chat.android.client.ChatClient
-import io.getstream.chat.android.client.logger.ChatLogLevel
-import io.getstream.chat.android.offline.model.message.attachments.UploadAttachmentsNetworkType
-import io.getstream.chat.android.offline.plugin.factory.StreamOfflinePluginFactory
-import io.getstream.chat.android.offline.plugin.configuration.Config
-import io.getstream.chat.android.client.models.User
-import io.getstream.chat.android.client.utils.toResult
+
 
 /*
 @AndroidEntryPoint
@@ -111,6 +102,7 @@ class MainActivity:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 // 1 - Set up the OfflinePlugin for offline storage
+/*
         val offlinePluginFactory = StreamOfflinePluginFactory(
             config = Config(
                 backgroundSyncEnabled = true,
@@ -139,6 +131,7 @@ class MainActivity:AppCompatActivity() {
         ).enqueue()
 
         // 4 - Set up the Channels Screen UI
+*/
 
       //  FirebaseAuth.getInstance().createUserWithEmailAndPassword(email)
         setContent {
@@ -184,25 +177,25 @@ class MainActivity:AppCompatActivity() {
         }
     }*/
 }
-@Destination
-@Composable
-fun ChatApp(navigator: DestinationsNavigator) {//I DONT UNDERSTAND ALL THE COMPLICATED NAVCONTROLLER STUFF
-    val navController = rememberNavController()
-   // val navi: DestinationsNavigator=navController.destinationsNavigator
-    NavHost(navController, startDestination = "channellist") {
-        composable("channellist") {
-            ChannelsActivityScreen(navigator)
-            //ChannelListScreen(navController = navController,
-
-        }
-        composable("messagelist/{cid}") { backStackEntry ->
-            MessageListScreen(
-                navController = navController,
-                cid = backStackEntry.arguments?.getString("cid")!!
-            )
-        }
-    }
-}
+//@Destination
+//@Composable
+//fun ChatApp(navigator: DestinationsNavigator) {//I DONT UNDERSTAND ALL THE COMPLICATED NAVCONTROLLER STUFF
+//    val navController = rememberNavController()
+//   // val navi: DestinationsNavigator=navController.destinationsNavigator
+//    NavHost(navController, startDestination = "channellist") {
+//        composable("channellist") {
+//            ChannelsActivityScreen(navigator)
+//            //ChannelListScreen(navController = navController,
+//
+//        }
+//        composable("messagelist/{cid}") { backStackEntry ->
+//            MessageListScreen(
+//                navController = navController,
+//                cid = backStackEntry.arguments?.getString("cid")!!
+//            )
+//        }
+//    }
+//}
 
 /*
     @OptIn(ExperimentalFoundationApi::class)
@@ -268,7 +261,7 @@ private fun customButton1(context: Context, input: String, navigator: Destinatio
             )*/*/
 
 
-fun addItems(context: Context) {
+/*fun addItems(context: Context) {
     val firestore = Firebase.firestore
     val collection = firestore.collection(FIRESTORE_COLLECTION)
     firestore.runBatch { batch ->
@@ -281,7 +274,7 @@ fun addItems(context: Context) {
     }.addOnFailureListener { e ->
         Toast.makeText(context, "Error adding items: ${e.message}", Toast.LENGTH_LONG).show()
     }
-}
+}*/
 
 private fun getItems() = listOf(
     Quest(title = "Quest1"), Quest(title = "Quest2"), Quest(title = "Quest3")

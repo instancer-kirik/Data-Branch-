@@ -5,7 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.data.entities.User
-import com.instance.dataxbranch.data.firestore.FirestoreUser
+import com.instance.dataxbranch.data.cloud.CloudUser
 
 
 data class UserWithAbilities (
@@ -41,11 +41,11 @@ data class UserWithAbilities (
         user.combine(tangent.user)
         abilities+=tangent.abilities
     }
-    fun toFireStoreUser(fsid:String?=null):FirestoreUser{
+    fun toCloudUser(fsid:String?=null):CloudUser{
         if(fsid != null){
            // user.fsid=fsid
         }
-        return FirestoreUser(//notice how these are all cloud data
+        return CloudUser(//notice how these are all cloud data
             activeCloudQuests =user.activeCloudQuests,
             cloudAbilities =user.cloudAbilities,
             completedCloudQuests = user.completedCloudQuests,

@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -17,10 +16,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.data.entities.AbilityEntity
-import com.instance.dataxbranch.data.entities.User
-import com.instance.dataxbranch.data.firestore.FirestoreUser
-import com.instance.dataxbranch.destinations.ListUsersScreenDestination
+import com.instance.dataxbranch.data.cloud.CloudUser
+import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -33,7 +30,7 @@ fun ListUsersScreen (viewModel: UserViewModel = hiltViewModel(),
 ) {
     val me = viewModel.getMeWithAbilities()
     val context = LocalContext.current
-    val listUsers : List<FirestoreUser> = viewModel.getAllFirestoreUsers(context)
+    val listUsers : List<CloudUser> = listOf()//viewModel.getAllCloudUsers(context)
     Scaffold(
 
         topBar = {DevToolbar(viewModel,navigator,context) },
@@ -50,7 +47,7 @@ fun ListUsersScreen (viewModel: UserViewModel = hiltViewModel(),
     }
 }
 @Composable
-fun ListUsersLazyColumn(context:Context,viewModel: UserViewModel, listUsers: List<FirestoreUser>, modifier: Modifier){
+fun ListUsersLazyColumn(context:Context, viewModel: UserViewModel, listUsers: List<CloudUser>, modifier: Modifier){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int ->
         selectedIndex = index
@@ -74,7 +71,7 @@ fun ListUsersLazyColumn(context:Context,viewModel: UserViewModel, listUsers: Lis
     }
     }
 @Composable
-fun FSUserView(user: FirestoreUser,
+fun FSUserView(user: CloudUser,
                context: Context,
                viewModel: UserViewModel,
               //ability: AbilityEntity,
@@ -103,7 +100,7 @@ fun FSUserView(user: FirestoreUser,
         //Text("DEBUG2")
     }
 @Composable
-fun FSuserCard( user: FirestoreUser){
+fun FSuserCard( user: CloudUser){
     Row{
         Column {
             Text(user.uname)

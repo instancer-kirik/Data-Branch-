@@ -28,7 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.R
 import com.instance.dataxbranch.core.Constants.ADD_QUEST
 import com.instance.dataxbranch.core.Utils.Companion.printError
-import com.instance.dataxbranch.destinations.*
+import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.domain.Response
 import com.instance.dataxbranch.quests.Quest
 import com.instance.dataxbranch.ui.components.AddQuestAlertDialog

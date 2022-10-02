@@ -13,23 +13,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.Coil.enqueue
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
+//import com.google.firebase.auth.FirebaseAuth
+//import com.google.firebase.auth.FirebaseUser
+//import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.core.Constants.TAG
-import com.instance.dataxbranch.data.PredefinedUserCredentials
-import com.instance.dataxbranch.data.UserCredentials
+//import com.instance.dataxbranch.data.PredefinedUserCredentials
+//import com.instance.dataxbranch.data.UserCredentials
 //import com.instance.dataxbranch.data.entities.User
 //import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
-import com.instance.dataxbranch.ui.components.OverwriteLocalDialog
-import com.instance.dataxbranch.destinations.UserScreenDestination
-import com.instance.dataxbranch.social.StreamChat.ChatHelper.connectUser
+
+import com.instance.dataxbranch.ui.destinations.*
+//import com.instance.dataxbranch.social.StreamChat.ChatHelper.connectUser
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import io.getstream.chat.android.client.ChatClient
+//import io.getstream.chat.android.client.ChatClient
 
 @Destination
 @Composable
@@ -55,7 +55,9 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
     ) { padding ->
 
         if (viewModel.downloadCloudDialog.value) {
-            OverwriteLocalDialog(viewModel, navigator)
+            showToast(context,"true state in login screen")
+            viewModel.downloadCloudDialog.value=false
+            //OverwriteLocalDialog(viewModel, navigator)
         }
         Column {
             val fsid = viewModel.whoAmI()
@@ -64,10 +66,10 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
             Text( "$myfsid  ...from local")
             /*Button(
                 synchronize())*/
-            ChatClient.instance().getCurrentToken()?.let { Text(it) }
+//            ChatClient.instance().getCurrentToken()?.let { Text(it) }
 
             Text("padding $padding")
-            LoginLogic( context, fsid , myfsid , navigator , viewModel  )
+            //LoginLogic( context, fsid , myfsid , navigator , viewModel  )
 
 
             //Text("Above line pulls from FirestoreAuth, if valid, you are already logged in, may skip")
@@ -106,7 +108,7 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
             }) { Text("skip") }
         }
     }}
-    fun streamchatlogin(user:FirebaseUser,forceRefresh:Boolean){
+   /* fun streamchatlogin(user:FirebaseUser,forceRefresh:Boolean){
         val user2= io.getstream.chat.android.client.models.User(
                 id = "bender",
         extraData = mutableMapOf(
@@ -127,7 +129,7 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
             } else {
                 // Handle error
                 Log.d(TAG,"FAILED IN LOGINSCREEN")
-            }/*
+            }*//*
             apiKey = PredefinedUserCredentials.API_KEY,
             user = user2.apply {
                 id = user.uid
@@ -135,9 +137,9 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
 
             },
             token = "user2.getIdToken(forceRefresh).toString()"
-        ))*/
-    }}
-    fun createFirebaseUser(db:FirebaseFirestore, context: Context, email:String, password:String, viewModel: UserViewModel): FirebaseUser? {
+        ))
+    }}*/
+    /*fun createFirebaseUser(db:FirebaseFirestore, context: Context, email:String, password:String, viewModel: UserViewModel): FirebaseUser? {
         var user:FirebaseUser? = null
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
@@ -154,10 +156,10 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
             }
 
         return user
-    }
+    }*/
 
 //MY ORIGINAL LOGIN FUNCTIONS, originally dealt with just firestore.
-fun synchronize(db:FirebaseFirestore,context: Context, email:String, password:String,viewModel: UserViewModel): FirebaseUser? {
+/*fun synchronize(db:FirebaseFirestore,context: Context, email:String, password:String,viewModel: UserViewModel): FirebaseUser? {
     var user:FirebaseUser? = null
     //var user2= io.getstream.chat.android.client.models.User()
 
@@ -176,8 +178,8 @@ fun synchronize(db:FirebaseFirestore,context: Context, email:String, password:St
 
 
     return user
-}
-@Composable
+}*/
+/*@Composable
 fun LoginLogic(context: Context,fsid: String?,myfsid:String?, navigator: DestinationsNavigator,viewModel: UserViewModel){
     var user: FirebaseUser? =  FirebaseAuth.getInstance().currentUser
     val db:FirebaseFirestore=FirebaseFirestore.getInstance()
@@ -196,7 +198,7 @@ fun LoginLogic(context: Context,fsid: String?,myfsid:String?, navigator: Destina
             navigator.navigate(UserScreenDestination)
         }) { Text("Pull from Cloud on AuthID") }
     }
-}
+}*/
 @Composable
 fun PasswordLogic(
     email: MutableState<String>,
@@ -208,7 +210,7 @@ fun PasswordLogic(
     navigator: DestinationsNavigator,
     viewModel: UserViewModel
 ) {
-    val db:FirebaseFirestore=FirebaseFirestore.getInstance()
+    //val db:FirebaseFirestore=FirebaseFirestore.getInstance()
 
     if (!(email.value.isEmpty() || password.value.isEmpty())) {
         if (checkedState.value) {
@@ -220,14 +222,14 @@ fun PasswordLogic(
             )
             if (password.value == matchpassword.value) {
                 Button(onClick = {
-
-                    createFirebaseUser(
+                    showToast(context,"Creates user, supposedly")
+                    /*createFirebaseUser(
                         db = db,
                         context,
                         email.value,
                         password.value,
                         viewModel
-                    )
+                    )*/
 
                     navigator.navigate(UserScreenDestination)
 
@@ -236,13 +238,7 @@ fun PasswordLogic(
             }
         } else {
             Button(onClick = {
-                synchronize(
-                    db = db,
-                    context,
-                    email.value,
-                    password.value,
-                    viewModel
-                )
+                showToast(context,"synchronize(db = db, context,email.value,password.value,viewModel)")
                 navigator.navigate(UserScreenDestination)
             }) { Text("synchronize to account") }
         }

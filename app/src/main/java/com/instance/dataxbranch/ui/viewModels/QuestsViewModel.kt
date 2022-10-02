@@ -34,35 +34,35 @@ class QuestsViewModel @Inject constructor(
 
 
     private fun getQuests() {
-        viewModelScope.launch {
+       /* viewModelScope.launch {
             useCases.getQuests().collect { response ->
                 _questsState.value = response
             }
-        }
+        }*/
     }
 
     fun addQuest(title: String,description:String, author: String) {
-        viewModelScope.launch {
+    /*    viewModelScope.launch {
             useCases.addQuest.invoke(title, description, author).collect { response ->
                 _isQuestAddedState.value = response
             }
-        }
+        }*/
     }
 
     fun addQuest(quest: Quest) {
-        viewModelScope.launch {
+      /*  viewModelScope.launch {
             useCases.addQuestbyQuest(quest).collect { response ->
                 _isQuestAddedState.value = response
             }
-        }
+        }*/
     }
 
     fun deleteQuest(quest: Quest) {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             useCases.deleteQuest(quest.qid).collect { response ->
                 _isQuestDeletedState.value = response
             }
-        }
+        }*/
     }
 
     fun addQuestToRoom(quest: Quest) {//probably isnt a flow function

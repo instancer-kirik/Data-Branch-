@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.instance.dataxbranch.destinations.*
+import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.components.AddAbilityEntityAlertDialog
 import com.instance.dataxbranch.ui.components.AddQuestAlertDialog
 import com.instance.dataxbranch.ui.components.EditAbilityEntityAlertDialog

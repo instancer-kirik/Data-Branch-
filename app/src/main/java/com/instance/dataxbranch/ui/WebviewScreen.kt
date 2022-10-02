@@ -19,7 +19,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.local.UserWithAbilities
-import com.instance.dataxbranch.destinations.*
+import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination

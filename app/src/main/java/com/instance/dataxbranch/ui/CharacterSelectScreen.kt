@@ -18,10 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.entities.CharacterEntity
 import com.instance.dataxbranch.data.local.CharacterWithStuff
-import com.instance.dataxbranch.destinations.CharacterQuestsScreenDestination
-import com.instance.dataxbranch.destinations.CharacterSelectScreenDestination
-import com.instance.dataxbranch.destinations.CharacterSheetScreenDestination
-import com.instance.dataxbranch.destinations.EditCharacterScreenDestination
+import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

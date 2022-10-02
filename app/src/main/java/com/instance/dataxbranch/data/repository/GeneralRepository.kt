@@ -13,7 +13,7 @@ import com.instance.dataxbranch.data.AppDatabase
 import com.instance.dataxbranch.data.daos.ItemDao
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.*
-import com.instance.dataxbranch.data.firestore.FirestoreUser
+//import com.instance.dataxbranch.data.firestore.CloudUser
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.quests.QuestWithObjectives
@@ -30,7 +30,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
 ) {
 
     var needsSync: Boolean = true
-    private var cachedUsers: List<FirestoreUser> = listOf()
+   // private var cachedUsers: List<CloudUser> = listOf()
     val aDao: AbilityDao = db.abilityDao()
     val uDao: UserDao = db.userDao()
     val qDao: QuestDao = db.questDao()
@@ -360,12 +360,12 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         CoroutineScope(Dispatchers.IO).launch {
             aDao.insert(AbilityEntity(title=title,author=me_container.user.uname))
         }*/
-    fun setUsers(output: List<FirestoreUser>) {
+  /*  fun setUsers(output: List<CloudUser>) {
         cachedUsers=output
     }
-    fun getCachedUsers(): List<FirestoreUser> {
+    fun getCachedUsers(): List<CloudUser> {
        return cachedUsers
-    }
+    }*/
   /*  fun addButDontOverride(news: List<CharacterWithStuff>){
     news.forEach{it->
 

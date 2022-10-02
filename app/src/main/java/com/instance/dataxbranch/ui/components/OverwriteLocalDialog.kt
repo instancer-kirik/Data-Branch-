@@ -1,3 +1,4 @@
+/*
 package com.instance.dataxbranch.ui.components
 
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.destinations.WebviewScreenDestination
+import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.domain.getNow
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -52,7 +53,8 @@ fun  OverwriteLocalDialog(//QviewModel: QuestsViewModel = hiltViewModel(),
                 Column {
                     Text("CLOUD IS OLDER, OVERWRITE LOCAL; replace local with cloud data?")
                     //Button(onClick = {navigator.navigate(WebviewScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("To Doc") }
-                    /* TextField(
+*/
+/* TextField(
                          value = title,
                          onValueChange = { title = it },
                          placeholder = {
@@ -79,7 +81,10 @@ fun  OverwriteLocalDialog(//QviewModel: QuestsViewModel = hiltViewModel(),
                                  text = Constants.DESC
                              )
                          }
-                     )*/
+                     )*//*
+*/
+/*
+
                 }
             },
             confirmButton = {
@@ -146,4 +151,4 @@ fun  OverwriteLocalDialog(//QviewModel: QuestsViewModel = hiltViewModel(),
         }
     )
     }
-}
+}*/

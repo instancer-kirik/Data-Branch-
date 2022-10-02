@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.domain.use_case
 
-import com.instance.dataxbranch.data.firestore.QuestsRepository
-import com.instance.dataxbranch.data.firestore.ResponseRepository
+import com.instance.dataxbranch.data.cloud.QuestsRepository
+import com.instance.dataxbranch.data.cloud.ResponseRepository
 
 class AddResponse (
     private val repo: ResponseRepository
@@ -12,5 +12,5 @@ class AddResponse (
         description: String,
         author: String,
         authorid:String
-    ) = repo.addResponseToFirestore(subject, description, author,authorid)
+    ) = repo.addResponseToCloud(subject, description, author,authorid)
 }

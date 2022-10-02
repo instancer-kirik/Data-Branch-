@@ -24,13 +24,12 @@ import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.entities.ItemEntity
 
 import com.instance.dataxbranch.showToast
-import com.instance.dataxbranch.destinations.*
-
+import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import io.getstream.chat.android.ui.ChatUI.navigator
+
 
 @Destination
 @Composable

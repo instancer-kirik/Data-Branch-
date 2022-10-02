@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.quests
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.google.firebase.firestore.FirebaseFirestore
+
 import com.instance.dataxbranch.data.entities.QuestEntity
 import com.instance.dataxbranch.data.repository.LocalQuestsRepository
 import com.instance.dataxbranch.updateList
@@ -14,11 +14,11 @@ import javax.inject.Singleton
 object QuestService {
 
     fun getQuests(quests: SnapshotStateList<Quest>){
-        FirebaseFirestore.getInstance().collection("quests").get().addOnSuccessListener {
-            quests.updateList(it.toObjects(Quest::class.java))
-        }.addOnFailureListener{
-            quests.updateList(listOf())
-        }
+//        FirebaseFirestore.getInstance().collection("quests").get().addOnSuccessListener {
+//            quests.updateList(it.toObjects(Quest::class.java))
+//        }.addOnFailureListener{
+//            quests.updateList(listOf())
+//        }
     }
    fun getLocalQuests(questsRepository: LocalQuestsRepository):Array<QuestWithObjectives>{
        return questsRepository.getQuests()

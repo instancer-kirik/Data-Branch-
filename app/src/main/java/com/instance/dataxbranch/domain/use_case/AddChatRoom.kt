@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.domain.use_case
 
 
-import com.instance.dataxbranch.data.firestore.SocialRepository
+import com.instance.dataxbranch.data.cloud.SocialRepository
 
 class AddChatRoom (
     private val repo: SocialRepository
@@ -17,7 +17,7 @@ class AddChatRoom (
         description: String,
         author: String,
         authorid:String*/
-    ) = repo.addChatRoomToFirestore(title,
+    ) = repo.addChatRoomToCloud(title,
         subject,
         members,
     /*recentMessageText,
