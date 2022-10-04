@@ -12,7 +12,7 @@ import java.util.*
     indices = [
         Index(value = ["aid"], unique = true)
     ],
-    foreignKeys = [
+   /* foreignKeys = [
         ForeignKey(
             entity= CharacterEntity::class,
             parentColumns = arrayOf("uuid"),
@@ -20,7 +20,7 @@ import java.util.*
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
 
-        )]
+        )]*/
         /*    CREATE TABLE "abilities" (
         "uid" INTEGER NOT NULL UNIQUE,
         "LeveL" INTEGER,

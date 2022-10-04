@@ -22,8 +22,9 @@ abstract class QuestDao {
     @Update
     abstract fun save(objectives: List<ObjectiveEntity>)
 */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun save(quest:QuestEntity):Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertQuestEntity(quest: QuestEntity?):Long
 
@@ -56,10 +57,11 @@ abstract class QuestDao {
         insertAll(qwo.objectives)
     }
 
-    fun save(qwo: QuestWithObjectives) {
+    fun save(qwo: QuestWithObjectives): Long {
         val id = save(qwo.quest)
         qwo.objectives.forEach { i -> i.id= id }
         updateAll(qwo.objectives)
+        return id
     }
     /*@Transaction
 

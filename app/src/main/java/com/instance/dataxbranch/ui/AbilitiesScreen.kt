@@ -66,6 +66,7 @@ fun AbilitiesScreen(viewModel: UserViewModel = hiltViewModel(),
             Row {
                 Button(onClick = {
                     viewModel.allabilities.value = !viewModel.allabilities.value
+
                 }, modifier = Modifier.padding(padding)) { Text("Mode") }
                 if(!viewModel.allabilities.value){Text("Selected Character: ${viewModel.getSelectedCharacter().character.name}")}
                 else{Text("All Abilities")

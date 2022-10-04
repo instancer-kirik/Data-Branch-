@@ -60,14 +60,14 @@ class ItemRepository @Inject constructor(application: Application, db: AppDataba
 
     fun updateitemEntity(item: ItemEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
-            itemDao.update(item)
+            itemDao.upsert(item)
 
         }
-    fun update(item: ItemEntity): Job =
+    /*fun update(item: ItemEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
             itemDao.update(item)
 
-        }
+        }*/
     /*fun update(obj: ObjectiveEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
             itemDao.update(obj)

@@ -21,7 +21,7 @@ data class CharacterWithStuff (
 
 
     )
-    var abilities: List<AbilityEntity>,
+    var abilities: List<AbilityEntity> = listOf(),
 
     @Relation(
         parentColumn = "quests",

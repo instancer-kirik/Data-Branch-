@@ -44,18 +44,18 @@ class DevViewModel @Inject constructor(
 
 
     private fun getResponses() {
-        viewModelScope.launch {
-            useCases.getResponses().collect { response ->
-                _rState.value = response
-            }
-        }
+//        viewModelScope.launch {
+//            useCases.getResponses().collect { response ->
+//                _rState.value = response
+//            }
+//        }
     }
 
     fun addResponse(subject: String, description: String, author: String,authorid: String) {
-        viewModelScope.launch {
-            useCases.addResponse.invoke(subject, description, author,authorid).collect { response ->
-                _isResponseAddedState.value = response
-            }
-        }
+//        viewModelScope.launch {
+//            useCases.addResponse.invoke(subject, description, author,authorid).collect { response ->
+//                _isResponseAddedState.value = response
+//            }
+//        }
     }
 }

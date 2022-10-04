@@ -103,7 +103,7 @@ fun InventoryScreen(
            /* if (showDialogC.value) {
                 alertC(uViewModel,navigator)
             }*/
-            Text("items are: ${uViewModel.getSelectedCharacter().character.items} --")
+            Text("character is ${uViewModel.getSelectedCharacter().character.name} items are: ${uViewModel.getSelectedCharacter().character.items} --")
             InventoryGrid( them = uViewModel.getInventory()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel)
             Button(
                 onClick = { showDialogC.value = true },

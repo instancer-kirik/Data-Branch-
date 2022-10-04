@@ -274,9 +274,16 @@ fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewM
                         quest.objectives.forEach { oe ->
                             ObjectiveViewEdit(viewModel, oe)
                         }
-                        Button(onClick = { viewModel.addNewObjectiveEntity(quest) }) { Text("ADD OBJECTIVE") }
-                    }
+                        Row {
+                            Button(onClick = { navi.navigate(QuestDetailScreenDestination) }) {
+                                Text(
+                                    "EDIT"
+                                )
+                            }
+                            Button(onClick = { viewModel.addNewObjectiveEntity(quest) }) { Text("ADD OBJECTIVE") }
 
+                        }
+                    }
 
                 }
 
@@ -336,7 +343,11 @@ fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewM
 
                 }
             }
-                Button(onClick = { navi.navigate(QuestDetailScreenDestination) }) { Text("EDIT") }
+                Button(onClick = { uViewModel.generalRepository.putQuestOnCharacter(quest) }) {
+                    Text(
+                        "GET"
+                    )
+                }
         }}
 }
 /*

@@ -191,12 +191,12 @@ class GeneralRepository(application: Application, db: AppDatabase,
 
 
     private fun CharacterWithStuff(character: CharacterEntity,) : CharacterWithStuff {
-        return CharacterWithStuff(character,mabilities,getQuestsbyCharacter(character))
+        return CharacterWithStuff(character,getAbilitiesbyCharacter(character),getQuestsbyCharacter(character))
     }
     private fun CharacterWithStuff(characters: List<CharacterEntity>) :List<CharacterWithStuff> {
         var result : MutableList<CharacterWithStuff> = mutableListOf()
         characters.forEach {character->
-            result.add(CharacterWithStuff(character,mabilities,getQuestsbyCharacter(character)))
+            result.add(CharacterWithStuff(character,getAbilitiesbyCharacter(character),getQuestsbyCharacter(character)))
         }
 
         return result.toList()
@@ -258,7 +258,11 @@ class GeneralRepository(application: Application, db: AppDatabase,
             val qwos: Array<QuestWithObjectives> =questsRepository.getQuests()
             return qwos.filter{it.quest.id in character.quests}.toTypedArray()
         }
-        fun newQuestOnCharacter(questEntity: QuestEntity){
+    fun getAbilitiesbyCharacter(character:CharacterEntity):List<AbilityEntity>{
+       // val qwos: Array<QuestWithObjectives> =questsRepository.getQuests()
+        return mabilities.filter{it.aid in character.abilities}
+    }
+        fun putQuestOnCharacter(questEntity: QuestEntity){
             //var qwo: QuestWithObjectives =
             CoroutineScope(Dispatchers.IO).launch {
                 selectedCharacterWithStuff.character.quests=selectedCharacterWithStuff.character.quests.plus(qDao.save(questEntity))
@@ -268,6 +272,16 @@ class GeneralRepository(application: Application, db: AppDatabase,
             }
 
         }
+    fun putQuestOnCharacter(quest: QuestWithObjectives){
+        //var qwo: QuestWithObjectives =
+        CoroutineScope(Dispatchers.IO).launch {
+            selectedCharacterWithStuff.character.quests=selectedCharacterWithStuff.character.quests.plus(qDao.save(quest))
+            //uDao.save(selectedCharacterWithStuff.character)
+
+            save()
+        }
+
+    }
     fun putAbilityOnCharacter(ae: AbilityEntity) {
         selectedCharacterWithStuff.character.abilities=selectedCharacterWithStuff.character.abilities.plus(ae.aid)
         selectedCharacterWithStuff.abilities= selectedCharacterWithStuff.abilities.plus(ae)

@@ -66,10 +66,10 @@ fun PayMeBlock() {
         mutableStateOf("https://www.__patreon.com/instance_select?fan_landing=true")
     }
     Text("Grant me money. Support the Developer ")
-    Text("I'll set up IAP and ads soon. and I'll grant you exclusive goodies.  " )
+   // Text("I'll set up IAP and ads soon. and I'll grant you exclusive goodies.  " )
 
     //Does this count as a game?
-    //Text("cashapp \$Instancer")
+    Text("cashapp \$Instancer")
     stringBlock(s = "Patreon: ", text)
     /*Column{Text("Future PayToWin features: +ability slots (planned to earn in update)" )
         Text("Wiki tokens")
@@ -89,6 +89,7 @@ fun ResponseBlock(context: Context, me: UserWithAbilities,db: String="database")
     var isVisible = remember { mutableStateOf(true) }
     Column{
         Text("Here you can submit responses, bug reports, and requests")
+        Text("not currently working; no cloud database currently. removed firestore")
     stringBlock(s = "Subject: ", subjecttext)
     stringBlock(s = "Message to dev: ", text)
 
@@ -109,6 +110,7 @@ fun ResponseBlock(context: Context, me: UserWithAbilities,db: String="database")
         //showToast(context,"c;")
     }) {
         Text("Submit Response")
+        Text("does not work, just ping me on discord: instancer_kirik#3040 ")
     }}
 }}
 //

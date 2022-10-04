@@ -80,7 +80,7 @@ class UserViewModel @Inject constructor(
         MutableLiveData<String>()
     }
     private var meWithAbilities=generalRepository.getMe()
-    var attunement = mutableStateOf(meWithAbilities.user.attunement)
+    var attunement = mutableStateOf(getSelectedCharacter().character.attunement)
     var attuned = mutableStateOf(getAttuned())
     var userContainer: User?=null
     init {
@@ -159,16 +159,21 @@ class UserViewModel @Inject constructor(
     fun getSelectedCharacterIndex():Int{
         return generalRepository.selectedCharacterIndex
     }
-    fun getAttuned():Int{
+    fun getUserAttuned():Int{
         return if(meWithAbilities.user.attuned==0){
             meWithAbilities.abilities.filter{it.inloadout}.size
         }else meWithAbilities.user.attuned
+    }
+    fun getAttuned():Int{
+        return if(getSelectedCharacter().character.attuned!=0){
+            getSelectedCharacter().abilities.filter{it.inloadout}.size
+        }else getSelectedCharacter().character.attuned
     }
     fun addNewAbilityEntity(ae: AbilityEntity){
         generalRepository.insertAbility(ae)
     }
     fun addNewAbilityEntity(title: String){ //might be better to just do on new title
-        val ae = AbilityEntity(title = title, author = generalRepository.getMe().user.uname)
+        val ae = AbilityEntity(title = title, author = generalRepository.getMe().user.uname,)
         generalRepository.insertAbility(ae)
     }
     fun addNewAbilityEntityOnCharacter(title: String){ //might be better to just do on new title
@@ -222,7 +227,7 @@ class UserViewModel @Inject constructor(
     fun addNewQuestEntity(title: String, description:String,author: String){
         var char = getSelectedCharacter()
         viewModelScope.launch {
-            val result = generalRepository.newQuestOnCharacter(
+            val result = generalRepository.putQuestOnCharacter(
                 QuestEntity(
                     title = title,
                     description = description,
@@ -237,7 +242,9 @@ class UserViewModel @Inject constructor(
             result =useCases.addNewQuestEntity(title,description, author) }*/
         }
     }
+    fun putQuestOnCharacter(){
 
+    }
     fun getMeWithAbilities(): UserWithAbilities {
         //refresh()
         return meWithAbilities
@@ -328,7 +335,9 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
 
     private fun fixattunement(){
         updateAttuned()
-        meWithAbilities.fixattunement()
+        getSelectedCharacter().fixattunement()
+        meWithAbilities.fixattunement()//legacy
+
     }
 
     fun getSelect() {

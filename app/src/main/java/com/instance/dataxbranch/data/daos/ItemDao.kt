@@ -11,7 +11,8 @@ abstract class ItemDao() {//:EntityDao<ItemEntity>
 
     @Update
     abstract fun update(vararg item: ItemEntity?)
-
+    @Upsert
+    abstract fun upsert(vararg item: ItemEntity?)
     @Delete
     abstract fun delete(vararg item: ItemEntity?)
 
