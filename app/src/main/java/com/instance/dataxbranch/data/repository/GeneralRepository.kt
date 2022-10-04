@@ -93,9 +93,11 @@ class GeneralRepository(application: Application, db: AppDatabase,
             mcharacters.forEach{uDao.prime(it.character)}  }
 }
     fun sync(andItems:Boolean = false, andQuests:Boolean = false){
-
-        Log.d("REPO","SYNC CALLED with ${needsSync}")
+//        fixInventory()
+        fixInventory()
+        Log.d("REPO","SYNC CALLED with ${needsSync}, andItems=$andItems, andQuests = $andQuests")
         if (needsSync){
+
         CoroutineScope(Dispatchers.IO).launch {//this might cause issues with data not being loaded fast enough
             uDao.prime(User())
 
@@ -107,7 +109,8 @@ class GeneralRepository(application: Application, db: AppDatabase,
 
         }
             if(andItems){
-                itemRepository.sync()}
+                itemRepository.sync()
+                fixInventory()}
 
             if(andQuests){
                 questsRepository.refresh()
@@ -284,7 +287,10 @@ class GeneralRepository(application: Application, db: AppDatabase,
             // udao.update(me)
         }
     }
-        fun updateCharacterQuests(){
+    fun fixInventory(){selectedCharacterWithStuff.inventory = filterLocalItemsOnID()}
+    fun filterLocalItemsOnID(ids:List<Long> =selectedCharacterWithStuff.character.items): Array<ItemEntity> = itemRepository.getitems().filter{it.iid in ids}.toTypedArray()
+
+    fun updateCharacterQuests(){
             selectedCharacterWithStuff.quests=getQuestsbyCharacter(selectedCharacterWithStuff.character)
             Log.d(TAG,"UPDATECHARACTERQUESTS")
         }

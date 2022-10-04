@@ -1,3 +1,5 @@
+
+
 package com.instance.dataxbranch.ui
 
 
@@ -99,8 +101,15 @@ padding
         Row{
 
             Column {
-                Button(onClick={recomposeState.value=true}){Text("recompose")}
+                Row{
+                    Button(onClick={recomposeState.value=true}){Text("recompose")}
 
+                    Button(onClick = {save3(context,navigator,viewModel,them)}){
+                        Icon(
+                            imageVector = Icons.Default.Done,
+                            contentDescription = Constants.SAVE
+                        )
+                    }}
                 Text(viewModel.getSelectI().toString())
                 istringBlock(s = "name", name)
                 istringBlock(s = "desc", desc)
@@ -112,17 +121,17 @@ padding
                 //bintBlock(s = "damage", damage)
                 iIntBlock(s = "damage", damage)
 
-            }
-            Column {
-                Row {
-                    Text("Obtained")
-                    Checkbox(
-                        checked =hasState.value,
-                        onCheckedChange = {status->
-                           hasState.value = status
-                           viewModel.invFlux(status ,item)
-                        })
-                }
+
+//            Column {
+//                Row {
+//                    Text("Obtained")
+//                    Checkbox(
+//                        checked =hasState.value,
+//                        onCheckedChange = {status->
+//                           hasState.value = status
+//                           viewModel.invFlux(status ,item)
+//                        })
+//                }
                 /*Row {
                     Text("in Inventory")
 
@@ -133,14 +142,11 @@ padding
                             itemToSave.apply { isHabit = it }
                         })
                 }*/
-                Button(onClick = {save3(context,navigator,viewModel,them)}){
-                    Icon(
-                        imageVector = Icons.Default.Done,
-                        contentDescription = Constants.SAVE
-                    )
-                }
+
                 //blvlupblock(levelups = levelup, levels = levels)
             }}}}
+
+
 
 
 
@@ -176,7 +182,9 @@ fun ItemDetailToolbar(context: Context, viewModel: UserViewModel, navigator: Des
             OutlinedButton(
                 onClick = {
                     expanded = !expanded
-                    expanded2=false
+
+                      expanded2=false
+
                 }
             ) {
 

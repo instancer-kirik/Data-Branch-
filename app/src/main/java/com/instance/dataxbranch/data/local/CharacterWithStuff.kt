@@ -51,6 +51,7 @@ data class CharacterWithStuff (
         character.attuned = abilities.filter{it.inloadout}.size
 
         }
+
     fun clearLoadoutAbilities(){
         abilities.filter{ it.inloadout }.forEach { ae ->
             ae.inloadout=false

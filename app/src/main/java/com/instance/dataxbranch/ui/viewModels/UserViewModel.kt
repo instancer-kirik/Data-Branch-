@@ -107,9 +107,12 @@ class UserViewModel @Inject constructor(
             meWithAbilities=generalRepository.getMe()
         }
         fixattunement()
+
         return meWithAbilities.user.uname
     }
     fun getInventory():Array<ItemEntity>{
+        //////////////////////////////////////////////////////////////////////
+        //generalRepository.fixInventory()//this should probably not be here but eh
         return getSelectedCharacter().inventory
 //        return generalRepository.itemRepository.getitems()
     }
@@ -306,7 +309,7 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
         //meWithAbilities.abilities.forEach { update(it) }
         update(meWithAbilities.user.apply{attuned=a})
         setSelect()
-        generalRepository.sync()
+        generalRepository.sync(andItems = true)
         refresh()
     }
     fun syncI(){
@@ -319,14 +322,15 @@ Log.d("USERVIEWMODEL","SYNC CALLED")
     fun syncAttunement(){
         meWithAbilities.user.attuned=attuned.value
     }
-    fun updateAttuned(){
+    private fun updateAttuned(){
         meWithAbilities.user.attuned= meWithAbilities.abilities.filter{it.inloadout}.size
     }
 
-    fun fixattunement(){
+    private fun fixattunement(){
         updateAttuned()
         meWithAbilities.fixattunement()
     }
+
     fun getSelect() {
         selectedAE=generalRepository.selectedAE
     }
@@ -529,6 +533,7 @@ return "me @ userViewModel"
             addNewItemEntityOnCharacter(name)
         }
     }
+
 
 
 }
