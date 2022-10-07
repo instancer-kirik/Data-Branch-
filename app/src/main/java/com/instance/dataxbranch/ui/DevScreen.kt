@@ -18,6 +18,7 @@ import com.instance.dataxbranch.data.cloud.CloudResponse
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddResponseAlertDialog
+import com.instance.dataxbranch.ui.components.DevToolbar
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
@@ -65,7 +66,7 @@ fun PayMeBlock() {
     val text = remember {
         mutableStateOf("https://www.__patreon.com/instance_select?fan_landing=true")
     }
-    Text("Grant me money. Support the Developer ")
+    Text("Support the Developer ")
    // Text("I'll set up IAP and ads soon. and I'll grant you exclusive goodies.  " )
 
     //Does this count as a game?
@@ -149,74 +150,6 @@ fun ResponseBlock(context: Context, me: UserWithAbilities,db: String="database")
 //        .addOnFailureListener { e -> showToast(context,"Error writing document $e") }
 //}
 
-@Composable
-fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator,context:Context) {
-
-    TopAppBar(
-        title = { Text(text = "dev toolbar") },
-        actions = {ConfigChangeExample()
-
-            var expanded by remember { mutableStateOf(false) }
-            var expanded2 by remember { mutableStateOf(false) }
-
-            OutlinedButton(
-                onClick = {
-                    expanded=false
-                    expanded2 = !expanded2
-                }
-            ) {
-
-                if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                    //only room for 3 buttons this way
-                    //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
-                    //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
-                    //Button(onClick = {viewModel.openDialogState3.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit loadout") }
-
-                        Button(onClick = {navigator.navigate(LoginScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Auth")}
-                        Button(onClick = {navigator.navigate(AbilitiesScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("All Abilities")}
-
-
-
-
-
-                    Button(onClick = {viewModel.generalRepository.resetAndSet(UserWithAbilities(User(),listOf()))}, modifier=Modifier.padding(2.dp)){Text("clear local")}
-                } else Text("DEBUG")
-
-            }
-            //startActivity(context, ChannelsActivity.createIntent(context),null)}
-            Button(onClick = {showToast(context,"CLICK c:")}, modifier=Modifier.padding(2.dp)){Text("click")}
-            OutlinedButton(
-                onClick = {
-                    expanded = !expanded
-                    expanded2=false
-                }
-            ) {
-
-                if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                    //only room for 3 buttons this way
-                    Row(modifier=Modifier.fillMaxWidth()) {
-                        Button(
-                            onClick = { navigator.navigate(UserScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to user") }
-                        Button(
-                            onClick = { navigator.navigate(HubScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to hub") }
-                        Button(
-                            onClick = { navigator.navigate(HelpScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("help") }
-                    }
-                } else Text("navigate")
-
-            }
-
-        })
-
-}
 @Composable//returning context through time?? idk is hard
 fun notification(context: Context){
 

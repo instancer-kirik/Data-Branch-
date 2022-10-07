@@ -188,6 +188,10 @@ class RoomQuestViewModel @Inject constructor(
     return selectedQuest.quest.title.toString()
     }
 
+    fun delete(quest: QuestWithObjectives) {
+        localQuestsRepository.deleteQuest(quest)
+    }
+
 
 }
 

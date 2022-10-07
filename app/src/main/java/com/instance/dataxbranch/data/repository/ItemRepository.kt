@@ -73,10 +73,12 @@ class ItemRepository @Inject constructor(application: Application, db: AppDataba
             itemDao.update(obj)
 
         }*/
-    fun deleteitemEntity(item: ItemEntity): Job =
-        CoroutineScope(Dispatchers.IO).launch {
-            itemDao.delete(item)
-        }
+    fun delete(item: ItemEntity) {
+        mitems = mitems.filter{it.iid !=item.iid}.toTypedArray()
+            CoroutineScope(Dispatchers.IO).launch {
+                itemDao.delete(item)
+            }
+    }
   /*  fun update(item: ItemEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
             itemDao.update(item)

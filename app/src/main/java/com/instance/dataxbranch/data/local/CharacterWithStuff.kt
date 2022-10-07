@@ -33,7 +33,7 @@ data class CharacterWithStuff (
     //val aidList: Array<String>
 
 ){
-
+val uuid = character.uuid
     @Relation(
         parentColumn = "inventory",
         entityColumn = "id",

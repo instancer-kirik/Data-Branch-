@@ -18,7 +18,9 @@ data class QuestWithObjectives @Inject constructor(
         entityColumn = "id"
     )
     var objectives: List<ObjectiveEntity>
- )
+ ){
+
+}
 
      /*fun addObjectives(vararg objs:ObjectiveEntity)  {Each { obj->objectives.add(obj)}
      }*/

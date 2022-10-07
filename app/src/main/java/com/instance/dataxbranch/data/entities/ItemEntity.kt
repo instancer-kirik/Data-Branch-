@@ -55,6 +55,8 @@ data class ItemEntity @JvmOverloads constructor(
     var links: List<String> =  listOf(),
     var ingredients: List<Long> =  listOf(),
     var other_ingredients: String ="",
+    var consumesOnUse: Boolean = false,
+    var consumesInCrafting:Boolean = true,//for example, a tool would not. how to phrase in ui
     var has: Boolean = false,
     var levels: List<String> = listOf("regular","fine","superior","exceptional","masterful","artifact"),//var levels: List<Pair<Int,String>> = listOf(),
     //var levelup: List<Int> = listOf(5,15,55,200),//when trainedAmt is above each increment fetches level.
@@ -74,6 +76,14 @@ data class ItemEntity @JvmOverloads constructor(
         /*trainedAmt+=1
         return (trainedAmt)*/
         return 1
+    }
+
+    fun use():String{
+        //TODO(CREATE AND HANDLE EFFECT)
+        if(consumesOnUse){
+        //TODO(DELETES ITEM)
+        }
+        return "Used"
     }
 }
 

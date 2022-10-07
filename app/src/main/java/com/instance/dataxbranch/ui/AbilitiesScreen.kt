@@ -23,6 +23,7 @@ import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.ui.destinations.AbilitiesScreenDestination
 
 import com.instance.dataxbranch.showToast
+import com.instance.dataxbranch.ui.components.AbilitiesToolbar
 import com.instance.dataxbranch.ui.components.AddAbilityEntityAlertDialog
 
 import com.instance.dataxbranch.ui.components.EditAbilityEntityAlertDialog
@@ -35,6 +36,9 @@ import com.instance.dataxbranch.ui.destinations.UserScreenDestination
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Destination
 @Composable
@@ -89,75 +93,6 @@ fun whichAbilitiesToUse(viewModel: UserViewModel, all: MutableState<Boolean>): L
     return if(all.value){
         viewModel.getMeWithAbilities().abilities
     }else viewModel.getSelectedCharacter().abilities
-}
-
-@Composable
-fun AbilitiesToolbar( context: Context, viewModel:UserViewModel, navigator: DestinationsNavigator) {
-
-        TopAppBar(
-            title = { Text(text = "Possible Actions") },
-            actions = {
-
-                var expanded by remember { mutableStateOf(false) }
-                var expanded2 by remember { mutableStateOf(false) }
-
-                OutlinedButton(
-                    onClick = {
-                        expanded=false
-                        expanded2 = !expanded2
-                    }
-                ) {
-
-                    if (expanded2) {
-                        //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                        //only room for 3 buttons this way
-                        Button(onClick = { viewModel.openDialogState2.value=true}, modifier=Modifier.padding(2.dp)){Text("edit")}
-                        //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("loadout")}
-                        Button(onClick = {
-                            viewModel.sync()
-                           // viewModel.refresh()
-                                         navigator.navigate(AbilitiesScreenDestination)
-                             }, modifier=Modifier.padding(2.dp)){Text("sync")}
-                        Button(onClick = { onSwapLoadoutClick(viewModel,context)}, modifier=Modifier.padding(2.dp)){Text("swap in Loadout")}
-//viewModel.openDialogState3.value=true
-
-                    } else Text("Interact")
-
-                }
-                OutlinedButton(
-                    onClick = {
-                        expanded = !expanded
-                        expanded2=false
-                    },
-                            modifier=Modifier.fillMaxWidth()
-                ) {
-
-                    if (expanded) {
-                        //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                        //only room for 3 buttons this way
-                        Row(modifier=Modifier.fillMaxWidth()) {
-                            Button(
-                                onClick = { navigator.navigate(UserScreenDestination) },
-                                modifier = Modifier.padding(2.dp)
-                            ) { Text("to user") }
-
-                            Button(
-                                onClick = { navigator.navigate(MyQuestsScreenDestination) },
-                                modifier = Modifier.padding(2.dp)
-                            ) { Text("to quests") }
-                            Button(
-                                onClick = { navigator.navigate(LoadoutScreenDestination) },
-                                modifier = Modifier.padding(2.dp)
-                            ) { Text("to loadout") }
-
-                        }
-
-                    } else Text("navigate")
-
-                }
-
-            })
-
 }
 
 @Composable

@@ -14,6 +14,7 @@ import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.components.AddAbilityEntityAlertDialog
 import com.instance.dataxbranch.ui.components.AddQuestAlertDialog
 import com.instance.dataxbranch.ui.components.EditAbilityEntityAlertDialog
+import com.instance.dataxbranch.ui.components.HelpToolbar
 import com.instance.dataxbranch.ui.viewModels.QuestsViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -114,68 +115,4 @@ Create Quest?*/
     etc
     Control what you can so you're better suited tomorrow*/
 }
-@Composable fun settingsAlertEvent(){}
 
-@Composable
-fun HelpToolbar( navigator: DestinationsNavigator) {
-
-    TopAppBar(
-        title = { Text(text = "Help Screen") },
-        actions = {
-
-            var expanded by remember { mutableStateOf(false) }
-            var expanded2 by remember { mutableStateOf(false) }
-
-            OutlinedButton(
-                onClick = {
-                    expanded=false
-                    expanded2 = !expanded2
-                }
-            ) {
-
-                if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                    //only room for 3 buttons this way
-                    //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
-                    //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
-                    //Button(onClick = {viewModel.openDialogState3.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit loadout") }
-                    Button(
-                        onClick = { navigator.navigate(DevScreenDestination) },
-                        modifier = Modifier.padding(2.dp)
-                    ) { Text("DevScreen") }
-
-                    Button(onClick = {navigator.navigate(AbilitiesScreenDestination)}, modifier=Modifier.padding(2.dp)){ Text("All Abilities") }
-                } else Text("DEBUG")
-
-            }
-            OutlinedButton(
-                onClick = {
-                    expanded = !expanded
-                    expanded2=false
-                }
-            ) {
-
-                if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                    //only room for 3 buttons this way
-                    Row(modifier=Modifier.fillMaxWidth()) {
-                        Button(
-                            onClick = { navigator.navigate(UserScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to user") }
-                        Button(
-                            onClick = { navigator.navigate(MyQuestsScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to quests") }
-                        Button(
-                            onClick = { navigator.navigate(HelpScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("help") }
-                    }
-                } else Text("navigate")
-
-            }
-
-        })
-
-}

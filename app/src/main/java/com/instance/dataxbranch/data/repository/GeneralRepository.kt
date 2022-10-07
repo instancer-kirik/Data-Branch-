@@ -405,6 +405,20 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         Log.d("REPO", "mcharacters updated index $selectedCharacterIndex with $selectedCharacter ================================from --------------OLD--------------- $old")
     }
 
+    fun deleteCharacter(character: CharacterWithStuff, ) {
+        mcharacters=mcharacters.filter { it.character.uuid != character.uuid }
+        CoroutineScope(Dispatchers.IO).launch {
+            uDao.delete(character.character) //check to see if not deleting quests/abilities
+        }
+        return
+    }
+    fun delete(ae:AbilityEntity){
+        mabilities=mabilities.filter { it.aid != ae.aid }
+        CoroutineScope(Dispatchers.IO).launch {
+            aDao.delete(ae) //check to see if not deleting quests/abilities
+        }
+        return
+    }
 
     /*fun sync(): Job =
         CoroutineScope(Dispatchers.IO).launch {

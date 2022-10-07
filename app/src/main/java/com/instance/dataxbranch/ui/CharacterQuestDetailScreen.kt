@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
 
 import com.instance.dataxbranch.showToast
+import com.instance.dataxbranch.ui.components.CharacterQuestDetailToolbar
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
@@ -122,58 +123,6 @@ padding
 
 
 
-@Composable
-fun CharacterQuestDetailToolbar(context: Context, viewModel: UserViewModel, navigator: DestinationsNavigator,them: List<MutableState<out Any>>) {
-    TopAppBar(
-        title = { Text(text = "Edit Quest") },
-        actions = {ConfigChangeExample()
-
-            var expanded by remember { mutableStateOf(false) }
-            var expanded2 by remember { mutableStateOf(false) }
-
-            OutlinedButton(
-                onClick = {
-                    expanded=false
-                    expanded2 = !expanded2
-                }
-            ) {
-
-                if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                    //only room for 3 buttons this way
-                    //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
-                    //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
-                    //Button(onClick = {viewModel.openDialogState3.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit loadout") }
-
-                    Button(onClick = {navigator.navigate( DevScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("DevScreen")}
-                    Button(onClick = {navigator.navigate(CharacterQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("My Quests")}
-                    Button(onClick = {save2(context,navigator,viewModel,them)}, modifier=Modifier.padding(2.dp)){Text("save any changes")}
-                } else Text("DEBUG")
-
-            }
-            OutlinedButton(
-                onClick = {
-                    expanded = !expanded
-                    expanded2=false
-                }
-            ) {
-
-                if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                    //only room for 3 buttons this way
-                    Row(modifier=Modifier.fillMaxWidth()){
-                    Button(onClick = {navigator.navigate(CharacterSelectScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("to user") }
-                    Button(onClick = {navigator.navigate(CharacterQuestsScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("to quests") }
-                    Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("to loadout") }}
-
-                } else Text("navigate")
-
-            }
-
-        })
-
-
-}
 
 @Composable
 fun cintBlock(s: String = "", i: MutableState<Int>){

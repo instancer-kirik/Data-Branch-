@@ -34,6 +34,7 @@ import com.instance.dataxbranch.data.entities.ItemEntity
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddItemEntityAlertDialog
+import com.instance.dataxbranch.ui.components.DevToolbar
 
 
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
@@ -360,6 +361,7 @@ fun ItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: Us
                 }
             }
                 Button(onClick = { uViewModel.putItemOnCharacter(item) }) { Text("GET") }
+                Button(onClick = { uViewModel.delete(item) }) { Text("DELETE") }
         }}
 }
 

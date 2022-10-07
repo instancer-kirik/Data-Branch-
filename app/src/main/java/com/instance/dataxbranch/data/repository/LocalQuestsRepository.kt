@@ -59,10 +59,12 @@ class LocalQuestsRepository @Inject constructor(application: Application, db: Ap
             questDao.update(obj)
 
         }
-    fun deleteQuestEntity(quest: QuestWithObjectives): Job =
-        CoroutineScope(Dispatchers.IO).launch {
-            questDao.delete(quest)
-        }
+    fun deleteQuest(quest: QuestWithObjectives) {
+        mquests= mquests.filter{it.quest.id !=quest.quest.id}.toTypedArray()
+            CoroutineScope(Dispatchers.IO).launch {
+                questDao.delete(quest)
+            }
+    }
     fun update(qwo: QuestWithObjectives): Job =
         CoroutineScope(Dispatchers.IO).launch {
             questDao.update(qwo.quest)

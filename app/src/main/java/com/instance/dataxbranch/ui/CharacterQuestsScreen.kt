@@ -41,6 +41,7 @@ import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
 
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddQuestEntityOnCharacterAlertDialog
+import com.instance.dataxbranch.ui.components.QuestToolbar
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.instance.dataxbranch.utils.await
 import kotlinx.coroutines.*
@@ -286,12 +287,16 @@ fun CharacterLocalQuestCardContent(navi: DestinationsNavigator, quest: QuestWith
                         //Text("open")
 
                         quest.objectives.forEach { oe ->
-                            CharacterObjectiveViewEdit(oe,uViewModel)
+                            CharacterObjectiveViewEdit(oe, uViewModel)
                         }
-                        Button(onClick = { uViewModel.addNewObjectiveEntity(quest) }) { Text("ADD OBJECTIVE") }
+                        Row {
+                            Button(onClick = { uViewModel.addNewObjectiveEntity(quest) }) { Text("ADD OBJECTIVE") }
+                            Button(onClick = { uViewModel.delete(quest) }) {
+                                Text("Delete")
+                            }
+                        }
+
                     }
-
-
                 }
 
             }
@@ -352,6 +357,7 @@ fun CharacterLocalQuestCardContent(navi: DestinationsNavigator, quest: QuestWith
                 }
             }
                 Button(onClick = { navi.navigate(CharacterQuestDetailScreenDestination) }) { Text("EDIT") }
+
         }}
 }
 
@@ -405,7 +411,12 @@ fun CharacterHabitCardContent(navi: DestinationsNavigator, quest: QuestWithObjec
                     quest.objectives.forEach { oe ->
                         CharacterObjectiveViewEdit(oe,uViewModel)
                     }
+                    Row{
                     Button(onClick = { uViewModel.addNewObjectiveEntity(quest) }) { Text("ADD OBJECTIVE") }
+                    Button(onClick = { uViewModel.delete(quest) } ) {
+                        Text("Delete")
+                    }
+                }
                 }
 
 
@@ -463,6 +474,9 @@ fun CharacterHabitCardContent(navi: DestinationsNavigator, quest: QuestWithObjec
                 }
             }
             Button(onClick = { navi.navigate(CharacterQuestDetailScreenDestination) }) { Text("EDIT") }
+            Button(onClick = { uViewModel.delete(quest) } ) {
+                Text("Delete")
+            }
         }}
 }
 /*
@@ -626,7 +640,7 @@ fun complete2(quest: QuestWithObjectives ,viewModel: RoomQuestViewModel) :Boolea
             Button(onClick = {  showDialogC2.value = false} ) {
                 Text("not yet")
             }
-            Button(onClick = { CoroutineScope(Dispatchers.IO).launch { viewModel.localQuestsRepository.deleteQuestEntity(quest) } }) {
+            Button(onClick = { CoroutineScope(Dispatchers.IO).launch { viewModel.delete(quest) } }) {
                 Text("No, remove quest")
             }
         }

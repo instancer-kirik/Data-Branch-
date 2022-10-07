@@ -40,6 +40,7 @@ import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.components.AddQuestEntityAlertDialog
+import com.instance.dataxbranch.ui.components.QuestToolbar
 
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.instance.dataxbranch.utils.await
@@ -275,6 +276,9 @@ fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewM
                             ObjectiveViewEdit(viewModel, oe)
                         }
                         Row {
+                            Button(onClick = { uViewModel.delete(quest) } ) {
+                                Text("Delete")
+                            }
                             Button(onClick = { navi.navigate(QuestDetailScreenDestination) }) {
                                 Text(
                                     "EDIT"
@@ -511,7 +515,7 @@ fun complete(quest: QuestWithObjectives ,viewModel: RoomQuestViewModel) :Boolean
             Button(onClick = {  showDialog2.value = false} ) {
                 Text("not yet")
             }
-            Button(onClick = { CoroutineScope(Dispatchers.IO).launch { viewModel.localQuestsRepository.deleteQuestEntity(quest) } }) {
+            Button(onClick = { CoroutineScope(Dispatchers.IO).launch {  viewModel.delete(quest) } }) {
                 Text("No, remove quest")
             }
         }

@@ -33,6 +33,7 @@ import com.instance.dataxbranch.domain.Response
 import com.instance.dataxbranch.quests.Quest
 import com.instance.dataxbranch.ui.components.AddQuestAlertDialog
 import com.instance.dataxbranch.ui.components.OnlyText
+import com.instance.dataxbranch.ui.components.QuestToolbar
 import com.instance.dataxbranch.ui.viewModels.QuestsViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -104,84 +105,6 @@ fun LazyColumn(viewModel: QuestsViewModel, questsResponse: List<Quest>, modifier
             )
         }
     }
-}
-
-@Composable
-fun QuestToolbar(navigator: DestinationsNavigator) {
-    TopAppBar(
-        title = { Text(text = "MAIN") },
-        actions = {
-
-            var expanded by remember { mutableStateOf(false) }
-            var expanded2 by remember { mutableStateOf(false) }
-            Row{
-            OutlinedButton(
-                modifier = Modifier.fillMaxSize(),
-                onClick = {
-                    expanded2 = !expanded2
-                }
-            ) {
-
-                if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                    //only room for 3 buttons this way
-                    Row(modifier = Modifier.fillMaxSize()) {
-                        Button(
-                            onClick = { navigator.navigate(QuestsScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to Cloud Quests") }
-                        Button(
-                            onClick = { navigator.navigate(MyQuestsScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to My Quests") }
-                        Button(
-                            onClick = { navigator.navigate(DevScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("DevScreen") }
-                        //Button(onClick = {viewModel.read})
-                        /*       Button(
-                            onClick = { navigator.navigate(MyQuestsScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to quests") }
-
-                        Button(
-                            onClick = { navigator.navigate(LoadoutScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to loadout") }
-                    }*/
-                    }
-
-                } else Text("DEBUG")
-            }
-            OutlinedButton(
-                onClick = {
-                    expanded = !expanded
-                }
-            ) {
-
-                if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                    //only room for 3 buttons this way
-                    Row() {
-                        Button(
-                            onClick = { navigator.navigate(UserScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to user ") }
-                        Button(
-                            onClick = { navigator.navigate(MyQuestsScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to quests") }
-
-                        Button(
-                            onClick = { navigator.navigate(LoadoutScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to loadout") }
-                    }
-                } else Text("navigate")}
-
-
-            }}
-    )
 }
 
 /*@Composable

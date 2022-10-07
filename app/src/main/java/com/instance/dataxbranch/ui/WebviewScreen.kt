@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.local.UserWithAbilities
+import com.instance.dataxbranch.ui.components.WebToolbar
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
@@ -55,81 +56,6 @@ fun WebviewScreen (viewModel: UserViewModel = hiltViewModel(),
         MyContent(viewModel)
 }}
 
-@Composable
-fun WebToolbar(
-    context:Context,
-    urls: Map<String, String>,
-    viewModel: UserViewModel,
-    navigator: DestinationsNavigator
-
-) {
-
-    TopAppBar(
-        title = { Text(text = "Armed Abilities") },
-        actions = {ConfigChangeExample()
-
-            var expanded by remember { mutableStateOf(false) }
-            var expanded2 by remember { mutableStateOf(false) }
-
-            OutlinedButton(
-                onClick = {
-                    expanded=false
-                    expanded2 = !expanded2
-                }
-            ) {
-
-                if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                    //only room for 3 buttons this way
-                    //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
-                    //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
-                    Button(onClick = {viewModel.currentSite = urls["URLeula"]+""
-                        viewModel.refreshWebview.value=true}, modifier= Modifier.padding(2.dp)){ Text("URLeula") }
-
-                    Button(onClick = {viewModel.currentSite = urls["URLTermsAndConditions"]+""
-                        viewModel.refreshWebview.value=true}, modifier= Modifier.padding(2.dp)){ Text("URLTermsAndConditions") }
-
-                    Button(onClick = {viewModel.currentSite = urls["URLPrivacyPolicy"]+""
-                        viewModel.refreshWebview.value=true}, modifier= Modifier.padding(2.dp)){ Text("URLPrivacyPolicy") }
-
-                   // Button(onClick = {navigator.navigate(DevScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("DevScreen") }
-                    Button(onClick = {viewModel.generalRepository.setMe(UserWithAbilities(User(),listOf()))
-                                     navigator.navigate(HubScreenDestination)
-                                     }, modifier= Modifier.padding(2.dp)){ Text("clear local") }
-                } else Text("DEBUG")
-
-            }
-            OutlinedButton(
-                onClick = {
-                    expanded = !expanded
-                    expanded2=false
-                }
-            ) {
-
-                if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
-                    //only room for 3 buttons this way
-                    Row(modifier= Modifier.fillMaxWidth()) {
-                        Button(
-                            onClick = { viewModel.getMeWithAbilities().user.terms_status = Calendar.getInstance().time.toString() },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("YES") }
-
-                       /* Button(
-                            onClick = { navigator.navigate(MyQuestsScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("to quests") }
-                        Button(
-                            onClick = { navigator.navigate(HelpScreenDestination) },
-                            modifier = Modifier.padding(2.dp)
-                        ) { Text("help") }*/
-                    }
-                } else Text("accept")
-
-            }
-
-        })
-}
 
 @Composable
 fun MyContent(viewModel: UserViewModel) {

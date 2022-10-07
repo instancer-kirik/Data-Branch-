@@ -1,7 +1,6 @@
 package com.instance.dataxbranch.ui.viewModels
 
 
-import android.content.Context
 import android.util.Log
 
 
@@ -20,7 +19,6 @@ import androidx.lifecycle.viewModelScope
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.AppDatabase
-import com.instance.dataxbranch.data.cloud.CloudUser
 import com.instance.dataxbranch.data.entities.*
 
 import com.instance.dataxbranch.data.local.CharacterWithStuff
@@ -28,7 +26,6 @@ import com.instance.dataxbranch.data.local.UserWithAbilities
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
 import com.instance.dataxbranch.quests.QuestWithObjectives
-import com.instance.dataxbranch.showToast
 
 
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -531,6 +528,7 @@ return "me @ userViewModel"
                 .toTypedArray()
             getSelectedCharacter().character.items=getSelectedCharacter().character.items.filter{it!=item.iid}
         }
+        delete(getSelectedCharacter(),true,true,true)
     }
 
     fun addItemOnClick(name:String) {
@@ -541,11 +539,52 @@ return "me @ userViewModel"
         }else {
             addNewItemEntityOnCharacter(name)
         }
+
+    }
+
+    fun delete(item: ItemEntity) {
+        getSelectedCharacter().inventory=getSelectedCharacter().inventory.filter{it.iid != item.iid}.toTypedArray()
+        getSelectedCharacter().character.items=getSelectedCharacter().character.items.filter{it != item.iid}
+        generalRepository.itemRepository.delete(item)
+    }
+    fun delete(ae: AbilityEntity) {
+        getSelectedCharacter().abilities=getSelectedCharacter().abilities.filter{it.aid != ae.aid}
+        getSelectedCharacter().character.abilities=getSelectedCharacter().character.abilities.filter{it != ae.aid}
+        generalRepository.delete(ae)
+    }
+    fun delete(quest: QuestWithObjectives) {
+        getSelectedCharacter().quests=getSelectedCharacter().quests.filter{it.quest.id != quest.quest.id}.toTypedArray()
+        getSelectedCharacter().character.quests=getSelectedCharacter().character.quests.filter{it != quest.quest.id}
+        generalRepository.questsRepository.deleteQuest(quest)
+    }
+    fun delete(character: CharacterWithStuff, andInventory:Boolean =false, andQuests:Boolean =false, andAbilities:Boolean = false) {
+        //don't think I have a list assoc with user. deletes direct from repo
+        //=getSelectedCharacter().characters.filter{it.character.id != character.character.id}.toTypedArray()
+        generalRepository.deleteCharacter(character)
+        meWithAbilities.user.characters=meWithAbilities.user.characters.filter{it != character.character.uuid}
+        if(andInventory){
+            character.inventory.forEach {
+                delete(it)}
+        }
+        if(andQuests){
+            character.quests.forEach {
+                delete(it)}
+        }
+        if(andAbilities){
+            character.abilities.forEach {
+                delete(it)}
+        }
+    }
+    fun delete(it:Any){//This is a general delete. maybe bad idea idk
+        //TODO bulk delete abilities/Items/quests etc
+        //TODO recycle bin behavior
+        Log.d("uViewModel","delete called on a ${it::class}; not implemented")
     }
 
 
 
 }
+
 
     /*val rowsInserted: MutableLiveData<Int> = MutableLiveData()
     override fun onCleared() {

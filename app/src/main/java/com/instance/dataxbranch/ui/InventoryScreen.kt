@@ -38,6 +38,7 @@ import com.instance.dataxbranch.data.entities.ItemEntity
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddItemEntityAlertDialog
+import com.instance.dataxbranch.ui.components.DevToolbar
 
 
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
@@ -104,7 +105,7 @@ fun InventoryScreen(
                 alertC(uViewModel,navigator)
             }*/
             Text("character is ${uViewModel.getSelectedCharacter().character.name} items are: ${uViewModel.getSelectedCharacter().character.items} --")
-            InventoryGrid( them = uViewModel.getInventory()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel)
+            InventoryGrid( them = uViewModel.getInventory()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel,context)
             Button(
                 onClick = { showDialogC.value = true },
                 modifier = Modifier.padding(2.dp)
@@ -148,7 +149,7 @@ fun alertC(uViewModel: UserViewModel,navi: DestinationsNavigator) {
 
 
 @Composable
-fun InventoryGrid(them: Array<ItemEntity>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel ){
+fun InventoryGrid(them: Array<ItemEntity>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel,context: Context ){
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index
 
@@ -164,7 +165,8 @@ fun InventoryGrid(them: Array<ItemEntity>, modifier: Modifier,navi: Destinations
                 selected = selectedIndex == ix,
                 onClick = onItemClick,
                 navi = navi,
-                uViewModel = uViewModel
+                uViewModel = uViewModel,
+                context=context
             )
         }
     }
@@ -213,7 +215,7 @@ fun ItemListLocalLazyColumn(items: Array<ItemEntity>, modifier: Modifier,navi: D
 @Composable
 fun InventoryItemView(
     navi: DestinationsNavigator,
-
+    context:Context,
     item: ItemEntity,
     index: Int,
     selected: Boolean,
@@ -234,7 +236,13 @@ fun InventoryItemView(
                 text = "Index $index\n name: ${item.name} id: ${item.iid}")
 
             InventoryItemCardContent(navi, item, uViewModel)
-
+            Button(onClick = {
+                showToast(context,item.use())
+            }){Text("USE")}
+            Button(onClick = {
+                //uViewModel.setSelectI(item)
+                uViewModel.delete(item)
+            }){Text("DELETE")}
             Button(onClick = {
                 uViewModel.setSelectI(item)
                 navi.navigate(ItemDetailScreenDestination)

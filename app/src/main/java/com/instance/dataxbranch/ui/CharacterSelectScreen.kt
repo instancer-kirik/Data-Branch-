@@ -17,7 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.entities.CharacterEntity
+import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.local.CharacterWithStuff
+import com.instance.dataxbranch.data.local.UserWithAbilities
+import com.instance.dataxbranch.showToast
+import com.instance.dataxbranch.ui.components.DevToolbar
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -32,6 +36,8 @@ fun CharacterSelectScreen (viewModel: UserViewModel = hiltViewModel(),
     val me = viewModel.getMeWithAbilities()
     val context = LocalContext.current
     val characters : List<CharacterWithStuff> = viewModel.getAllCharacters()
+    var expanded by remember { mutableStateOf(false) }
+    var expanded2 by remember { mutableStateOf(false) }
     Scaffold(
 
         topBar = {DevToolbar(viewModel,navigator,context) },
@@ -48,10 +54,35 @@ fun CharacterSelectScreen (viewModel: UserViewModel = hiltViewModel(),
             Row ( modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
             ){
-                Button(onClick = { viewModel.addCharacterEntity("Dummy") }) { Text("Add") }
-                Button(onClick = { navigator.navigate(EditCharacterScreenDestination)}) { Text("Edit") }
-                Button(onClick = { navigator.navigate(CharacterQuestsScreenDestination)}) { Text("Quest") }
-                Button(onClick = { navigator.navigate(CharacterSheetScreenDestination)}) { Text("Sheet") }
+                OutlinedButton(
+
+                    onClick = {
+                        expanded = false
+                        expanded2 = !expanded2
+                    }
+
+                ) {
+                    if (expanded2) {
+                        Button(onClick = { viewModel.addCharacterEntity("Dummy") }) { Text("Add") }
+                        Button(onClick = { navigator.navigate(EditCharacterScreenDestination)}) { Text("Edit") }
+                        Button(onClick = { viewModel.delete(viewModel.getSelectedCharacter()) }) { Text("Delete") }
+                    } else Text("MOD")
+                }
+                OutlinedButton(
+
+                    onClick = {
+                        expanded2 = false
+                        expanded = !expanded
+                    }
+                ) {
+                    if (expanded) {
+                        Button(onClick = { navigator.navigate(CharacterQuestsScreenDestination)}) { Text("Quest") }
+                        Button(onClick = { navigator.navigate(InventoryScreenDestination)}) { Text("Inventory") }
+                        Button(onClick = { navigator.navigate(AbilitiesScreenDestination)}) { Text("Abilities") }
+                        Button(onClick = { navigator.navigate(CharacterSheetScreenDestination)}) { Text("Sheet") }
+                    } else Text("GOTO")
+                }
+
             }
         ListCharactersLazyColumn(context,viewModel, characters=characters, modifier = Modifier.padding(padding))
     }}
