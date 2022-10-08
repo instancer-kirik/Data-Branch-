@@ -5,25 +5,12 @@ Pause || Effect
 Pip-Boy / Pause menu- like application.
 
 Current Features:
+custom, selectable characters
+each with custom, selectable quests/abilites/inventory (create/read/update) 
+able to be applied on char from local list. 
 
-Custom Abilities. Editable. Equipable. (For most-all ablilities, it is the player's agency to actually perform ability. App to show/track your options)
-Custom Quests. Editable. Completable. Rewarding. 
 Help screen. 
-User Screen. etc
-
 
 Future Features:
-
-Quest Tracker screen (to show progression)
-Social aspect (probably by StreamChat and/or StreamFeeds)
-Friends/Squad/Party system
-Wiki
-Skill map
-Geo map
-dnd mode
-cheats 
-shop
-hud
-AR integration
-MAKE OPEN WHEN YOU SAY "PAUSE"
-
+Many. see website 
+https://sites.google.com/view/instance-select/home
