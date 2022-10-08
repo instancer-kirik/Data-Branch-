@@ -15,9 +15,9 @@ abstract class AbilityDao() {//:EntityDao<AbilityEntity>
     @Delete
     abstract fun delete(vararg ability: AbilityEntity?)
 
-    @Transaction
-    @Insert(onConflict=OnConflictStrategy.REPLACE)
-    abstract fun save(ability: AbilityEntity)
+
+    @Upsert
+    abstract fun save(ability: AbilityEntity):Long
 
     @Insert(onConflict=OnConflictStrategy.REPLACE)
     abstract fun insertAll(abilities: List<AbilityEntity>)

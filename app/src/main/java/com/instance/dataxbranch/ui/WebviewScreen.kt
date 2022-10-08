@@ -1,5 +1,6 @@
 package com.instance.dataxbranch.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -27,7 +28,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.util.*
 
-
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Destination
 @Composable
 fun WebviewScreen (viewModel: UserViewModel = hiltViewModel(),
@@ -48,11 +49,12 @@ fun WebviewScreen (viewModel: UserViewModel = hiltViewModel(),
 
             // EditAbilityEntityFloatingActionButton()
 
-    ) {padding ->
+    ) {
         if (viewModel.refreshWebview.value) {
             viewModel.refreshWebview.value=false
             navigator.navigate(WebviewScreenDestination)
         }
+
         MyContent(viewModel)
 }}
 

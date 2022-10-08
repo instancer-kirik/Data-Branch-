@@ -1,6 +1,6 @@
 package com.instance.dataxbranch.data.cloud
 
-import android.util.Log
+//import android.util.Log
 
 import com.instance.dataxbranch.core.Constants.TITLE
 
@@ -71,8 +71,7 @@ class ResponseRepositoryImpl @Inject constructor(
                 author = author,
                 authorid=authorid
             )
-            Log.d("Cloud" +
-                    "ADD",thisMessage.toString())
+            //Log.d("Cloud" + "ADD",thisMessage.toString())
             //val addition = responsesRef.document(fsid).set(thisMessage).await()
             //emit(Response.Success(addition))
         } catch (e: Exception) {

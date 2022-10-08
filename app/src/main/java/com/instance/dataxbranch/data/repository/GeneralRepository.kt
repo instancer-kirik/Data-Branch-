@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.data.repository
 
 import android.app.Application
-import android.util.Log
+//import android.util.Log
 import com.google.common.collect.Iterables.size
 import com.instance.dataxbranch.core.Constants.TAG
 
@@ -38,7 +38,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
     var mabilities: List<AbilityEntity> = listOf()
     var mcharacters: List<CharacterWithStuff> by Delegates.observable(listOf()) { property, oldValue, newValue ->
 
-        Log.d("ITEMREPO"," CHANGED  $property and  oldval len=${size(oldValue)}, ${oldValue.toString()} and newval len=${size(newValue)}, ${newValue.toString()}")
+        //Log.d("ITEMREPO"," CHANGED  $property and  oldval len=${size(oldValue)}, ${oldValue.toString()} and newval len=${size(newValue)}, ${newValue.toString()}")
         //if (newValue.iid ==0L){ selectedItem =oldValue}// this prevents resetting to id=0 bug
     }
     var ncharacters:List<CharacterEntity> = listOf()
@@ -95,7 +95,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
     fun sync(andItems:Boolean = false, andQuests:Boolean = false){
 //        fixInventory()
         fixInventory()
-        Log.d("REPO","SYNC CALLED with ${needsSync}, andItems=$andItems, andQuests = $andQuests")
+        //Log.d("REPO","SYNC CALLED with ${needsSync}, andItems=$andItems, andQuests = $andQuests")
         if (needsSync){
 
         CoroutineScope(Dispatchers.IO).launch {//this might cause issues with data not being loaded fast enough
@@ -143,8 +143,9 @@ class GeneralRepository(application: Application, db: AppDatabase,
         }
     fun save(char: CharacterWithStuff=selectedCharacterWithStuff):Job =
         CoroutineScope(Dispatchers.IO).launch {
-            Log.d(TAG,"FUCKING SAVED ${char.character}" )
+            //Log.d(TAG,"FUCKING SAVED ${char.character}" )
 //            selectedCharacterWithStuff=char
+            ////////////////////////////////////////////////might switch order. this was the way it was
             uDao.save(char.character)
             updateByCharacterList(char)
             /*char.quests.forEach {qDao.update(it)}
@@ -165,9 +166,9 @@ class GeneralRepository(application: Application, db: AppDatabase,
         CoroutineScope(Dispatchers.IO).launch {
             if (mcharacters.isEmpty()){ primeCharacters() }
             ncharacters = uDao.getAllCharacters()
-            Log.d(TAG,"REPO BUILT, ${ncharacters} IN LIST")
+            //Log.d(TAG,"REPO BUILT, ${ncharacters} IN LIST")
             mcharacters = CharacterWithStuff(ncharacters)
-            mcharacters.forEach {Log.d(TAG,"REPO BUILT, ${it.toString()} IN LIST")}
+           //mcharacters.forEach {Log.d(TAG,"REPO BUILT, ${it.toString()} IN LIST")}
 
 
         }
@@ -295,7 +296,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
         selectedCharacterWithStuff.character.items=selectedCharacterWithStuff.character.items.plus(item.iid)
 
         selectedCharacterWithStuff.inventory= selectedCharacterWithStuff.inventory.plus(item)
-        Log.d("REPO_putItemOnCharacter", "item  is $item in generalRepo putItemOnCharacter")
+        //Log.d("REPO_putItemOnCharacter", "item  is $item in generalRepo putItemOnCharacter")
         CoroutineScope(Dispatchers.IO).launch {
             save()
             // udao.update(me)
@@ -306,7 +307,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
 
     fun updateCharacterQuests(){
             selectedCharacterWithStuff.quests=getQuestsbyCharacter(selectedCharacterWithStuff.character)
-            Log.d(TAG,"UPDATECHARACTERQUESTS")
+            //Log.d(TAG,"UPDATECHARACTERQUESTS")
         }
 
     fun getAbilities(): List<AbilityEntity> = mabilities
@@ -347,6 +348,18 @@ class GeneralRepository(application: Application, db: AppDatabase,
             aDao.save(ability)
             needsSync=true
         }
+    suspend fun insertAbility(title:String="ABILITY_DEFAULT", ae: AbilityEntity=AbilityEntity(title = title, author =  getMe().user.uname)):Long{
+        var id:Long= ae.aid
+
+        id= withContext(Dispatchers.IO){
+            aDao.save(ae)
+        }
+//        if (id==0L) {
+//            Log.d("REPO_insertAbility", "RUH ROH id ==0 ")
+//        }else{Log.d("REPO_insertAbility", "id  is $id")}
+        needsSync=true
+        return id
+    }
     suspend fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = name, author =  getMe().user.uname)):Long{
         var id:Long= item.iid
 
@@ -354,9 +367,9 @@ class GeneralRepository(application: Application, db: AppDatabase,
             iDao.save(item)
         }
 
-        if (id==0L) {
-            Log.d("REPO_insertItem", "RUH ROH id ==0 ")
-        }else{Log.d("REPO_insertItem", "id  is $id")}
+//        if (id==0L) {
+//            Log.d("REPO_insertItem", "RUH ROH id ==0 ")
+//        }else{Log.d("REPO_insertItem", "id  is $id")}
 
         needsSync=true
         return id
@@ -402,7 +415,7 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         mcharacters = mcharacters.toMutableList().apply {
             this[selectedCharacterIndex] = selectedCharacter
         }
-        Log.d("REPO", "mcharacters updated index $selectedCharacterIndex with $selectedCharacter ================================from --------------OLD--------------- $old")
+        //Log.d("REPO", "mcharacters updated index $selectedCharacterIndex with $selectedCharacter ================================from --------------OLD--------------- $old")
     }
 
     fun deleteCharacter(character: CharacterWithStuff, ) {

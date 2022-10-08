@@ -1,5 +1,5 @@
 package com.instance.dataxbranch.ui.viewModels
-import android.util.Log
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -116,10 +116,10 @@ class RoomQuestViewModel @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             dao.update(quest.quest)
         }}
-    fun addQuestEntity(quest: Quest) {
+    fun toRoom(quest: Quest) {
         CoroutineScope(Dispatchers.IO).launch {
-            quest.toRoom(dao)
-            quest.objectives.forEach { Log.d("RQVM"," OBJ seen $it")}//objective->objective.convert()  }
+            quest.toRoom(dao)//handles objectives in this fun, so not needed after
+            //quest.objectives.forEach { Log.d("RQVM"," OBJ seen $it")}//objective->objective.convert()  }
 
         }
     }

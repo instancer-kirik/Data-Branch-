@@ -272,19 +272,29 @@ fun EditAbilityEntityFloatingActionButton(viewModel: UserViewModel = hiltViewMod
 fun onSwapLoadoutClick(viewModel: UserViewModel,context: Context){
 
     if( !viewModel.selectedAE.inloadout){// me.abilities.filter{it.inloadout}.size
-        if (viewModel.attunement.value >=viewModel.attuned.value)//when adding ability. enough room in attunement
-        {viewModel.selectedAE.inloadout=!viewModel.selectedAE.inloadout
+        if (viewModel.attunement.value >=viewModel.attuned.value)
+        //when adding ability. enough room in attunement
+        {
+            viewModel.selectedAE.inloadout=!viewModel.selectedAE.inloadout//does this change in character's ability list? SHALLOW COPY?
+
             viewModel.attuned.value+=1//
             viewModel.syncSelectedAE()
             viewModel.syncAttunement()
+           //viewModel.putAbilityOnCharacter(viewModel.selectedAE) not putting on character. but putting in loadout within character
         }else{
             showToast(context, "not enough attunement slots")
-        }}else{
+        }
+    }else{
         //when subtracting ability
         viewModel.selectedAE.inloadout=!viewModel.selectedAE.inloadout
+        //should edit within character's ability list maybe not however
         viewModel.syncSelectedAE()
         viewModel.attuned.value-=1
         viewModel.syncAttunement()
+
+        //this removes from character's ability list. not removes from loadout. don't do
+        //viewModel.getSelectedCharacter().abilities=viewModel.getSelectedCharacter().abilities.filter{it.aid!=viewModel.selectedAE.aid}
+
     }
 
 

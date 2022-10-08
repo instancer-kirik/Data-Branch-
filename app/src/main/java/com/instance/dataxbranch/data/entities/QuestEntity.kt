@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.data.entities
 
 //import com.instance.dataxbranch.quests.Quest
-import android.util.Log
+//import android.util.Log
 import androidx.room.*
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.domain.getNow
@@ -93,7 +93,7 @@ INSERT INTO "main"."quests" VALUES('2','0','','','','0','','','','','','','','',
 
             formatter.parse(myDate)?.let { cal.setTime(it) }
             cal.add(Calendar.DATE, 1)
-            Log.d(TAG,"DATE DEBUG IN QUESTENTITY ${cal.before(qDate)}")
+            //Log.d(TAG,"DATE DEBUG IN QUESTENTITY ${cal.before(qDate)}")
             val date = formatter.parse(myDate)
             val qdate = formatter.parse(qDate)
             //date.toString()

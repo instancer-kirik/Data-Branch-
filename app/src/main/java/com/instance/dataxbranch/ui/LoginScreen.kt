@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.ui
 
 import android.content.Context
-import android.util.Log
+//import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.*

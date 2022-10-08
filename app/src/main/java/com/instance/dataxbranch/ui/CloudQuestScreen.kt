@@ -41,7 +41,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun QuestsScreen(
+fun CloudQuestsScreen(
     viewModel: QuestsViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ){

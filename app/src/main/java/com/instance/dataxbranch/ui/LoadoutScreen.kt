@@ -59,7 +59,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
             if (viewModel.openDialogState3.value) {
                //
             }
-            LoadoutLazyColumn(context,viewModel, abilities = me.abilities.filter{ it.inloadout }, modifier = Modifier.padding(2.dp))
+            LoadoutLazyColumn(context,viewModel, abilities = viewModel.getSelectedCharacter().abilities.filter{ it.inloadout }, modifier = Modifier.padding(2.dp))
             /*me.abilities.forEach {\
                 abilityCard(context,it)
             }*/

@@ -2,7 +2,7 @@ package com.instance.dataxbranch.data.cloud
 
 
 
-import android.util.Log
+//import android.util.Log
 
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.core.Constants.TITLE

@@ -16,12 +16,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.data.entities.CharacterEntity
-import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.local.CharacterWithStuff
-import com.instance.dataxbranch.data.local.UserWithAbilities
-import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.DevToolbar
+import com.instance.dataxbranch.ui.components.GOTOButton
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -63,25 +60,29 @@ fun CharacterSelectScreen (viewModel: UserViewModel = hiltViewModel(),
 
                 ) {
                     if (expanded2) {
-                        Button(onClick = { viewModel.addCharacterEntity("Dummy") }) { Text("Add") }
-                        Button(onClick = { navigator.navigate(EditCharacterScreenDestination)}) { Text("Edit") }
-                        Button(onClick = { viewModel.delete(viewModel.getSelectedCharacter()) }) { Text("Delete") }
+                        Button(onClick = { viewModel.addCharacterEntity("Dummy") }, modifier= Modifier.padding(2.dp)) { Text("Add") }
+                        Button(onClick = { navigator.navigate(EditCharacterScreenDestination)}, modifier= Modifier.padding(2.dp)) { Text("Edit") }
+                        Button(onClick = { viewModel.delete(viewModel.getSelectedCharacter()) }, modifier= Modifier.padding(2.dp)) { Text("Delete") }
                     } else Text("MOD")
                 }
-                OutlinedButton(
 
-                    onClick = {
-                        expanded2 = false
-                        expanded = !expanded
+
+                    OutlinedButton(
+
+                        onClick = {
+                            expanded2 = false
+                            expanded= !expanded
+                        }
+                    ) {
+                        if (expanded) {
+                            Button(onClick = { navigator.navigate(CharacterQuestsScreenDestination)}, modifier= Modifier.padding(2.dp)) { Text("Quest") }
+                            Button(onClick = { navigator.navigate(InventoryScreenDestination)}, modifier= Modifier.padding(2.dp)) { Text("Inventory") }
+                            Button(onClick = { navigator.navigate(AbilitiesScreenDestination)}, modifier= Modifier.padding(2.dp)) { Text("Abilities") }
+
+                            Button(onClick = { navigator.navigate(CharacterSheetScreenDestination)}, modifier= Modifier.padding(2.dp)) { Text("Sheet") }
+                        } else Text("GOTO")
                     }
-                ) {
-                    if (expanded) {
-                        Button(onClick = { navigator.navigate(CharacterQuestsScreenDestination)}) { Text("Quest") }
-                        Button(onClick = { navigator.navigate(InventoryScreenDestination)}) { Text("Inventory") }
-                        Button(onClick = { navigator.navigate(AbilitiesScreenDestination)}) { Text("Abilities") }
-                        Button(onClick = { navigator.navigate(CharacterSheetScreenDestination)}) { Text("Sheet") }
-                    } else Text("GOTO")
-                }
+
 
             }
         ListCharactersLazyColumn(context,viewModel, characters=characters, modifier = Modifier.padding(padding))

@@ -59,11 +59,13 @@ fun UserDumpScreen(
         )
         {
             val me = viewModel.getMeWithAbilities()
+            Column{
             Text(me.toString())
+                Text("-----------------CHARACTERS:")
             androidx.compose.foundation.lazy.LazyColumn(
                    modifier = Modifier.padding(vertical = 4.dp)
             ){ items(items=viewModel.getAllCharacters()){character->
                Text(character.toString())
             }
             }
-    }}}
+    }}}}

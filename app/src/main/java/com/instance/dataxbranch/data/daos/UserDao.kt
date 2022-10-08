@@ -1,6 +1,6 @@
 package com.instance.dataxbranch.data.daos
 
-import android.util.Log
+//import android.util.Log
 import androidx.room.*
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.entities.*
@@ -28,8 +28,8 @@ abstract class UserDao {
     abstract fun update(vararg user: User?)
 
     @Update
-    fun update(user: User?){
-        Log.d(TAG,"updating with $user")}
+    abstract fun update(user: User?)
+        //Log.d(TAG,"updating with $user")}
     @Delete
     abstract fun delete(vararg user: User?)
 
@@ -81,7 +81,7 @@ abstract class UserDao {
 
     @Update
     fun update(char: CharacterEntity?){
-        Log.d(TAG,"updating with $char")
+        //Log.d(TAG,"updating with $char")
     }
 
     @Query("SELECT * FROM abilities WHERE aid =:id")

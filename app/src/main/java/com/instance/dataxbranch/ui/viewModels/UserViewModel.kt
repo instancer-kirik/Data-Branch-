@@ -1,9 +1,6 @@
 package com.instance.dataxbranch.ui.viewModels
 
-
-import android.util.Log
-
-
+//import android.util.Log
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.UserDao
 import com.instance.dataxbranch.data.repository.GeneralRepository
@@ -81,7 +78,7 @@ class UserViewModel @Inject constructor(
     var attuned = mutableStateOf(getAttuned())
     var userContainer: User?=null
     init {
-        Log.d("USERVIEWMODEL","INIT CALLED")
+        //Log.d("USERVIEWMODEL","INIT CALLED")
 
         refresh()
         selectedAE = if(meWithAbilities.abilities.isNotEmpty()) {
@@ -98,7 +95,7 @@ class UserViewModel @Inject constructor(
         //setSelectI()
     }
     fun refresh(andQuests:Boolean = false,andItems:Boolean = false) : String {
-        Log.d("USERVIEWMODEL","REFRESH CALLED")
+        //Log.d("USERVIEWMODEL","REFRESH CALLED")
         generalRepository.sync(andItems, andQuests)
         viewModelScope.launch {// Coroutine that will be canceled when the ViewModel is cleared.
             meWithAbilities=generalRepository.getMe()
@@ -107,22 +104,7 @@ class UserViewModel @Inject constructor(
 
         return meWithAbilities.user.uname
     }
-    fun getInventory():Array<ItemEntity>{
-        //////////////////////////////////////////////////////////////////////
-        //generalRepository.fixInventory()//this should probably not be here but eh
-        return getSelectedCharacter().inventory
-//        return generalRepository.itemRepository.getitems()
-    }
-    fun getItems():Array<ItemEntity>{
-        return generalRepository.itemRepository.getitems()
-    }
 
-    fun addItemEntity(name:String){
-        generalRepository.itemRepository.insertItemEntity(ItemEntity(name=name))
-    }
-    fun addItemToInventory(item:ItemEntity=getSelectI()){
-        generalRepository.putItemOnCharacter(item)
-    }
     fun getAllCharacters():List<CharacterWithStuff>{
         return generalRepository.mcharacters
     }
@@ -131,12 +113,12 @@ class UserViewModel @Inject constructor(
         generalRepository.selectedCharacterIndex = index
         generalRepository.selectedCharacterWithStuff=generalRepository.mcharacters[generalRepository.selectedCharacterIndex]
 
-        Log.d(TAG,"SELECTED CHARACTER IS INDEX ${generalRepository.selectedCharacterIndex} and is ${getSelectedCharacter()}")
+        //Log.d(TAG,"SELECTED CHARACTER IS INDEX ${generalRepository.selectedCharacterIndex} and is ${getSelectedCharacter()}")
     }
     fun setSelectedCharacter(character: CharacterWithStuff){
         generalRepository.selectedCharacterWithStuff=character
 
-        Log.d(TAG,"WARNING, DOES NOT UPDATE INDEX SELECTED CHARACTER is ${getSelectedCharacter()}")
+        //Log.d(TAG,"WARNING, DOES NOT UPDATE INDEX SELECTED CHARACTER is ${getSelectedCharacter()}")
     }
     fun addCharacterEntity(name:String){
         generalRepository.makeACharacter(name)
@@ -174,15 +156,44 @@ class UserViewModel @Inject constructor(
         generalRepository.insertAbility(ae)
     }
     fun addNewAbilityEntityOnCharacter(title: String){ //might be better to just do on new title
-        val ae = AbilityEntity(title = title, author = generalRepository.getMe().user.uname)
-        putAbilityOnCharacter(ae)
-        generalRepository.insertAbility(ae)
+        CoroutineScope(Dispatchers.IO).launch {
+            val anID = generalRepository.insertAbility()
+            // Log.d(TAG, "id is $anID")
+            val ae2 =
+                AbilityEntity(
+                    title = title,
+                    author = generalRepository.getMe().user.uname,
+                    aid = anID
+                )
+            putAbilityOnCharacter(ae2)
+            generalRepository.insertAbility(ae2)
+        }
+
+        //val ae = AbilityEntity(title = title, author = generalRepository.getMe().user.uname)
+        //putAbilityOnCharacter(ae)
+
 
 }
     fun putAbilityOnCharacter(ae: AbilityEntity=selectedAE){
         generalRepository.putAbilityOnCharacter(ae)
     }
     fun putItemOnCharacter(item: ItemEntity=getSelectI()){
+        generalRepository.putItemOnCharacter(item)
+    }
+    fun getInventory():Array<ItemEntity>{
+        //////////////////////////////////////////////////////////////////////
+        //generalRepository.fixInventory()//this should probably not be here but eh
+        return getSelectedCharacter().inventory
+//        return generalRepository.itemRepository.getitems()
+    }
+    fun getItems():Array<ItemEntity>{
+        return generalRepository.itemRepository.getitems()
+    }
+
+    fun addItemEntity(name:String){
+        generalRepository.itemRepository.insertItemEntity(ItemEntity(name=name))
+    }
+    fun addItemToInventory(item:ItemEntity=getSelectI()){
         generalRepository.putItemOnCharacter(item)
     }
     fun addNewItemEntityOnCharacter(name: String) {
@@ -193,13 +204,13 @@ class UserViewModel @Inject constructor(
         //insert a blank object to get an id
         CoroutineScope(Dispatchers.IO).launch {
             val anID = generalRepository.insertItem()
-            Log.d(TAG, "id is $anID")
+           // Log.d(TAG, "id is $anID")
             val item =
                 ItemEntity(name = name, author = generalRepository.getMe().user.uname, iid = anID)
             putItemOnCharacter(item)
 
             generalRepository.insertItem(item = item)
-            Log.d(TAG, "AFTER.. item is now $item.iid")
+            //Log.d(TAG, "AFTER.. item is now $item.iid")
         }
     }
    /* fun addNewAbilityEntity() {
@@ -231,10 +242,10 @@ class UserViewModel @Inject constructor(
                     author = author
                 )
             )
-            Log.d(TAG, "11111character quests: ${char.quests.size}")
+            //Log.d(TAG, "11111character quests: ${char.quests.size}")
             //generalRepository.updateCharacterQuests()
             refresh(true)
-            Log.d(TAG, "character quests: ${getSelectedCharacter().quests.size}")
+            //Log.d(TAG, "character quests: ${getSelectedCharacter().quests.size}")
             /*    CoroutineScope(Dispatchers.IO).launch {
             result =useCases.addNewQuestEntity(title,description, author) }*/
         }
@@ -260,9 +271,9 @@ class UserViewModel @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             qdao.update(quest.quest)
         }}
-    fun save(i:ItemEntity) {
-        generalRepository.itemRepository.updateitemEntity(i)
-    }
+//    fun save(i:ItemEntity) {
+//        generalRepository.itemRepository.updateitemEntity(i)
+//    }
    /* fun getAllFirestoreUsers(context:Context, db: FirebaseFirestore=FirebaseFirestore.getInstance()):List<CloudUser>{
         var output :List<CloudUser> =listOf()
         var cachedUsers = generalRepository.getCachedUsers()
@@ -309,7 +320,7 @@ class UserViewModel @Inject constructor(
         updateAttuned()
     }
     fun sync(a:Int=attuned.value){
-Log.d("USERVIEWMODEL","SYNC CALLED")
+//Log.d("USERVIEWMODEL","SYNC CALLED")
         //meWithAbilities.abilities.forEach { update(it) }
         update(meWithAbilities.user.apply{attuned=a})
         setSelect()
@@ -514,7 +525,7 @@ return "me @ userViewModel"
         if (c != null) {
             generalRepository.save(c)
         }else{generalRepository.save()}//by default uses selected in repo
-        generalRepository.updateByCharacterList()
+        //generalRepository.updateByCharacterList()
 
     }
 
@@ -546,16 +557,19 @@ return "me @ userViewModel"
         getSelectedCharacter().inventory=getSelectedCharacter().inventory.filter{it.iid != item.iid}.toTypedArray()
         getSelectedCharacter().character.items=getSelectedCharacter().character.items.filter{it != item.iid}
         generalRepository.itemRepository.delete(item)
+        save()
     }
     fun delete(ae: AbilityEntity) {
         getSelectedCharacter().abilities=getSelectedCharacter().abilities.filter{it.aid != ae.aid}
         getSelectedCharacter().character.abilities=getSelectedCharacter().character.abilities.filter{it != ae.aid}
         generalRepository.delete(ae)
+        save()
     }
     fun delete(quest: QuestWithObjectives) {
         getSelectedCharacter().quests=getSelectedCharacter().quests.filter{it.quest.id != quest.quest.id}.toTypedArray()
         getSelectedCharacter().character.quests=getSelectedCharacter().character.quests.filter{it != quest.quest.id}
         generalRepository.questsRepository.deleteQuest(quest)
+        save()
     }
     fun delete(character: CharacterWithStuff, andInventory:Boolean =false, andQuests:Boolean =false, andAbilities:Boolean = false) {
         //don't think I have a list assoc with user. deletes direct from repo
@@ -574,11 +588,12 @@ return "me @ userViewModel"
             character.abilities.forEach {
                 delete(it)}
         }
+        //save()
     }
-    fun delete(it:Any){//This is a general delete. maybe bad idea idk
+    fun delete(it:Any){//This is a general delete. uses specific when can
         //TODO bulk delete abilities/Items/quests etc
         //TODO recycle bin behavior
-        Log.d("uViewModel","delete called on a ${it::class}; not implemented")
+        //Log.d("uViewModel","delete called on a ${it::class}; not implemented")
     }
 
 

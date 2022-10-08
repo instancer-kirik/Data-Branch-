@@ -3,7 +3,7 @@ package com.instance.dataxbranch.data.repository
 
 
 import android.app.Application
-import android.util.Log
+//import android.util.Log
 
 import com.instance.dataxbranch.data.daos.ItemDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
@@ -22,7 +22,7 @@ class ItemRepository @Inject constructor(application: Application, db: AppDataba
     var itemDao: ItemDao
     var selectedItem: ItemEntity by Delegates.observable(ItemEntity()) { property, oldValue, newValue ->
 
-        Log.d("ITEMREPO"," CHANGED  $property and oldval ${oldValue.stringify()} and newval ${newValue.stringify()}")
+        //Log.d("ITEMREPO"," CHANGED  $property and oldval ${oldValue.stringify()} and newval ${newValue.stringify()}")
         //if (newValue.iid ==0L){ selectedItem =oldValue}// this prevents resetting to id=0 bug
     }
     var selectedID:Int = 0
@@ -50,7 +50,7 @@ class ItemRepository @Inject constructor(application: Application, db: AppDataba
     fun insertItemEntity(item: ItemEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
             val returnId = itemDao.save(item)
-            Log.d("ItemREPO","id on insert is $returnId")
+           // Log.d("ItemREPO","id on insert is $returnId")
         }
     /*fun newObjectiveEntity(item: ItemEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {

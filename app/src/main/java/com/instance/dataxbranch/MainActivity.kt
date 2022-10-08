@@ -6,7 +6,7 @@ package com.instance.dataxbranch
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+//import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast

@@ -1,7 +1,7 @@
 package com.instance.dataxbranch.data.cloud
 
 //import com.google.firebase.Cloud.auth.User
-import android.util.Log
+//import android.util.Log
 
 import com.instance.dataxbranch.core.Constants.TAG
 
@@ -92,8 +92,8 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun addUserToCloud(user: User): Flow<Response<Void?>> = flow {
         try {
-
-            Log.d(TAG,"STUB in userrepimpl")
+//TODO(STUB)
+            //Log.d(TAG,"STUB in userrepimpl")
            /* emit(Response.Loading)
             val id = user.fsid
 
@@ -117,8 +117,8 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun addLocalUserToCloud(user: com.instance.dataxbranch.data.entities.User) = flow {
         try {
-
-            Log.d(TAG,"STUB in userrepimpl")
+//TODO(STUB)
+           // Log.d(TAG,"STUB in userrepimpl")
             /*emit(Response.Loading)
             val id = user.fsid
 

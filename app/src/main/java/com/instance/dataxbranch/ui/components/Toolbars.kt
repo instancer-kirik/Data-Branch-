@@ -25,7 +25,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
+@Composable
+fun GOTOButton(navigator:DestinationsNavigator, expanded: MutableState<Boolean>, expanded2: MutableState<Boolean>){
+    OutlinedButton(
 
+        onClick = {
+            expanded2.value = false
+            expanded.value = !expanded.value
+        }
+    ) {
+        if (expanded.value) {
+            Button(onClick = { navigator.navigate(CharacterQuestsScreenDestination)}) { Text("Quest") }
+            Button(onClick = { navigator.navigate(InventoryScreenDestination)}) { Text("Inventory") }
+            Button(onClick = { navigator.navigate(AbilitiesScreenDestination)}) { Text("Abilities") }
+            Button(onClick = { navigator.navigate(CharacterSheetScreenDestination)}) { Text("Sheet") }
+        } else Text("GOTO")
+    }
+}
 @Composable
 fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator, context: Context) {
 
@@ -44,14 +60,14 @@ fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator, conte
             ) {
 
                 if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
                     //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
                     //Button(onClick = {viewModel.openDialogState3.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit loadout") }
 
                     Button(onClick = {navigator.navigate(LoginScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("Auth") }
-                    Button(onClick = {navigator.navigate(AbilitiesScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("All Abilities") }
+
 
 
 
@@ -74,7 +90,7 @@ fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator, conte
             ) {
 
                 if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     Row(modifier= Modifier.fillMaxWidth()) {
                         Button(
@@ -89,6 +105,7 @@ fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator, conte
                             onClick = { navigator.navigate(HelpScreenDestination) },
                             modifier = Modifier.padding(2.dp)
                         ) { Text("help") }
+
                     }
                 } else Text("navigate")
 
@@ -115,7 +132,7 @@ fun UserToolbar(navigator: DestinationsNavigator,viewModel:UserViewModel,context
                 ) {
 
                     if (expanded2) {
-                        //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                        //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                         //only room for 3 buttons this way
                         Row(modifier = Modifier.fillMaxSize()) {
                             /* val myfsid = viewModel.getMeWithAbilities().user.fsid
@@ -151,7 +168,7 @@ fun UserToolbar(navigator: DestinationsNavigator,viewModel:UserViewModel,context
                 ) {
 
                     if (expanded) {
-                        //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                        //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                         //only room for 3 buttons this way
                         Row() {
                             Button(
@@ -193,7 +210,7 @@ fun AbilitiesToolbar( context: Context, viewModel:UserViewModel, navigator: Dest
             ) {
 
                 if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     Button(onClick = { viewModel.openDialogState2.value=true}, modifier=Modifier.padding(2.dp)){Text("edit")}
                     Button(onClick = { CoroutineScope(Dispatchers.IO).launch {  viewModel.delete(viewModel.selectedAE) } }) {
@@ -220,7 +237,7 @@ fun AbilitiesToolbar( context: Context, viewModel:UserViewModel, navigator: Dest
             ) {
 
                 if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     Row(modifier=Modifier.fillMaxWidth()) {
                         Button(
@@ -264,7 +281,7 @@ fun AbilityDetailToolbar(context: Context, viewModel: UserViewModel, navigator: 
             ) {
 
                 if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
                     //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
@@ -284,7 +301,7 @@ fun AbilityDetailToolbar(context: Context, viewModel: UserViewModel, navigator: 
             ) {
 
                 if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     Row(modifier=Modifier.fillMaxWidth()) {
                         Button(
@@ -327,7 +344,7 @@ fun CharacterQuestDetailToolbar(context: Context, viewModel: UserViewModel, navi
             ) {
 
                 if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
                     //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
@@ -356,7 +373,7 @@ fun CharacterQuestDetailToolbar(context: Context, viewModel: UserViewModel, navi
             ) {
 
                 if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Button(
@@ -399,11 +416,11 @@ fun QuestToolbar(navigator: DestinationsNavigator) {
                     ) {
 
                         if (expanded2) {
-                            //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                            //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                             //only room for 3 buttons this way
                             Row(modifier = Modifier.fillMaxSize()) {
                                 Button(
-                                    onClick = { navigator.navigate(QuestsScreenDestination) },
+                                    onClick = { navigator.navigate(CloudQuestsScreenDestination) },
                                     modifier = Modifier.padding(2.dp)
                                 ) { Text("to Cloud Quests") }
                                 Button(
@@ -436,7 +453,7 @@ fun QuestToolbar(navigator: DestinationsNavigator) {
                     ) {
 
                         if (expanded) {
-                            //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                            //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                             //only room for 3 buttons this way
                             Row() {
                                 Button(
@@ -478,7 +495,7 @@ fun HelpToolbar( navigator: DestinationsNavigator) {
             ) {
 
                 if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
                     //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
@@ -500,7 +517,7 @@ fun HelpToolbar( navigator: DestinationsNavigator) {
             ) {
 
                 if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     Row(modifier=Modifier.fillMaxWidth()) {
                         Button(
@@ -541,7 +558,7 @@ fun ItemDetailToolbar(context: Context, viewModel: UserViewModel, navigator: Des
             ) {
 
                 if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
                     //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
@@ -563,7 +580,7 @@ fun ItemDetailToolbar(context: Context, viewModel: UserViewModel, navigator: Des
             ) {
 
                 if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     Row(modifier=Modifier.fillMaxWidth()){
                         Button(onClick = {navigator.navigate(CharacterSelectScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("to user") }
@@ -597,7 +614,7 @@ fun LoadoutToolbar( navigator: DestinationsNavigator) {
             ) {
 
                 if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
                     //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
@@ -619,7 +636,7 @@ fun LoadoutToolbar( navigator: DestinationsNavigator) {
             ) {
 
                 if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     Row(modifier=Modifier.fillMaxWidth()) {
                         Button(
@@ -660,7 +677,7 @@ fun QuestDetailToolbar(context: Context, viewModel: RoomQuestViewModel, navigato
             ) {
 
                 if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
                     //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
@@ -680,7 +697,7 @@ fun QuestDetailToolbar(context: Context, viewModel: RoomQuestViewModel, navigato
             ) {
 
                 if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     Row(modifier=Modifier.fillMaxWidth()){
                         Button(onClick = {navigator.navigate(UserScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("to user") }
@@ -720,7 +737,7 @@ fun WebToolbar(
             ) {
 
                 if (expanded2) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     //Button(onClick = { viewModel.openDialogState2.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit") }
                     //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
@@ -748,7 +765,7 @@ fun WebToolbar(
             ) {
 
                 if (expanded) {
-                    //Button(onClick = {navigator.navigate(QuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
+                    //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                     //only room for 3 buttons this way
                     Row(modifier= Modifier.fillMaxWidth()) {
                         Button(
