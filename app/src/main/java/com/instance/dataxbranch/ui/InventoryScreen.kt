@@ -224,58 +224,73 @@ fun InventoryItemView(
 
 ) {
     //Text("DEBUG")
+    var expanded by remember { mutableStateOf(false) }
+
     Box(modifier = Modifier
         .clickable {
             onClick.invoke(index)
         }
         .background(if (selected) MaterialTheme.colors.secondary else Color.Transparent)
         .fillMaxWidth()
-        .padding(12.dp)) {
-        Column{
-            Text(
-                text = "Index $index\n name: ${item.name} id: ${item.iid}")
+
+        .padding(2.dp)) {
+        Column(modifier = Modifier.fillMaxWidth()){
+
 
             InventoryItemCardContent(navi, item, uViewModel)
+
+Row(horizontalArrangement = Arrangement.End) {
+    if (expanded) {
+        Column {
             Button(onClick = {
-                showToast(context,item.use())
-            }){Text("USE")}
+                showToast(context, item.use())
+            }) { Text("USE") }
             Button(onClick = {
                 //uViewModel.setSelectI(item)
                 uViewModel.delete(item)
-            }){Text("DELETE")}
+            }) { Text("DELETE") }
             Button(onClick = {
                 uViewModel.setSelectI(item)
                 navi.navigate(ItemDetailScreenDestination)
-            }){Text("EDIT")}
+            }) { Text("EDIT") }
+            Text(text = "Index $index\n  id: ${item.iid}")
+        }
+    }
+    IconButton(onClick = {
+        expanded = !expanded
+        if (!expanded) {//saves on click when closing
+            //viewModel.additem(item)
+        }
+    }) {
+
+        Icon(
+            imageVector = if (expanded) Icons.Filled.Check else Icons.Filled.ArrowDropDown,
+            contentDescription = if (expanded) {
+                stringResource(R.string.show_less)
+            } else {
+                stringResource(R.string.show_more)
+            }
+
+        )
+
+    }
+}
+
 
 
     }}
     //Text("DEBUG2")
 }
 
-/*private suspend fun waitcomplete(username: String): Boolean {
-    val shouldCreateUser = MaterialAlertDialogBuilder(this)
-        .setTitle("User \"$username\" was not found.")
-        .setMessage("Create new user?")
-        .create()
-        .await(positiveText = "Create", negativeText = "Cancel")
-
-    if (shouldCreateUser) {
-        createNewUser(username)
-        return true
-    }
-
-
-}*/
 
 @Composable
 fun InventoryItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: UserViewModel) {
 
-        var expanded by remember { mutableStateOf(false) }
 
 
         Row(horizontalArrangement = Arrangement.End,
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(4.dp)
                 .animateContentSize(
                     animationSpec = spring(
@@ -285,43 +300,25 @@ fun InventoryItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uView
                 )
 //                .fillMaxWidth()
         ) {
+
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(14.dp)
+                    .padding(2.dp)
                     .fillMaxWidth()
                     .background(Color.Black.copy(alpha = 0.5f))
             ) {
-                Text(text = "Title:          id= ${item.iid}")
+//                Text(text = "Title:          id= ${item.iid}")
                 Text(
 
                     text = item.name + "",
                     style = MaterialTheme.typography.h4.copy(
                         fontWeight = FontWeight.ExtraBold
                     )
-                , modifier = Modifier.background(Color.Black.copy(alpha = 0.3f))
+                    , modifier = Modifier.background(Color.Black.copy(alpha = 0.3f)).fillMaxWidth()
                 )
-
-
-                //Text(item.objectives.toString())
-                if (expanded) {
-                    Text("HI 2")
-                    //var listofObjectiveEntities: Array<ObjectiveEntity> = arrayOf(ObjectiveEntity(-5,"",-5,"",item.ObjectiveType.Default,0,0,""))
-                    //var objective: item.itemObjective
-                   /* run {
-                        //Text("open")
-
-                        *//*item.objectives.forEach { oe ->
-                            CharacterObjectiveViewEdit(oe,uViewModel)
-                        }*//*
-                        *//*Button(onClick = { uViewModel.addNewObjectiveEntity(item) }) { Text("ADD OBJECTIVE") }*//*
-                    }*/
-
-
-                }
-
             }
-            Column{
+           /* Column{
             Row(
                 modifier = Modifier.background(Color.Black.copy(alpha = 0.6f)),
                 horizontalArrangement = Arrangement.End
@@ -335,15 +332,15 @@ fun InventoryItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uView
                     onCheckedChange = {
                         checkedState.value = it
                         showToast(context, "STUB")
-                        /*item.apply {has  = it }
-                        uViewModel.invFlux(it,item)*/
+                        *//*item.apply {has  = it }
+                        uViewModel.invFlux(it,item)*//*
                         //WHY WOULD THIS BE IN THE INVENTORY SCREEN LOL
 
-                        /*val result =uViewModel.onCheckboxChecked(item, it)
-                        if (result != null) { showToast(context, result) }*/
+                        *//*val result =uViewModel.onCheckboxChecked(item, it)
+                        if (result != null) { showToast(context, result) }*//*
                     })
                 //if(!checkedState.value){ trying to pop up dialog for confirm or cancel
-                /*val time = measureTimeMillis {
+                *//*val time = measureTimeMillis {
                                 runBlocking {
                                         try {
                                             showDialogC2.value = true
@@ -354,35 +351,17 @@ fun InventoryItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uView
                                         }
                             }
                             }
-                            showToast(context,"completed in $time millis")*/
+                            showToast(context,"completed in $time millis")*//*
 
-                /*if(bouncy){checkedState.value = it
+                *//*if(bouncy){checkedState.value = it
                                 item.item.apply { completed = it }
-                                viewModel.onCheckboxChecked(item, it)}*/
+                                viewModel.onCheckboxChecked(item, it)}*//*
                 // }else{
+*/
 
-
-                IconButton(onClick = {
-                    expanded = !expanded
-                    if (!expanded) {//saves on click when closing
-                        //viewModel.additem(item)
-                    }
-                }) {
-
-                    Icon(
-                        imageVector = if (expanded) Icons.Filled.Check else Icons.Filled.ArrowDropDown,
-                        contentDescription = if (expanded) {
-                            stringResource(R.string.show_less)
-                        } else {
-                            stringResource(R.string.show_more)
-                        }
-
-                    )
-
-                }
             }
                /* Button(onClick = { *//*navi.navigate(ItemDetailScreenDestination)*//* }) { Text("EDIT") }*/
-        }}
+
 }
 
 

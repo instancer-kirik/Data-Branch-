@@ -66,7 +66,7 @@ data class CharacterEntity @JvmOverloads constructor(
     //@ColumnInfo(name = "uid") val uid: Long = 1L,
     @ColumnInfo(name = "user_id")var user_id: String?=null,
     //@ColumnInfo(name = "uname")var uname: String = DEFAULT_UNAME,
-    @ColumnInfo(name = "name") var name: String = "name",
+    @ColumnInfo(name = "name") var name: String = "DEFAULT_NAME",
     @ColumnInfo(name = "imageUrl") var imageUrl: String = "",
     //val price: Long = 100L,
     @ColumnInfo(name = "tagline") var tagline: String = "like an email signature",
