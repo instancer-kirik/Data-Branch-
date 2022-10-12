@@ -35,6 +35,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.entities.ItemEntity
+import com.instance.dataxbranch.data.repository.plus
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddItemEntityAlertDialog
@@ -104,7 +105,7 @@ fun InventoryScreen(
            /* if (showDialogC.value) {
                 alertC(uViewModel,navigator)
             }*/
-            Text("character is ${uViewModel.getSelectedCharacter().character.name} items are: ${uViewModel.getSelectedCharacter().character.items} --")
+            Text("character is ${uViewModel.getSelectedCharacter().character.name} items are: ${uViewModel.getSelectedCharacter().character.inventory} --")
             InventoryGrid( them = uViewModel.getInventory()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel,context)
             Button(
                 onClick = { showDialogC.value = true },
@@ -149,24 +150,36 @@ fun alertC(uViewModel: UserViewModel,navi: DestinationsNavigator) {
 
 
 @Composable
-fun InventoryGrid(them: Array<ItemEntity>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel,context: Context ){
+fun InventoryGrid(them: MutableMap<ItemEntity,Int>, modifier: Modifier,navi: DestinationsNavigator,uViewModel: UserViewModel,context: Context ){
+
     var selectedIndex by remember { mutableStateOf(0) }
+    var selectedId by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index
 
+
 //        iViewModel.selectedItem= them[index]
-        uViewModel.setSelectI(them[index])
+        //uViewModel.setSelectI(them[index]) set in card onclick
         recomposeState.value=true}
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp)
     ) {
-        itemsIndexed(them) { ix ,item->
-            InventoryItemView( item = item,
+        //val items =them  List<ItemEntity>as
+
+//        itemsIndexed(items = them, key = { item -> item.iid })  { ix ,item->
+        itemsIndexed(items = them.keys.toList() ,/* key = {i,item->
+            item.iid
+            println("$i, $item")
+
+        }*/)  { ix ,item->
+
+            InventoryItemView(them=them, item = item,
                 index = ix,
                 selected = selectedIndex == ix,
                 onClick = onItemClick,
                 navi = navi,
                 uViewModel = uViewModel,
-                context=context
+                context=context,
+                quantity = them[item]?:1
             )
         }
     }
@@ -214,13 +227,15 @@ fun ItemListLocalLazyColumn(items: Array<ItemEntity>, modifier: Modifier,navi: D
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun InventoryItemView(
+    them: MutableMap<ItemEntity, Int>,
     navi: DestinationsNavigator,
     context:Context,
     item: ItemEntity,
     index: Int,
     selected: Boolean,
     onClick: (Int) -> Unit,
-    uViewModel: UserViewModel
+    uViewModel: UserViewModel,
+    quantity: Int
 
 ) {
     //Text("DEBUG")
@@ -229,6 +244,7 @@ fun InventoryItemView(
     Box(modifier = Modifier
         .clickable {
             onClick.invoke(index)
+            uViewModel.setSelectI(item)
         }
         .background(if (selected) MaterialTheme.colors.secondary else Color.Transparent)
         .fillMaxWidth()
@@ -237,7 +253,7 @@ fun InventoryItemView(
         Column(modifier = Modifier.fillMaxWidth()){
 
 
-            InventoryItemCardContent(navi, item, uViewModel)
+            InventoryItemCardContent(navi, item, uViewModel,quantity)
 
 Row(horizontalArrangement = Arrangement.End) {
     if (expanded) {
@@ -253,6 +269,11 @@ Row(horizontalArrangement = Arrangement.End) {
                 uViewModel.setSelectI(item)
                 navi.navigate(ItemDetailScreenDestination)
             }) { Text("EDIT") }
+            if (item.stackable){
+            Button(onClick = {
+                uViewModel.addItemToInventory(item)
+                //them.plus(item)
+            }) { Text("++") }}
             Text(text = "Index $index\n  id: ${item.iid}")
         }
     }
@@ -284,7 +305,7 @@ Row(horizontalArrangement = Arrangement.End) {
 
 
 @Composable
-fun InventoryItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: UserViewModel) {
+fun InventoryItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uViewModel: UserViewModel,quantity: Int) {
 
 
 
@@ -309,6 +330,7 @@ fun InventoryItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uView
                     .background(Color.Black.copy(alpha = 0.5f))
             ) {
 //                Text(text = "Title:          id= ${item.iid}")
+                Text("$quantity")
                 Text(
 
                     text = item.name + "",

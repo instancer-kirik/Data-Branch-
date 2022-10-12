@@ -98,7 +98,7 @@ fun ItemListScreen(
            /* if (showDialogC.value) {
                 alertC(uViewModel,navigator)
             }*/
-            Text("items are: ${uViewModel.getSelectedCharacter().character.items} --")
+            Text("items are: ${uViewModel.getSelectedCharacter().character.inventory} --")
             ItemListLocalLazyColumn( items = uViewModel.getItems()/*uViewModel.getSelectedCharacter().inventory*/, modifier = Modifier.padding(2.dp),navigator,uViewModel)
             Button(
                 onClick = { showToast(context,"clicked") },

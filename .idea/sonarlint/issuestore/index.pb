@@ -13,8 +13,6 @@ A
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
 l
 <app/src/main/java/com/instance/dataxbranch/ui/theme/Theme.kt,4\0\40888936052256d1c20847eca4df097bc0711006
-n
->app/src/main/java/com/instance/dataxbranch/utils/Converters.kt,b\1\b19111cf4eba4e9bc5a4522dc3b4a0a0a53bde63
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 P
@@ -25,8 +23,6 @@ v
 Fapp/src/main/java/com/instance/dataxbranch/composables/contextstuff.kt,2\e\2e19673ae9bb27056d0064b87be9cff88116583d
 s
 Capp/src/main/java/com/instance/dataxbranch/composables/QuestCard.kt,8\a\8a2cb8ee82cc293993d790eaa716d6102871d3a6
-l
-<app/src/main/java/com/instance/dataxbranch/core/Constants.kt,e\f\efd79d22c064fa431bbf205333959cf5513e1eb4
 r
 Bapp/src/main/java/com/instance/dataxbranch/data/cloud/CloudChat.kt,c\4\c4d1f35b8d44760cc1c76cb305072205294072b5
 v
@@ -43,8 +39,6 @@ w
 Gapp/src/main/java/com/instance/dataxbranch/data/cloud/UserRepository.kt,7\d\7db1bfa2801d49385bb4e48b905faf99f278117f
 q
 Aapp/src/main/java/com/instance/dataxbranch/data/daos/EntityDao.kt,8\1\815ec3b8195102817bdc385ac1da5211d047a0d8
-o
-?app/src/main/java/com/instance/dataxbranch/data/daos/ItemDao.kt,f\6\f6b89e41b254167dd310cbebd56a20d4d9869ee4
 t
 Dapp/src/main/java/com/instance/dataxbranch/data/daos/ObjectiveDao.kt,8\8\88f9954a4d72d61d56f21d363852f745966a1615
 p
@@ -55,14 +49,10 @@ w
 Gapp/src/main/java/com/instance/dataxbranch/data/entities/MathProblem.kt,1\0\101925b7de30e01fa8cdb41687cf3aae77261afc
 n
 >app/src/main/java/com/instance/dataxbranch/data/local/Entry.kt,6\4\648bde80a48165e88d59884fa8233b7bffe55d68
-v
-Fapp/src/main/java/com/instance/dataxbranch/data/entities/ItemEntity.kt,0\c\0c0cc9c2a190548316c56536b0602a7590d897a2
 z
 Japp/src/main/java/com/instance/dataxbranch/data/local/UserWithAbilities.kt,b\e\be1975757804d88f83542ee3793fa9570dca9c30
 ƒ
 Sapp/src/main/java/com/instance/dataxbranch/data/repository/LocalQuestsRepository.kt,f\e\fe3aab027671e287ebcb28dcfc488e8c9af9f8fb
-n
->app/src/main/java/com/instance/dataxbranch/data/AppDatabase.kt,c\5\c53b8c89dff61b2605e1c4e26c5e9ea1146254fc
 r
 Bapp/src/main/java/com/instance/dataxbranch/data/DataOrException.kt,f\1\f1c18423feb8d9d9294091dfb0030fa7b45bee1b
 r
@@ -159,10 +149,6 @@ k
 ;app/src/main/java/com/instance/dataxbranch/ui/HelpScreen.kt,4\0\4052c96c2bf3f347daee70f0b0f34bfbff4a6e27
 j
 :app/src/main/java/com/instance/dataxbranch/ui/HubScreen.kt,f\4\f459d7930514e349d8443a60de19d674356a98cc
-q
-Aapp/src/main/java/com/instance/dataxbranch/ui/ItemDetailScreen.kt,e\9\e97370e6943d882a2e4f6bc3b2b76e71cb78c841
-o
-?app/src/main/java/com/instance/dataxbranch/ui/ItemListScreen.kt,a\1\a19fc70b8daa1257e86e025c0d1e474484d65d81
 p
 @app/src/main/java/com/instance/dataxbranch/ui/ListUsersScreen.kt,5\3\53470a3859b72b670d08822d1ac13c476792bd2c
 o
@@ -197,8 +183,6 @@ v
 Fapp/src/main/java/com/instance/dataxbranch/ui/CharacterSelectScreen.kt,0\8\08d000f97fbb168fc03a4503586429263a039b02
 q
 Aapp/src/main/java/com/instance/dataxbranch/ui/CloudQuestScreen.kt,7\c\7c245e5fa8c9a6678118afbeff2f687a4795e076
-|
-Lapp/src/main/java/com/instance/dataxbranch/data/repository/ItemRepository.kt,6\b\6bca91e2c8a06096a8f647de9aa38ecc18f35c7b
 l
 <app/src/main/java/com/instance/dataxbranch/ui/LoginScreen.kt,e\8\e899b378da4ab1879b60988ce29b5c7c1c61be81
 j
@@ -225,3 +209,5 @@ z
 Japp/src/main/java/com/instance/dataxbranch/data/entities/QuestionEntity.kt,4\d\4d7558e16ef20126dfea60dc47d142ac9884409d
 p
 @app/src/main/java/com/instance/dataxbranch/data/entities/Repo.kt,1\4\143d9450bd4a7de9b8d8b10566f4129caabbb91e
+n
+>app/src/main/java/com/instance/dataxbranch/ui/LoadoutScreen.kt,7\f\7f86137dbfd9816f822b1aec9625892c89cc7058

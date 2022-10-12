@@ -20,6 +20,7 @@ import com.instance.dataxbranch.data.entities.*
 
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
+import com.instance.dataxbranch.data.repository.plus
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
 import com.instance.dataxbranch.quests.QuestWithObjectives
@@ -180,7 +181,7 @@ class UserViewModel @Inject constructor(
     fun putItemOnCharacter(item: ItemEntity=getSelectI()){
         generalRepository.putItemOnCharacter(item)
     }
-    fun getInventory():Array<ItemEntity>{
+    fun getInventory():MutableMap<ItemEntity,Int>{
         //////////////////////////////////////////////////////////////////////
         //generalRepository.fixInventory()//this should probably not be here but eh
         return getSelectedCharacter().inventory
@@ -202,8 +203,13 @@ class UserViewModel @Inject constructor(
         //generate manually beforehand
         //return a fresh id from DAO
         //insert a blank object to get an id
+        if(getSelectedCharacter().inventory.any{it.key.name==name}){
+           getSelectedCharacter().inventory.filter{it.key.name==name }.forEach { putItemOnCharacter(it.key)}
+            return
+        }
         CoroutineScope(Dispatchers.IO).launch {
             val anID = generalRepository.insertItem()
+
            // Log.d(TAG, "id is $anID")
             val item =
                 ItemEntity(name = name, author = generalRepository.getMe().user.uname, iid = anID)
@@ -212,6 +218,7 @@ class UserViewModel @Inject constructor(
             generalRepository.insertItem(item = item)
             //Log.d(TAG, "AFTER.. item is now $item.iid")
         }
+
     }
    /* fun addNewAbilityEntity() {
         CoroutineScope(Dispatchers.IO).launch { adao.insert(AbilityEntity()) }
@@ -529,11 +536,11 @@ return "me @ userViewModel"
 
     }
 
-    fun invFlux(pickUp:Boolean,item:ItemEntity) {
+   /* fun invFlux(pickUp:Boolean,item:ItemEntity) {
         item.apply { has = pickUp }
         if(pickUp){
             getSelectedCharacter().inventory=getSelectedCharacter().inventory.plus(item)
-            getSelectedCharacter().character.items=getSelectedCharacter().character.items.plus(item.iid)
+            getSelectedCharacter().character.inventory=getSelectedCharacter().character.inventory.plus(item.iid,item.stackable)
         }else{
             getSelectedCharacter().inventory= getSelectedCharacter().inventory.filter{it.iid !=item.iid}
                 .toTypedArray()
@@ -541,7 +548,7 @@ return "me @ userViewModel"
         }
         delete(getSelectedCharacter(),true,true,true)
     }
-
+*/
     fun addItemOnClick(name:String) {
         if (inventoryModeState.value) {
             CoroutineScope(Dispatchers.IO).launch {
@@ -554,8 +561,8 @@ return "me @ userViewModel"
     }
 
     fun delete(item: ItemEntity) {
-        getSelectedCharacter().inventory=getSelectedCharacter().inventory.filter{it.iid != item.iid}.toTypedArray()
-        getSelectedCharacter().character.items=getSelectedCharacter().character.items.filter{it != item.iid}
+        getSelectedCharacter().inventory.remove(item)
+        getSelectedCharacter().character.inventory=getSelectedCharacter().character.inventory.filter{it.key != item.iid}
         generalRepository.itemRepository.delete(item)
         save()
     }
@@ -600,12 +607,11 @@ return "me @ userViewModel"
 
 }
 
-
-    /*val rowsInserted: MutableLiveData<Int> = MutableLiveData()
-    override fun onCleared() {
-        rowsInserted.removeObserver(observer)
-        super.onCleared()
-    }*/
+/*val rowsInserted: MutableLiveData<Int> = MutableLiveData()
+override fun onCleared() {
+    rowsInserted.removeObserver(observer)
+    super.onCleared()
+}*/
    /* private fun getQuests() {
         viewModelScope.launch(Dispatchers.IO) {
             val qwe = arrayListOf<QuestWithObjectives>()

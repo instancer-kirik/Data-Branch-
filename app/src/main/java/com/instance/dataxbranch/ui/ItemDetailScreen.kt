@@ -63,10 +63,10 @@ fun ItemDetailScreen (
     var links = remember { mutableStateOf(item.links) }
     var featuredImage = remember { mutableStateOf(item.featuredImage) }
     var weight = remember { mutableStateOf(item.weight) }
-    //var isHabitState = remember { mutableStateOf(item.isHabit) }
+    var isStackable= remember { mutableStateOf(item.stackable) }
     var note= remember {mutableStateOf(item.note) }
-    val hasState = remember { mutableStateOf(item.has) }
-    val them =listOf(name,desc,hasState,damage,color,weight,note,links, featuredImage)
+    //val hasState = remember { mutableStateOf(item.has) }
+    val them =listOf(name,desc,isStackable,damage,color,weight,note,links, featuredImage)
     val context = LocalContext.current
     Scaffold(
 
@@ -133,16 +133,16 @@ padding
 //                           viewModel.invFlux(status ,item)
 //                        })
 //                }
-                /*Row {
-                    Text("in Inventory")
+                Row {
+                    Text("Stackable")
 
                     Checkbox(
-                        checked = isHabitState.value,
+                        checked = isStackable.value,
                         onCheckedChange = {
-                            isHabitState.value = it
-                            itemToSave.apply { isHabit = it }
+                            isStackable.value = it
+                            item.apply { stackable = it }
                         })
-                }*/
+                }
 
                 //blvlupblock(levelups = levelup, levels = levels)
             }}}}
@@ -196,7 +196,7 @@ fun save3(context: Context,navigator: DestinationsNavigator,viewModel:UserViewMo
     itemToSave.name = them[0].value.toString()
     itemToSave.desc =
         them[1].value.toString()//this isn't changing even though I clearly change it.
-    itemToSave.has = them[2].value as Boolean
+    itemToSave.stackable = them[2].value as Boolean
 
     itemToSave.damage = them[3].value as Int
     itemToSave.color =them[4].value as String

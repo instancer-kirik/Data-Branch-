@@ -35,7 +35,7 @@ fun AddItemEntityAlertDialog(
             },
             title = {
                 Text(
-                    text = Constants.ADD_ABILITY
+                    text = Constants.ADD_ITEM
                 )
             },
             text = {

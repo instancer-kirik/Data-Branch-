@@ -40,7 +40,8 @@ val uuid = character.uuid
 
 
         )
-    var inventory: Array<ItemEntity> = arrayOf()
+    //var inventory: Array<ItemEntity> = arrayOf()
+    var inventory: MutableMap<ItemEntity,Int> = mutableMapOf()
     //val aidList: Array<String>
     /*var equipment: MutableMap<String, Long?> = mutableMapOf("L" to null, "R" to null,
         "Head" to null,"Necklace" to null, "Torso" to null,"Legs" to null,"Feets" to null,

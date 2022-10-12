@@ -6,6 +6,7 @@ object Constants {
     const val REFRESH= "Refresh"
     const val EDIT_ABILITY= "Edit selected ability"
     const val ADD_ABILITY= "Add an ability"
+    const val ADD_ITEM= "Add an item"
     const val EDIT_LOADOUT= "Edit ability slots"
     //App
     const val TAG = "Debugilator"

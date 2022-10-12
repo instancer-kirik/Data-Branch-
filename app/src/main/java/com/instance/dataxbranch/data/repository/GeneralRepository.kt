@@ -1,6 +1,7 @@
 package com.instance.dataxbranch.data.repository
 
 import android.app.Application
+import android.util.Log
 //import android.util.Log
 import com.google.common.collect.Iterables.size
 import com.instance.dataxbranch.core.Constants.TAG
@@ -137,7 +138,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
             //should save elsewhere, but whateev
             char.quests.forEach {qDao.save(it)}
             char.abilities.forEach{aDao.save(it)}
-            char.inventory.forEach{iDao.save(it)}
+            char.inventory.forEach{iDao.save(it.key)}
             //qDao.save(char.quests)
             needsSync=true
         }
@@ -293,7 +294,8 @@ class GeneralRepository(application: Application, db: AppDatabase,
     }
 
     fun putItemOnCharacter(item: ItemEntity=itemRepository.selectedItem) {
-        selectedCharacterWithStuff.character.items=selectedCharacterWithStuff.character.items.plus(item.iid)
+
+        selectedCharacterWithStuff.character.inventory=selectedCharacterWithStuff.character.inventory.plus(item.iid,item.stackable)
 
         selectedCharacterWithStuff.inventory= selectedCharacterWithStuff.inventory.plus(item)
         //Log.d("REPO_putItemOnCharacter", "item  is $item in generalRepo putItemOnCharacter")
@@ -301,9 +303,17 @@ class GeneralRepository(application: Application, db: AppDatabase,
             save()
             // udao.update(me)
         }
+
     }
-    fun fixInventory(){selectedCharacterWithStuff.inventory = filterLocalItemsOnID()}
-    fun filterLocalItemsOnID(ids:List<Long> =selectedCharacterWithStuff.character.items): Array<ItemEntity> = itemRepository.getitems().filter{it.iid in ids}.toTypedArray()
+    fun fixInventory(){selectedCharacterWithStuff.inventory = buildInventory()}
+
+    fun buildInventory(idToQuant:Map<Long,Int> =selectedCharacterWithStuff.character.inventory): MutableMap<ItemEntity,Int> {
+        val items: List<ItemEntity> = itemRepository.getitems().filter{it.iid in idToQuant.keys}
+        return items.associateWith { idToQuant[it.iid]?:1 } as MutableMap<ItemEntity, Int>
+    }
+
+
+        //itemRepository.getitems().filter{it.iid in ids}.toTypedArray()
 
     fun updateCharacterQuests(){
             selectedCharacterWithStuff.quests=getQuestsbyCharacter(selectedCharacterWithStuff.character)
@@ -438,4 +448,43 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
             uDao.save(me_user)
 
         }*/
+}
+
+fun MutableMap<ItemEntity, Int>.plus(item: ItemEntity): MutableMap<ItemEntity, Int> {
+    //in already vs absent
+    //if stackable
+    if (item.stackable){
+        //present + stackable
+        //absent + stackable
+        println("increments")
+        this[item] = (this[item]?:0) + 1
+    }else{
+        //present + non stackable
+        if(this.containsKey(item)){
+            println("present already")
+        }else{ //absent + non stackable
+            println("absent")
+            this[item] = 1
+
+        }
+    }
+    return this
+}
+fun Map<Long, Int>.plus(iid: Long,isStackable:Boolean): Map<Long, Int> {
+    val result = this as MutableMap<Long, Int>
+    if (isStackable){
+        //present + stackable
+        //absent + stackable
+        result[iid] = (result[iid]?:0) + 1
+    }else{
+        //present + non stackable
+        if(this.containsKey(iid)){
+            println("present already")
+        }else{ //absent + non stackable
+            println("absent")
+            result[iid] = 1
+
+        }
+    }
+    return result
 }

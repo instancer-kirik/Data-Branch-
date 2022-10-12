@@ -3,6 +3,7 @@ package com.instance.dataxbranch.data.entities
 //import android.util.Log
 
 import androidx.room.*
+import com.instance.dataxbranch.data.MapConverter
 import com.instance.dataxbranch.utils.Converters
 import com.squareup.moshi.JsonClass
 import java.text.SimpleDateFormat
@@ -55,7 +56,7 @@ class Category(@field:PrimaryKey val id: String, val title: String?, val parentI
     ]
 
 )
-@TypeConverters(Converters::class)
+@TypeConverters(Converters::class, MapConverter::class)
 @JsonClass(generateAdapter=true)
 data class CharacterEntity @JvmOverloads constructor(
    // @ColumnInfo(name = "character_id") val character_id: Long=0,
@@ -136,7 +137,8 @@ data class CharacterEntity @JvmOverloads constructor(
     @ColumnInfo(name = "race") var race: String = "Generic",
     @ColumnInfo(name = "class") var className: String = "Nothing",
 
-    @ColumnInfo(name = "inventory") var items: List<Long> = listOf(),
+     //var items: List<Long> = listOf(),
+    var inventory:Map<Long,Int> = mapOf(),
 //store list of authored quests, nuggets,abilities,items etc
     ) {
 
