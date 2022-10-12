@@ -272,6 +272,7 @@ Row(horizontalArrangement = Arrangement.End) {
             if (item.stackable){
             Button(onClick = {
                 uViewModel.addItemToInventory(item)
+                recomposeState.value=true
                 //them.plus(item)
             }) { Text("++") }}
             Text(text = "Index $index\n  id: ${item.iid}")
@@ -330,7 +331,10 @@ fun InventoryItemCardContent(navi: DestinationsNavigator, item: ItemEntity,uView
                     .background(Color.Black.copy(alpha = 0.5f))
             ) {
 //                Text(text = "Title:          id= ${item.iid}")
-                Text("$quantity")
+                if(item.stackable){
+                    Text("$quantity")
+                }
+
                 Text(
 
                     text = item.name + "",

@@ -98,6 +98,7 @@ data class User @JvmOverloads constructor(
     @ColumnInfo(name = "terms_status")var terms_status: String = "",//update this on accepting terms
     var xp: Int = 0,
     @ColumnInfo(name = "characters") var characters: List<String> = listOf(),
+    var selectedCharacterID: String="AAAAAA",
 //store list of authored quests, nuggets,abilities,items etc
     ) {
 

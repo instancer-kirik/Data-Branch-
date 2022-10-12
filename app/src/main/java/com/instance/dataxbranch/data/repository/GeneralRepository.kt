@@ -31,6 +31,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
 ) {
 
     var needsSync: Boolean = true
+    var initialized: Boolean = false
    // private var cachedUsers: List<CloudUser> = listOf()
     val aDao: AbilityDao = db.abilityDao()
     val uDao: UserDao = db.userDao()
@@ -47,8 +48,10 @@ class GeneralRepository(application: Application, db: AppDatabase,
     lateinit var selectedAE: AbilityEntity
 
     //var selectedItem: ItemEntity = ItemEntity()
-    var selectedCharacterIndex: Int = 0
-    var selectedCharacterWithStuff: CharacterWithStuff = CharacterWithStuff(CharacterEntity())
+    var selectedCharacterIndex by Delegates.observable(0) { property, oldValue, newValue ->
+        Log.d(TAG,"SELECTED $property IS NOW $newValue")
+    }
+    var selectedCharacterWithStuff: CharacterWithStuff =CharacterWithStuff(CharacterEntity())
     private var me_container = UserWithAbilities(User(), mabilities)
 
     init {
@@ -76,18 +79,18 @@ class GeneralRepository(application: Application, db: AppDatabase,
     mcharacters = listOf(
         CharacterWithStuff(
         CharacterEntity(name ="ME"),
-        listOf(AbilityEntity(title = "my_ability1")),
-        arrayOf(QuestWithObjectives(QuestEntity(title="my_quest1") ,listOf()))
+//        listOf(AbilityEntity(title = "my_ability1")),
+//        arrayOf(QuestWithObjectives(QuestEntity(title="my_quest1") ,listOf()))
         ),
         CharacterWithStuff(
         CharacterEntity(name ="PRIME1"),
-        listOf(AbilityEntity(title = "APRIME1")),
-        arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME1") ,listOf()))
+//        listOf(AbilityEntity(title = "APRIME1")),
+//        arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME1") ,listOf()))
         ),
         CharacterWithStuff(
         CharacterEntity(name ="PRIME2"),
-        listOf(AbilityEntity(title = "APRIME2")),
-        arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME2") ,listOf()))
+//        listOf(AbilityEntity(title = "APRIME2")),
+//        arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME2") ,listOf()))
         )
     )
         CoroutineScope(Dispatchers.IO).launch {
@@ -103,7 +106,18 @@ class GeneralRepository(application: Application, db: AppDatabase,
             uDao.prime(User())
 
             me = uDao.getMe()
+            Log.d(TAG,"Gotted ${me.selectedCharacterID} ..id")
             mcharacters = CharacterWithStuff(uDao.getAllCharacters())
+            if (!initialized) {
+                Log.d(TAG,"IN INTITITIT ${mcharacters.size}")
+                selectedCharacterIndex =
+                    mcharacters.indexOfFirst { it.character.uuid == me.selectedCharacterID }
+                if(mcharacters.isNotEmpty()&&selectedCharacterIndex>=0){
+                    selectedCharacterWithStuff =mcharacters[selectedCharacterIndex]
+                    Log.d(TAG,"SETS CHARACTER ")
+                }
+                initialized=true
+            }
             mabilities = aDao.getAbilites()
             getMeWithAbilities()
             getAllCharacters()

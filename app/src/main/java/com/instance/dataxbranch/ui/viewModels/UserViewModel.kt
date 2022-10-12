@@ -1,6 +1,7 @@
 package com.instance.dataxbranch.ui.viewModels
 
 //import android.util.Log
+import android.util.Log
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.UserDao
 import com.instance.dataxbranch.data.repository.GeneralRepository
@@ -71,13 +72,13 @@ class UserViewModel @Inject constructor(
     var allabilities = mutableStateOf(false)
     var inventoryModeState = mutableStateOf(false)
     //var mfsid:String = "-2"
-    val handyString: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
-    }
+//    val handyString: MutableLiveData<String> by lazy {
+//        MutableLiveData<String>()
+//    }
     private var meWithAbilities=generalRepository.getMe()
     var attunement = mutableStateOf(getSelectedCharacter().character.attunement)
     var attuned = mutableStateOf(getAttuned())
-    var userContainer: User?=null
+    //var userContainer: User?=null
     init {
         //Log.d("USERVIEWMODEL","INIT CALLED")
 
@@ -113,12 +114,12 @@ class UserViewModel @Inject constructor(
 
         generalRepository.selectedCharacterIndex = index
         generalRepository.selectedCharacterWithStuff=generalRepository.mcharacters[generalRepository.selectedCharacterIndex]
-
-        //Log.d(TAG,"SELECTED CHARACTER IS INDEX ${generalRepository.selectedCharacterIndex} and is ${getSelectedCharacter()}")
+        update(meWithAbilities.user.apply{selectedCharacterID=generalRepository.selectedCharacterWithStuff.character.uuid})
+        Log.d(TAG,"updating user with id ${generalRepository.selectedCharacterWithStuff.character.uuid} ")
     }
     fun setSelectedCharacter(character: CharacterWithStuff){
         generalRepository.selectedCharacterWithStuff=character
-
+        update(meWithAbilities.user.apply{selectedCharacterID=character.uuid})
         //Log.d(TAG,"WARNING, DOES NOT UPDATE INDEX SELECTED CHARACTER is ${getSelectedCharacter()}")
     }
     fun addCharacterEntity(name:String){

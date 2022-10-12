@@ -1,6 +1,7 @@
 package com.instance.dataxbranch.data.daos
 
 //import android.util.Log
+import android.util.Log
 import androidx.room.*
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.entities.*
@@ -51,8 +52,9 @@ abstract class UserDao {
      }
 
     @Transaction
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun save(user: User)
+    @Upsert
+    fun save(user: User){
+        Log.d(TAG,"selected character id is ${user.selectedCharacterID}")}
 
     @Transaction
     @Upsert
