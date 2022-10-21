@@ -43,7 +43,13 @@ class LocalQuestsRepository @Inject constructor(application: Application, db: Ap
             val oe = ObjectiveEntity(id = quest.quest.id,)// quest = quest.toString())
             questDao.save(oe)
         }
-
+    fun bind(quest: QuestWithObjectives,oe:ObjectiveEntity): Job =
+        CoroutineScope(Dispatchers.IO).launch {
+            oe.apply{id = quest.quest.id}
+            quest.objectives += oe
+            //val oe = ObjectiveEntity()// quest = quest.toString())
+            questDao.save(oe)
+        }
     fun updateQuestEntity(quest: QuestEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
             questDao.update(quest)
@@ -56,7 +62,7 @@ class LocalQuestsRepository @Inject constructor(application: Application, db: Ap
         }
     fun update(obj: ObjectiveEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
-            questDao.update(obj)
+            questDao.save(obj)
 
         }
     fun deleteQuest(quest: QuestWithObjectives) {
@@ -68,7 +74,7 @@ class LocalQuestsRepository @Inject constructor(application: Application, db: Ap
     fun update(qwo: QuestWithObjectives): Job =
         CoroutineScope(Dispatchers.IO).launch {
             questDao.update(qwo.quest)
-            qwo.objectives.forEach{obj->questDao.update(obj)}
+            qwo.objectives.forEach{obj->questDao.save(obj)}
         }
     fun getAllQuestsAsync(): Deferred<Unit> =
         CoroutineScope(Dispatchers.IO).async {

@@ -14,6 +14,7 @@ data class UseCases (
     val addQuestEntity: AddQuestEntity,
     val addNewQuestEntity: AddNewQuestEntity,
     val addNewObjectiveEntityToQuestEntity: AddNewObjectiveEntityToQuestEntity,
+    val addObjectiveEntityToQuestEntity: AddObjectiveEntityToQuestEntity,
     val addResponse: AddResponse,
     val getResponses: GetResponses,
     val getChatRooms:  GetChatRooms,

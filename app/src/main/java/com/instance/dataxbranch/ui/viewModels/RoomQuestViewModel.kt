@@ -110,7 +110,7 @@ class RoomQuestViewModel @Inject constructor(
     }
     fun update(oe: ObjectiveEntity){
         CoroutineScope(Dispatchers.IO).launch {
-            dao.update(oe)
+            dao.save(oe)
         }}
     fun update(quest: QuestWithObjectives){
         CoroutineScope(Dispatchers.IO).launch {

@@ -159,6 +159,7 @@ object AppModule {
         addQuestEntity = AddQuestEntity(dao),
         addNewQuestEntity = AddNewQuestEntity(localrepo),
         addNewObjectiveEntityToQuestEntity=  AddNewObjectiveEntityToQuestEntity(localrepo),
+        addObjectiveEntityToQuestEntity=  AddObjectiveEntityToQuestEntity(localrepo),
         addResponse = AddResponse(responseRepo),
         getResponses = GetResponses(responseRepo),
     addChatRoom= AddChatRoom(socialRepo),

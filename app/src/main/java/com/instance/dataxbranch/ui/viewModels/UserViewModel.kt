@@ -239,6 +239,7 @@ class UserViewModel @Inject constructor(
 
     fun onObjCheckedChanged(obj: ObjectiveEntity, b: Boolean){ CoroutineScope(Dispatchers.IO).launch {generalRepository.questsRepository.update(obj)} }
     fun addNewObjectiveEntity(quest: QuestWithObjectives){ CoroutineScope(Dispatchers.IO).launch { useCases.addNewObjectiveEntityToQuestEntity(quest)} }
+    fun addObjectiveEntity(quest: QuestWithObjectives,oe: ObjectiveEntity=ObjectiveEntity()){ CoroutineScope(Dispatchers.IO).launch { useCases.addObjectiveEntityToQuestEntity(quest,oe)} }
     fun getQuestsFromRepo():Array<QuestWithObjectives>{ return generalRepository.questsRepository.getQuests() }
     fun addNewQuestEntity(title: String, description:String,author: String){
         var char = getSelectedCharacter()
@@ -271,9 +272,9 @@ class UserViewModel @Inject constructor(
         //return meWithAbilities.user.friends// stored as ids, must store more local or pull from cloud
 
     }
-    fun update(oe: ObjectiveEntity){
+    fun save(oe: ObjectiveEntity){
         CoroutineScope(Dispatchers.IO).launch {
-            qdao.update(oe)
+            qdao.save(oe)
         }}
     fun update(quest: QuestWithObjectives){
         CoroutineScope(Dispatchers.IO).launch {

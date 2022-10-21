@@ -14,9 +14,9 @@ abstract class QuestDao {
     @Query("SELECT * FROM quests")
     abstract fun getItAll(): Array<QuestWithObjectives>//probably includes objectives
 
-    @Transaction
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun save(objective: ObjectiveEntity)
+//    @Transaction
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    abstract fun save(objective: ObjectiveEntity)
 
     /*@Transaction
     @Update
@@ -97,12 +97,12 @@ abstract class QuestDao {
     @Query("SELECT * FROM quests")
     abstract fun loadAll(): Array<QuestWithObjectives>
 
-    @Update
-    abstract fun update(quest: QuestEntity?):Int
+//    @Update
+//    abstract fun update(quest: QuestEntity?):Int
     @Update
     abstract fun update(vararg quest:QuestEntity):Int
-    @Update
-    abstract fun update(objective: ObjectiveEntity)
+    @Upsert
+    abstract fun save(objective: ObjectiveEntity)
 
     /*@Query("SELECT * FROM quests WHERE active != 0")
     //alter this on active select in lazycolumnwithselection

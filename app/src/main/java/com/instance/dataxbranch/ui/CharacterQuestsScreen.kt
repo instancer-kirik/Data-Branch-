@@ -168,8 +168,8 @@ fun CharacterLocalLazyColumn(quests: Array<QuestWithObjectives>, modifier: Modif
 
     Text(
         "Selected Character: ${uViewModel.getSelectedCharacter().character.name}" +
-                "\n Selected Quest: ${uViewModel.selectedQuest}\"" +
-                "\n NUMQUESTS = ${uViewModel.getSelectedCharacter().quests.size}" +
+                //"\n Selected Quest: ${uViewModel.selectedQuest}\"" +
+                //"\n NUMQUESTS = ${uViewModel.getSelectedCharacter().quests.size}" +
                 "\n Quests: ${uViewModel.getSelectedCharacter().quests} ##"//text = "Index $index"
     )
     LazyColumn(
@@ -290,7 +290,9 @@ fun CharacterLocalQuestCardContent(navi: DestinationsNavigator, quest: QuestWith
                             CharacterObjectiveViewEdit(oe, uViewModel)
                         }
                         Row {
-                            Button(onClick = { uViewModel.addNewObjectiveEntity(quest) }) { Text("ADD OBJECTIVE") }
+                            Button(onClick = { uViewModel.addObjectiveEntity(quest)
+                            recomposeState.value=true
+                            }) { Text("ADD OBJECTIVE") }
                             Button(onClick = { uViewModel.delete(quest) }) {
                                 Text("Delete")
                             }
@@ -521,18 +523,20 @@ fun CharacterObjectiveViewEdit( oe: ObjectiveEntity,uViewModel:UserViewModel) {
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp)
         ) {
+            Text("id:${oe.id}, oid:${oe.oid}")
             Row(modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()) {
+
                 OutlinedButton(
                     onClick = {
                         expanded = !expanded
                         if (!expanded) {//since save triggers expanded, handle saving here with value: String
                             //Log.d("saved the objective", "$value")
                             oe.obj =
-                                value// updates quest. needs method to push back to firebase
+                                value// updates quest. needs method to push back to cloud
                             oe.desc = value2
-                            uViewModel.update(oe)
+                            uViewModel.save(oe)
                         }
                     }
                 ) {
