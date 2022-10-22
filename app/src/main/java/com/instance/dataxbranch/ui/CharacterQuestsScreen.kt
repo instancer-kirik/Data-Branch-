@@ -167,10 +167,10 @@ fun CharacterLocalLazyColumn(quests: Array<QuestWithObjectives>, modifier: Modif
     }
 
     Text(
-        "Selected Character: ${uViewModel.getSelectedCharacter().character.name}" +
+        "Selected Character: ${uViewModel.getSelectedCharacter().character.name}"
                 //"\n Selected Quest: ${uViewModel.selectedQuest}\"" +
                 //"\n NUMQUESTS = ${uViewModel.getSelectedCharacter().quests.size}" +
-                "\n Quests: ${uViewModel.getSelectedCharacter().quests} ##"//text = "Index $index"
+                //"\n Quests: ${uViewModel.getSelectedCharacter().quests} ##"//text = "Index $index"
     )
     LazyColumn(
         modifier.fillMaxSize(),
