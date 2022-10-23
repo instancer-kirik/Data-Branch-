@@ -24,19 +24,28 @@ kotlin{
     }
 }
 android {
+    signingConfigs {
+        release {
+            storeFile file('F:\\WorkFolder\\Android\\firstkeystore.jks')
+            storePassword 'password2'
+            keyAlias 'tester'
+            keyPassword 'password2'
+        }
+    }
     compileSdk 33
 
     defaultConfig {
         applicationId "com.instance.dataxbranch"
         minSdk 27
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName '1.00'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
+        versionNameSuffix 'beta'
     }
     /*File signFile = rootProject.file('.sign/keystore.properties')
     if (signFile.exists()) {
@@ -77,7 +86,11 @@ android {
         }*/
         release {
             minifyEnabled false
+            shrinkResources false
+
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            versionNameSuffix 'beta'
+            signingConfig signingConfigs.release
 //signingConfig signingConfigs.release
         }
     }

@@ -26,7 +26,7 @@ object Constants {
     const val ADD = "Add"
     const val DISMISS = "Dismiss"
     const val OVERWRITE = "Overwrite"
-
+    const val OK = "Ok"
     //Placeholders
     const val QUEST_TITLE = "Title"
     const val AUTHOR = "Author"

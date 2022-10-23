@@ -79,8 +79,8 @@ class GeneralRepository(application: Application, db: AppDatabase,
     mcharacters = listOf(
         CharacterWithStuff(
         CharacterEntity(name ="ME"),
-//        listOf(AbilityEntity(title = "my_ability1")),
-//        arrayOf(QuestWithObjectives(QuestEntity(title="my_quest1") ,listOf()))
+        listOf(AbilityEntity(title = "add an ability (tap +)")),
+        arrayOf(QuestWithObjectives(QuestEntity(title="Add A Quest") ,listOf()))
         ),
         CharacterWithStuff(
         CharacterEntity(name ="PRIME1"),
@@ -93,6 +93,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
 //        arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME2") ,listOf()))
         )
     )
+        //selectedCharacterWithStuff= mcharacters.first { it.character.name == "ME" }
         CoroutineScope(Dispatchers.IO).launch {
             mcharacters.forEach{uDao.prime(it.character)}  }
 }
@@ -179,13 +180,36 @@ class GeneralRepository(application: Application, db: AppDatabase,
     fun getAllCharacters():Job =
 
         CoroutineScope(Dispatchers.IO).launch {
-            if (mcharacters.isEmpty()){ primeCharacters() }
+            if (mcharacters.isEmpty()){ primeCharacters()
+
+            }
             ncharacters = uDao.getAllCharacters()
             //Log.d(TAG,"REPO BUILT, ${ncharacters} IN LIST")
             mcharacters = CharacterWithStuff(ncharacters)
            //mcharacters.forEach {Log.d(TAG,"REPO BUILT, ${it.toString()} IN LIST")}
+            if(selectedCharacterWithStuff.character.name=="DEFAULT_NAME") {
+                selectedCharacterWithStuff = mcharacters.first { it.character.name == "ME" }
+                selectedCharacterIndex = 0}
+                if (selectedCharacterWithStuff.abilities.isEmpty()) {
+                    putAbilityOnCharacter(AbilityEntity(title = "Add Custom Ability (click +)"))
+                }
+                if (selectedCharacterWithStuff.quests.isEmpty()) {
+                    putQuestOnCharacter(
+                        QuestWithObjectives(
+                            QuestEntity(title = "Add A Custom Quest"), listOf(
+                                ObjectiveEntity(obj = "click the +")
+                            )
+                        )
+                    )
+                }
+                if (selectedCharacterWithStuff.inventory.isEmpty()) {
 
+                    putItemOnCharacter(ItemEntity(name = "skeleton"))
+                    putItemOnCharacter(ItemEntity(name = "mesh"))
+                    putItemOnCharacter(ItemEntity(name = "meat"))
+                    putItemOnCharacter(ItemEntity(name = "stuff"))
 
+            }
         }
 
 
@@ -435,10 +459,14 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
     */
 
     fun updateByCharacterList(selectedCharacter: CharacterWithStuff=selectedCharacterWithStuff) {
-        val old = mcharacters[selectedCharacterIndex].toString()
-        mcharacters = mcharacters.toMutableList().apply {
-            this[selectedCharacterIndex] = selectedCharacter
+
+        if (selectedCharacterIndex>=0) {
+            val old = mcharacters[selectedCharacterIndex].toString()
+            mcharacters = mcharacters.toMutableList().apply {
+                this[selectedCharacterIndex] = selectedCharacter
+            }
         }
+        else{selectedCharacterIndex=mcharacters.size}//this might break. find which character, set to that index?
         //Log.d("REPO", "mcharacters updated index $selectedCharacterIndex with $selectedCharacter ================================from --------------OLD--------------- $old")
     }
 

@@ -724,7 +724,7 @@ fun WebToolbar(
 
     TopAppBar(
         title = { Text(text = "Armed Abilities") },
-        actions = {ConfigChangeExample()
+        actions = {
 
             var expanded by remember { mutableStateOf(false) }
             var expanded2 by remember { mutableStateOf(false) }
@@ -751,10 +751,10 @@ fun WebToolbar(
                         viewModel.refreshWebview.value=true}, modifier= Modifier.padding(2.dp)){ Text("URLPrivacyPolicy") }
 
                     // Button(onClick = {navigator.navigate(DevScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("DevScreen") }
-                    Button(onClick = {viewModel.generalRepository.setMe(UserWithAbilities(User(),listOf()))
-                        navigator.navigate(HubScreenDestination)
-                    }, modifier= Modifier.padding(2.dp)){ Text("clear local") }
-                } else Text("DEBUG")
+//                    Button(onClick = {viewModel.generalRepository.setMe(UserWithAbilities(User(),listOf()))
+//                        navigator.navigate(HubScreenDestination)
+//                    }, modifier= Modifier.padding(2.dp)){ Text("clear local") }
+                } else Text("DOCS")
 
             }
             OutlinedButton(
@@ -772,7 +772,7 @@ fun WebToolbar(
                             onClick = { viewModel.getMeWithAbilities().user.terms_status = Calendar.getInstance().time.toString() },
                             modifier = Modifier.padding(2.dp)
                         ) { Text("YES") }
-
+                        ConfigChangeExample()
                         /* Button(
                              onClick = { navigator.navigate(MyQuestsScreenDestination) },
                              modifier = Modifier.padding(2.dp)

@@ -5,8 +5,6 @@ l
 <app/src/main/java/com/instance/dataxbranch/ui/theme/Color.kt,0\e\0e916668c942317025683de4e7fd5809efd5496a
 }
 Mapp/src/main/java/com/instance/dataxbranch/composables/CircularProgressBar.kt,c\f\cfa85f0818f73799ea102ceecd9bd85aa5b79e25
-F
-app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
 A
 gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
 ?
@@ -15,10 +13,6 @@ l
 <app/src/main/java/com/instance/dataxbranch/ui/theme/Theme.kt,4\0\40888936052256d1c20847eca4df097bc0711006
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 v
 Fapp/src/main/java/com/instance/dataxbranch/composables/contextstuff.kt,2\e\2e19673ae9bb27056d0064b87be9cff88116583d
 s
@@ -115,8 +109,6 @@ w
 Gapp/src/main/java/com/instance/dataxbranch/ui/components/ProgressBar.kt,c\5\c59cab105b22490c155f0c42ba7ad016a1221564
 u
 Eapp/src/main/java/com/instance/dataxbranch/ui/components/QuestCard.kt,e\d\ed841f8cddbaca0e32032638057f6c5d378389db
-Å
-Qapp/src/main/java/com/instance/dataxbranch/ui/components/TermsPopupAlertDialog.kt,e\8\e878ab92068bf0b95e7143487a4daa230b148f27
 x
 Happ/src/main/java/com/instance/dataxbranch/ui/viewModels/DevViewModel.kt,f\d\fde6cacb4978ff71b4a37ab444793dcef607a3ac
 y
@@ -163,8 +155,6 @@ b
 Oapp/src/main/java/com/instance/dataxbranch/domain/use_case/AddNewQuestEntity.kt,3\c\3c50f923a8f722754d1e1a417cbbf94f779ef565
 q
 Aapp/src/main/java/com/instance/dataxbranch/ui/CloudQuestScreen.kt,7\c\7c245e5fa8c9a6678118afbeff2f687a4795e076
-l
-<app/src/main/java/com/instance/dataxbranch/ui/LoginScreen.kt,e\8\e899b378da4ab1879b60988ce29b5c7c1c61be81
 j
 :app/src/main/java/com/instance/dataxbranch/MainActivity.kt,5\4\54e4fca92e8a9990650ad1227cbd46a5465d6b46
 
@@ -185,16 +175,12 @@ p
 @app/src/main/java/com/instance/dataxbranch/data/entities/Repo.kt,1\4\143d9450bd4a7de9b8d8b10566f4129caabbb91e
 n
 >app/src/main/java/com/instance/dataxbranch/ui/LoadoutScreen.kt,7\f\7f86137dbfd9816f822b1aec9625892c89cc7058
-p
-@app/src/main/java/com/instance/dataxbranch/ui/AbilitiesScreen.kt,e\1\e1506c007b959ac9c9126b7b83ef3061412698ea
 á
 Wapp/src/main/java/com/instance/dataxbranch/ui/components/AddAbilityEntityAlertDialog.kt,2\7\2776cd5925833e55dbea1ae824e806fcd72c8613
 o
 ?app/src/main/java/com/instance/dataxbranch/ui/UserDumpScreen.kt,9\2\92deb430e132905d7ad4438fd375612c022e318f
 |
 Lapp/src/main/java/com/instance/dataxbranch/data/cloud/QuestRepositoryImpl.kt,3\5\3591557447593412edd4b2142df584ae72f3fee7
-t
-Dapp/src/main/java/com/instance/dataxbranch/ui/components/Toolbars.kt,5\f\5fa9a3c2d574e39789fcae277e649a7a592bdf96
 x
 Happ/src/main/java/com/instance/dataxbranch/quests/QuestWithObjectives.kt,5\a\5ab5be9978859d682222aa53a10aa6418c32af59
 y
@@ -219,13 +205,23 @@ o
 ?app/src/main/java/com/instance/dataxbranch/data/daos/UserDao.kt,2\e\2e96603f92ea9d0d62d2d2a288c5a993eab8cf32
 Ñ
 Tapp/src/main/java/com/instance/dataxbranch/ui/components/AddItemEntityAlertDialog.kt,7\d\7de2e722d1b4a8c5bf931ceeee37fe4e2ed30a31
-l
-<app/src/main/java/com/instance/dataxbranch/core/Constants.kt,e\f\efd79d22c064fa431bbf205333959cf5513e1eb4
 n
 >app/src/main/java/com/instance/dataxbranch/data/AppDatabase.kt,c\5\c53b8c89dff61b2605e1c4e26c5e9ea1146254fc
-{
-Kapp/src/main/java/com/instance/dataxbranch/data/local/CharacterWithStuff.kt,5\7\57cba4c4c55036f082ceaa426403d1737ec80494
-
-Oapp/src/main/java/com/instance/dataxbranch/data/repository/GeneralRepository.kt,0\b\0b9c75b5bcec4c7728cb355be368d8dc73ca0356
 ê
 `app/src/main/java/com/instance/dataxbranch/domain/use_case/AddNewObjectiveEntityToQuestEntity.kt,4\a\4a448769c536b54b20b36253b9d16fb9ded6f58b
+y
+Iapp/src/main/java/com/instance/dataxbranch/ui/viewModels/UserViewModel.kt,d\3\d3fd52bf122d8859e12c8943b4eb345860af3788
+p
+@app/src/main/java/com/instance/dataxbranch/data/daos/QuestDao.kt,4\a\4af72cc08dcd6f31d2aec917feeeae1fa88e242e
+~
+Napp/src/main/java/com/instance/dataxbranch/ui/viewModels/RoomQuestViewModel.kt,a\8\a805d13805975d3a2ad62b10a6f7ba2d0e301846
+k
+;app/src/main/java/com/instance/dataxbranch/ui/HelpScreen.kt,4\0\4052c96c2bf3f347daee70f0b0f34bfbff4a6e27
+É
+Sapp/src/main/java/com/instance/dataxbranch/data/repository/LocalQuestsRepository.kt,f\e\fe3aab027671e287ebcb28dcfc488e8c9af9f8fb
+ç
+]app/src/main/java/com/instance/dataxbranch/domain/use_case/AddObjectiveEntityToQuestEntity.kt,b\8\b81b3be12fab3f2ed71eeb35cb2687fe134090a0
+v
+Fapp/src/main/java/com/instance/dataxbranch/domain/use_case/UseCases.kt,6\a\6a9f2bbdb69309b04562820776deb31e09e24cf4
+{
+Kapp/src/main/java/com/instance/dataxbranch/data/entities/ObjectiveEntity.kt,3\6\36f7d747800ef7b220cfb721db913f9f0a335dfb

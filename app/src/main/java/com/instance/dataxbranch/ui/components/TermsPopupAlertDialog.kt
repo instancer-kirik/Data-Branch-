@@ -33,12 +33,17 @@ fun TermsPopupAlertDialog (
             },
             title = {
                 Text(
-                    text = Constants.TERMS
+                    text = "      BETA\n"
+                            +Constants.TERMS+ " and Stuff"
+
                 )
             },
             text = {
                 Column {
-                    Button(onClick = {navigator.navigate(WebviewScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("To Doc")}
+                    Button(onClick = {navigator.navigate(WebviewScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("GOTO")}
+                    Text("may be updated when I update it. (in google docs)")
+                    Text("btw, to nav to doc: hit DOCS, select, then hit back")
+
                    /* TextField(
                         value = title,
                         onValueChange = { title = it },
@@ -78,7 +83,7 @@ fun TermsPopupAlertDialog (
                     }
                 ) {
                     Text(
-                        text = Constants.ADD
+                        text = Constants.OK
                     )
                 }
             },

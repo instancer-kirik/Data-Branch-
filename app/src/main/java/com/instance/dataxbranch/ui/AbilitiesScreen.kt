@@ -96,14 +96,14 @@ fun whichAbilitiesToUse(viewModel: UserViewModel, all: MutableState<Boolean>): L
 }
 
 @Composable
-fun abilityCard( ae: AbilityEntity){
+fun abilityCard( ae: AbilityEntity,selected:Boolean){
     Row(modifier= Modifier.background(if (ae.inloadout) Color.Blue else Color.Transparent   )/*{
         showToast(context,"casted")*/
     ){
         Column{
-        Text("${ae.title} id: ${ae.aid}")
-        Row{Text("Cost: "+ae.requiredEnergy)
-            Text("   Level: "+ae.getLevel())}
+        Text("${ae.title} id: ${ae.aid}",color= if(selected) Color.Black else Color.White)
+        Row{Text("Cost: "+ae.requiredEnergy,color= if(selected) Color.Black else Color.White)
+            Text("   Level: "+ae.getLevel(),color= if(selected) Color.Black else Color.White)}
     }
 
     }
@@ -202,7 +202,7 @@ fun AbilityView(
             text = "Index $index",
         )*/
          //if (selected){viewModel.selectedAE = ability}
-        abilityCard(ability)
+        abilityCard(ability,selected)
 
     }
     //Text("DEBUG2")
@@ -230,7 +230,7 @@ fun AbilityViewShort(
             text = "Index $index",
         )*/
         //if (selected){viewModel.selectedAE = ability}
-        abilityCard(ability)
+        abilityCard(ability,selected)
 
     }
     //Text("DEBUG2")
