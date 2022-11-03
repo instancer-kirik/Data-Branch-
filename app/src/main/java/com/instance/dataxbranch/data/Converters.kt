@@ -18,4 +18,32 @@ object MapConverter {
         val gson = Gson()
         return gson.toJson(map)
     }
+
+
+
+    @JvmStatic
+    @TypeConverter
+    fun fromStringtoLongSSMap(value: String): Map<Long,Pair<String,String>> {
+        val mapType = object : TypeToken<Map<Long,Pair<String,String>>>() {}.type
+        return Gson().fromJson(value, mapType)
+    }
+    @TypeConverter
+    @JvmStatic
+    fun fromLongSSMap(map: Map<Long,Pair<String,String>>): String {
+        val gson = Gson()
+        return gson.toJson(map)
+    }
+
+    @JvmStatic
+    @TypeConverter
+    fun fromStringtoLongListSSMap(value: String): Map<Long,Pair<List<String>,String>> {
+        val mapType = object : TypeToken<Map<Long,Pair<List<String>,String>>>() {}.type
+        return Gson().fromJson(value, mapType)
+    }
+    @TypeConverter
+    @JvmStatic
+    fun fromLongListSSMap(map: Map<Long,Pair<List<String>,String>>): String {
+        val gson = Gson()
+        return gson.toJson(map)
+    }
 }

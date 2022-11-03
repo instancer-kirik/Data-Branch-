@@ -4,9 +4,11 @@ package com.instance.dataxbranch.data.entities
 
 import androidx.room.*
 import com.instance.dataxbranch.data.MapConverter
+import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.utils.Converters
 import com.squareup.moshi.JsonClass
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -118,7 +120,7 @@ data class CharacterEntity @JvmOverloads constructor(
     var friends: List<Int> = listOf(),//just use ids
     @ColumnInfo(name = "dob") var dob: String= "",
     @ColumnInfo(name = "dateUpdated") var dateUpdated: String= "",
-    @ColumnInfo(name = "completedQuests") var completedQuests: List<Int> =listOf(),
+
     @ColumnInfo(name = "completedCloudQuests") var completedCloudQuests: List<String> =listOf(),//listof fsid
 
 
@@ -140,6 +142,20 @@ data class CharacterEntity @JvmOverloads constructor(
      //var items: List<Long> = listOf(),
     var inventory:Map<Long,Int> = mapOf(),
 //store list of authored quests, nuggets,abilities,items etc
+
+//progression 11/1/2022
+    @ColumnInfo(name = "completedQuests") var completedQuests: Map<Long,Pair<String,String>> =mapOf(),//by id:Title (Or a recognizable String stamp of quest completion with time, xp, etc)
+    //Map<ID,Pair<date,slug>>
+    //I want dates. to see when you complete a quest.
+    //build a calendar. see marks for quest completed. and marks for each habit. Lets get that library
+    @ColumnInfo(name = "habitTracker") var habitTracker: Map<Long,Pair<List<String>,String>> =mapOf(),//by id:List<DateTime>
+
+
+
+
+
+
+
     ) {
 
     fun getActiveQuest(): Long{
@@ -303,6 +319,30 @@ return newer
         numKills = tangent.numKills
         numDeaths = tangent.numDeaths
         */
+/*
+    fun onComplete(q:QuestWithObjectives){
+        if (q.quest.isHabit){
+            habitTracker[q.quest.id].first=
+        }
 
+    }*/
 
+    fun habitIncrementAddNow(quest:QuestWithObjectives){
+        var editing =habitTracker.toMutableMap()
+        habitTracker[quest.quest.id]?.let {
+            editing[quest.quest.id]=Pair(it.first+ LocalDateTime.now().toString(),it.second)
+        }?:run{
+            editing[quest.quest.id]=Pair(listOf(LocalDateTime.now().toString()),quest.quest.describe())
+        }
+        habitTracker=editing//done
+    }
+    fun QuestAddNow(quest:QuestWithObjectives){
+        var editing =completedQuests.toMutableMap()
+        completedQuests[quest.quest.id]?.let {
+            editing[quest.quest.id]=Pair(LocalDateTime.now().toString(),"x${it.second}")
+        }?:run{
+            editing[quest.quest.id]=Pair(LocalDateTime.now().toString(),quest.quest.describe())
+        }
+        completedQuests=editing//done
+    }
 }

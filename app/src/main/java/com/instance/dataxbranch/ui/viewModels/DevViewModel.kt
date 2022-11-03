@@ -32,6 +32,7 @@ class DevViewModel @Inject constructor(
     var hasNavi: Boolean = false
     var openDialogState = mutableStateOf(false)
     var openNoteDialogState = mutableStateOf(false)
+    var HTTPResponse: String = ""
     init {
         getResponses()
 

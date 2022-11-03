@@ -112,6 +112,9 @@ INSERT INTO "main"."quests" VALUES('2','0','','','','0','','','','','','','','',
         }
         return -1
     }
+    fun describe():String{
+        return "${title} "
+    }
 }
 
 /**/

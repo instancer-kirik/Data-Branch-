@@ -91,7 +91,7 @@ fun  OverwriteLocalDialog(//QviewModel: QuestsViewModel = hiltViewModel(),
                 TextButton(
                     onClick = {
                         viewModel.overwriteLogIn(context=context, db = FirebaseFirestore.getInstance(),fsid=currentUser.uid)
-                        me.user.dateUpdated =getNow()//Calendar.getInstance().time.toString();
+                        me.user.dateUpdated =getNow()//calendar.getInstance().time.toString();
                         viewModel.downloadCloudDialog.value = false
 
                     }
@@ -130,7 +130,7 @@ fun  OverwriteLocalDialog(//QviewModel: QuestsViewModel = hiltViewModel(),
                 onClick = {
                     //viewModel.overwriteLogIn(context=context, db = FirebaseFirestore.getInstance(),fsid=currentUser.uid)
                     viewModel.downloadCloudDialog.value = false
-                    //me.user.terms_status = me.user.getNow()//Calendar.getInstance().time.toString();
+                    //me.user.terms_status = me.user.getNow()//calendar.getInstance().time.toString();
                 }
             ) {
                 Text(

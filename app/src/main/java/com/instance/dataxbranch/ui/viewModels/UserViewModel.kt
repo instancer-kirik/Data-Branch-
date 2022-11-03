@@ -32,6 +32,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.random.Random
 //@Singleton
@@ -494,6 +496,8 @@ return "me @ userViewModel"
     }
     fun onHabitClick(quest:QuestWithObjectives):String {
         val char = getSelectedCharacter()
+
+        char.character.habitIncrementAddNow(quest)
         quest.quest.onDone()
         generalRepository.questsRepository.update(quest)//notice different save style
        return if (quest.quest.isHabit){
@@ -520,7 +524,7 @@ return "me @ userViewModel"
         //Regular quest, default case
             meWithAbilities.user.xp += quest.quest.rewardxp
             char.character.xp += quest.quest.rewardxp
-
+            char.character.QuestAddNow(quest)
             //Plans: to handle other rewards, like tokens and items
             // s tatus updates
             //notification to QuestGiver

@@ -1,6 +1,7 @@
 package com.instance.dataxbranch.ui
 
 import android.content.Context
+import android.util.Log
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.instance.dataxbranch.core.Constants.TAG
 
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.cloud.CloudResponse
@@ -24,6 +26,9 @@ import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import okhttp3.*
+import okhttp3.RequestBody.Companion.toRequestBody
+import okio.IOException
 
 
 @Destination
@@ -54,8 +59,12 @@ fun DevScreen (viewModel: UserViewModel =hiltViewModel(),
                 ){Text("Crash Button")}
 
 
-            PayMeBlock()
-            ResponseBlock(context=context, me = me, )
+                Text("HTTP TEST: ${devViewModel.HTTPResponse}\n")
+                httpButton1(viewModel = devViewModel)
+
+
+                PayMeBlock()
+                ResponseBlock(context=context, me = me, )
                 Button(onClick = {navigator.navigate(HubScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Default screen")}
 }
 }}
@@ -170,6 +179,54 @@ fun notePadButton(viewModel: DevViewModel){
     Button(onClick = { viewModel.openNoteDialogState.value=true},
         modifier = Modifier.padding(2.dp)
     ) { Text("^NotePad^") }
+
+
+}
+
+@Composable
+fun httpButton1(URL: String = /*"https://publicobject.com/helloworld.txt"*/ "https://0.0.0.0:8000/sql",viewModel: DevViewModel){
+    Button(onClick={
+        if (URL.isNotEmpty()){
+            //create http client
+            val DATA = "INFO FOR DB;"
+            val okhttpClient = OkHttpClient()
+            //build request
+            val request = Request.Builder()
+                .url(URL)
+                .header("Accept", "application/json")
+                .addHeader("DB","my_db")
+                .addHeader("NS","my_ns")
+                .addHeader("user", "root:root")
+                .addHeader("data","${DATA}")//post(string.toRequestBody())
+                //.addHeader("data", "${DATA}")
+                .build()
+            //enqueue the request and handle callbacks/??
+            Log.i("Request",request.toString())
+            okhttpClient.newCall(request).enqueue(object: Callback {
+                override fun onFailure(call: Call, e:IOException){
+                    e.printStackTrace()
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    Log.i("Response","recieved Response from server")
+                    response.use{
+                        if(!response.isSuccessful)
+                        {
+                            Log.e("HTTP ERROR","Unsuccessful loading")
+                        }
+                        else{
+                            //fetch the body of the response
+                            val body = response?.body?.string()
+                            Log.i("Response","$body")
+                            viewModel.HTTPResponse = body+""
+                        }
+                    }}
+            })
+        }else{
+            Log.d(TAG,"URL IS EMPTY @DEVSCREEN HTTPBUTTON1"
+            )
+        }
+                   },modifier=Modifier.padding(2.dp)){Text("HTTPButton")}
 
 
 }
