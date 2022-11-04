@@ -216,7 +216,7 @@ fun httpButton1(URL: String = /*"https://publicobject.com/helloworld.txt"*/ "htt
                         }
                         else{
                             //fetch the body of the response
-                            val body = response?.body?.string()
+                            val body = response.body?.string()
                             Log.i("Response","$body")
                             viewModel.HTTPResponse = body+""
                         }

@@ -8,9 +8,9 @@ import java.time.LocalDate
 
 
 @Stable
-public interface SelectionState {
-    public fun isDateSelected(date: LocalDate): Boolean = false
-    public fun onDateSelected(date: LocalDate) { }
+interface SelectionState {
+    fun isDateSelected(date: LocalDate): Boolean = false
+    fun onDateSelected(date: LocalDate) { }
 }
 
 /**
@@ -19,7 +19,7 @@ public interface SelectionState {
  * @param confirmSelectionChange return false from this callback to veto the selection change
  */
 @Stable
-public class DynamicSelectionState(
+class DynamicSelectionState(
     private val confirmSelectionChange: (newValue: List<LocalDate>) -> Boolean = { true },
     selection: List<LocalDate>,
     selectionMode: SelectionMode,
@@ -28,7 +28,7 @@ public class DynamicSelectionState(
     private var _selection by mutableStateOf(selection)
     private var _selectionMode by mutableStateOf(selectionMode)
 
-    public var selection: List<LocalDate>
+    var selection: List<LocalDate>
         get() = _selection
         set(value) {
             if (value != selection && confirmSelectionChange(value)) {
@@ -36,7 +36,7 @@ public class DynamicSelectionState(
             }
         }
 
-    public var selectionMode: SelectionMode
+    var selectionMode: SelectionMode
         get() = _selectionMode
         set(value) {
             if (value != selectionMode) {
@@ -72,7 +72,7 @@ public class DynamicSelectionState(
 }
 
 @Immutable
-public object EmptySelectionState : SelectionState {
+object EmptySelectionState : SelectionState {
     override fun isDateSelected(date: LocalDate): Boolean = false
 
     override fun onDateSelected(date: LocalDate): Unit = Unit

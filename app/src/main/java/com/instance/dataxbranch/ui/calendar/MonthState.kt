@@ -9,15 +9,15 @@ import java.time.YearMonth
 
 
 @Suppress("FunctionName") // Factory function
-public fun MonthState(initialMonth: YearMonth): MonthState = MonthStateImpl(initialMonth)
+fun MonthState(initialMonth: YearMonth): MonthState = MonthStateImpl(initialMonth)
 
 @Stable
-public interface MonthState {
-    public var currentMonth: YearMonth
+interface MonthState {
+    var currentMonth: YearMonth
 
-    public companion object {
+    companion object {
         @Suppress("FunctionName") // Factory function
-        public fun Saver(): Saver<MonthState, String> = Saver(
+        fun Saver(): Saver<MonthState, String> = Saver(
             save = { it.currentMonth.toString() },
             restore = { MonthState(YearMonth.parse(it)) }
         )

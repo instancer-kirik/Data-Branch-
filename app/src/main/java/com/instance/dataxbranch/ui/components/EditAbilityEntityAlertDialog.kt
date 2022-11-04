@@ -20,7 +20,7 @@ fun EditAbilityEntityAlertDialog(
 navigator: DestinationsNavigator
 ) {
     var desc by remember { mutableStateOf(viewModel.selectedAE.desc ?:"") }
-    var inloadout by remember { mutableStateOf(viewModel.selectedAE.inloadout ?:"") }
+    var inloadout by remember { mutableStateOf(viewModel.selectedAE.inloadout) }
 
 
 

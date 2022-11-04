@@ -8,6 +8,7 @@ import com.instance.dataxbranch.domain.getNow
 import com.instance.dataxbranch.utils.Converters
 import com.squareup.moshi.JsonClass
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 @Entity(
@@ -65,7 +66,7 @@ INSERT INTO "main"."quests" VALUES('2','0','','','','0','','','','','','','','',
     @ColumnInfo(name = "isHabit") var isHabit: Boolean=false,//if habit, reward is randomly, and sporatically given,
     @ColumnInfo(name = "habitStreak") var habitStreak: Int = 0,
     @ColumnInfo(name = "dateLastDone") var dateLastDone: String = "",
-
+    @ColumnInfo(name = "target") var targetDateTime: String = LocalDateTime.now().plusDays(5).toString(),
 
 
 

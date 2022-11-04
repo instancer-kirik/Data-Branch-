@@ -19,7 +19,7 @@ internal data class Week(
 )
 
 @Composable
-public fun DefaultWeekHeader(
+fun DefaultWeekHeader(
     daysOfWeek: List<DayOfWeek>,
     modifier: Modifier = Modifier,
 ) {

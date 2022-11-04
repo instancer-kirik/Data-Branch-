@@ -34,9 +34,9 @@ import java.util.Locale
  * @property selectionState handler for the calendar's selection
  */
 @Stable
-public class CalendarState<T : SelectionState>(
-    public val monthState: MonthState,
-    public val selectionState: T,
+class CalendarState<T : SelectionState>(
+    val monthState: MonthState,
+    val selectionState: T,
 )
 
 /**
@@ -62,7 +62,7 @@ public class CalendarState<T : SelectionState>(
  * @param monthContainer container composable for all the days in current month
  */
 @Composable
-public fun SelectableCalendar(
+fun SelectableCalendar(
     modifier: Modifier = Modifier,
     firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek,
     today: LocalDate = LocalDate.now(),
@@ -113,14 +113,19 @@ public fun SelectableCalendar(
  * @param monthContainer container composable for all the days in current month
  */
 @Composable
-public fun StaticCalendar(
-    modifier: Modifier = Modifier,
+fun StaticCalendar(
+
+    modifier: Modifier,
+    data:Map<LocalDate, List<String>>,
     firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek,
     today: LocalDate = LocalDate.now(),
     showAdjacentMonths: Boolean = true,
     horizontalSwipeEnabled: Boolean = true,
     calendarState: CalendarState<EmptySelectionState> = rememberCalendarState(),
-    dayContent: @Composable BoxScope.(DayState<EmptySelectionState>) -> Unit = { DisplayDay(it) },
+    dayContent: @Composable BoxScope.(DayState<EmptySelectionState>) -> Unit = {
+        //this works like if you've got data in passed map for day, it displays it, else does prime arg val
+        data[it.date]?.let { it1 -> DisplayDay(it,displayData=it1) }?:run{DisplayDay(it)}
+    },
     monthHeader: @Composable ColumnScope.(MonthState) -> Unit = { DefaultMonthHeader(it) },
     weekHeader: @Composable BoxScope.(List<DayOfWeek>) -> Unit = { DefaultWeekHeader(it) },
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit = { content ->
@@ -159,7 +164,7 @@ public fun StaticCalendar(
  * @param monthContainer container composable for all the days in current month
  */
 @Composable
-public fun <T : SelectionState> Calendar(
+fun <T : SelectionState> Calendar(
     calendarState: CalendarState<T>,
     modifier: Modifier = Modifier,
     firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek,
@@ -217,7 +222,7 @@ public fun <T : SelectionState> Calendar(
  * @param confirmSelectionChange callback for optional side-effects handling and vetoing the state change
  */
 @Composable
-public fun rememberSelectableCalendarState(
+fun rememberSelectableCalendarState(
     initialMonth: YearMonth = YearMonth.now(),
     initialSelection: List<LocalDate> = emptyList(),
     initialSelectionMode: SelectionMode = SelectionMode.Single,
@@ -238,7 +243,7 @@ public fun rememberSelectableCalendarState(
  * @param initialMonth initially rendered month
  */
 @Composable
-public fun rememberCalendarState(
+fun rememberCalendarState(
     initialMonth: YearMonth = YearMonth.now(),
     monthState: MonthState = rememberSaveable(saver = MonthState.Saver()) {
         MonthState(initialMonth = initialMonth)

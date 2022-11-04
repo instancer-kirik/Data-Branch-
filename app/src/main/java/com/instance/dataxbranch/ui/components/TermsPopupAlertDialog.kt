@@ -78,7 +78,7 @@ fun TermsPopupAlertDialog (
                 TextButton(
                     onClick = {
                         UviewModel.termsDialogState.value = false
-                        me.user.terms_status = Calendar.getInstance().time.toString();
+                        me.user.terms_status = Calendar.getInstance().time.toString()
                         UviewModel.singleConditionsDialog.value = false
                     }
                 ) {

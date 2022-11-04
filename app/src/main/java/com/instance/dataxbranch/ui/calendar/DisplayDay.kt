@@ -18,12 +18,14 @@ import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 
 @Composable
-public fun <T : SelectionState> DisplayDay(
+fun <T : SelectionState> DisplayDay(
+
     state: DayState<T>,
     modifier: Modifier = Modifier,
     selectionColor: Color = MaterialTheme.colors.secondary,
     currentDayColor: Color = MaterialTheme.colors.primary,
     onClick: (LocalDate) -> Unit = {},
+    displayData:List<String> = listOf("<3"),
 ) {
     val date = state.date
     val selectionState = state.selectionState
@@ -47,11 +49,11 @@ public fun <T : SelectionState> DisplayDay(
             },
             contentAlignment = Alignment.Center,
         ) {
-            Column() {
+            Column {
 
 
                 Text(text = date.dayOfMonth.toString())
-                Text("DOOT")
+                Text(displayData.toString())
             }
         }    }
 }

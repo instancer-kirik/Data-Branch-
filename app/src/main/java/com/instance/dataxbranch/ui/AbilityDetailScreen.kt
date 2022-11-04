@@ -64,7 +64,7 @@ fun AbilityDetailScreen (viewModel: UserViewModel=hiltViewModel(),
         "levels"  to levels,
         "levelup"  to levelup,
         "requiredEnergy" to requiredEnergy,)*/
-        val checkedState = remember { mutableStateOf(viewModel.selectedAE.inloadout?:false) }
+        val checkedState = remember { mutableStateOf(viewModel.selectedAE.inloadout) }
 
         //abilityblock("")
         Row{

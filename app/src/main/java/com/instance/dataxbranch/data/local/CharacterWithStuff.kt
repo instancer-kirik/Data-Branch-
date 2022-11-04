@@ -4,8 +4,10 @@ package com.instance.dataxbranch.data.local
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.instance.dataxbranch.data.entities.*
+import com.instance.dataxbranch.domain.getNow
 //import com.instance.dataxbranch.data.firestore.FirestoreCharacter
 import com.instance.dataxbranch.quests.QuestWithObjectives
+import java.time.LocalDateTime
 
 
 data class CharacterWithStuff (
@@ -129,6 +131,28 @@ val uuid = character.uuid
         result = 31 * result + abilities.hashCode()
         result = 31 * result + quests.contentHashCode()
         return result
+    }
+    fun setCompletedFakeQuests(){
+        character.completedQuests = mapOf(11L to Pair(getNow(),"R"),12L to Pair(LocalDateTime.now().toString(),"Q"))//by id:Title (Or a recognizable String stamp of quest completion with time, xp, etc)
+
+    }
+    fun setCompletedFakeHabits(){
+        character.habitTracker = mapOf(11L to Pair(
+            listOf(
+                getNow(),
+                LocalDateTime.of(2022,11,1,11,11).toString(),
+                LocalDateTime.of(2022,11,2,11,11).toString(),
+                LocalDateTime.of(2022,11,3,11,11).toString(),
+                LocalDateTime.of(2022,11,4,11,11).toString(),
+                LocalDateTime.of(2022,11,5,11,11).toString())
+            ,"R"),
+            12L to Pair(listOf(
+                getNow(),
+                LocalDateTime.of(2022,11,1,11,11).toString(),
+                LocalDateTime.of(2022,11,2,11,11).toString(),
+                LocalDateTime.of(2022,11,3,11,11).toString(),
+                LocalDateTime.of(2022,11,4,11,11).toString(),
+                LocalDateTime.of(2022,11,5,11,11).toString()),"Q"))//by id:Title (Or a recognizable String stamp of quest completion with time, xp, etc)
     }
 }
    /* fun setStats(m:Map<String,Int>){

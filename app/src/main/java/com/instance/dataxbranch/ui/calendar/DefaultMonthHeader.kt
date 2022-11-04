@@ -19,7 +19,7 @@ import java.time.format.TextStyle
 import java.util.*
 
 @Composable
-public fun DefaultMonthHeader(
+fun DefaultMonthHeader(
     monthState: MonthState,
     modifier: Modifier = Modifier,
 ) {

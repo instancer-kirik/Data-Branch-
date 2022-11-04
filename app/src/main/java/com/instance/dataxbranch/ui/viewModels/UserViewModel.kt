@@ -8,6 +8,7 @@ import com.instance.dataxbranch.data.repository.GeneralRepository
 
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -609,6 +610,9 @@ return "me @ userViewModel"
         //Log.d("uViewModel","delete called on a ${it::class}; not implemented")
     }
 
+    fun getCalendarStuff(): Map<LocalDate, List<String>> {
+        return generalRepository.computeForCalendar()
+    }
 
 
 }

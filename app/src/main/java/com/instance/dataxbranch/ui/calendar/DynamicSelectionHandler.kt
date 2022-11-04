@@ -5,8 +5,8 @@ package com.instance.dataxbranch.ui.calendar
 
 import java.time.LocalDate
 
-public object DynamicSelectionHandler {
-    public fun calculateNewSelection(
+object DynamicSelectionHandler {
+    fun calculateNewSelection(
         date: LocalDate,
         selection: List<LocalDate>,
         selectionMode: SelectionMode,

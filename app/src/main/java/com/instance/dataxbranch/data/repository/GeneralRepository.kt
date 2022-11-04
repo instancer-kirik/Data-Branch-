@@ -3,7 +3,7 @@ package com.instance.dataxbranch.data.repository
 import android.app.Application
 import android.util.Log
 //import android.util.Log
-import com.google.common.collect.Iterables.size
+
 import com.instance.dataxbranch.core.Constants.TAG
 
 import com.instance.dataxbranch.data.daos.AbilityDao
@@ -17,12 +17,17 @@ import com.instance.dataxbranch.data.entities.*
 //import com.instance.dataxbranch.data.firestore.CloudUser
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
+import com.instance.dataxbranch.domain.dateFormattingPattern
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import kotlinx.coroutines.*
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 import javax.inject.Singleton
 import kotlin.properties.Delegates
+
 
 @Singleton
 class GeneralRepository(application: Application, db: AppDatabase,
@@ -133,6 +138,8 @@ class GeneralRepository(application: Application, db: AppDatabase,
                 updateCharacterQuests()
             }
     }
+        selectedCharacterWithStuff.setCompletedFakeHabits()
+        selectedCharacterWithStuff.setCompletedFakeQuests()
         needsSync=false
     }
     fun refresh(): Job =
@@ -177,6 +184,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
         iDao.update(item)
         needsSync=true
     }
+
     fun getAllCharacters():Job =
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -457,7 +465,83 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
 
     }}
     */
+    fun computeForCalendar(startDate: LocalDate=LocalDate.of(2022,11,1), endDate:LocalDate=LocalDate.now(),completedQuests:Boolean = true,habits: Boolean = true, quests:Boolean = true):Map<LocalDate,List<String>>{//want date by display
+        val result : MutableMap<LocalDate,List<String>> = mutableMapOf()
+        getCompletedQuests(startDate,endDate,result)
+            .also {
+                getCompletedHabits(startDate,endDate,m = it)
+            }
+            .also{it2->
+                return getActiveQuests(startDate,endDate,m = it2)
+            }
+    }
 
+    private fun getActiveQuests(
+        startDate: LocalDate,
+        endDate: LocalDate,
+        m: MutableMap<LocalDate, List<String>>
+    ): MutableMap<LocalDate, List<String>> {
+        val valid =  selectedCharacterWithStuff.quests.filter{
+            val q = LocalDateTime.parse(it.quest.targetDateTime)
+            q.isAfter(startDate.atStartOfDay()) && q.isBefore(endDate.atTime(23,59))
+
+        }
+        /* val numbersMaps = (0 until valid.size).map { i ->
+             i+1 to numbers[it]
+         }*/
+
+        //val result : MutableMap<LocalDate,List<String>> = mutableMapOf()
+        valid.forEach{//now have moments in target
+            //want sorted like date x strings
+            m[LocalDateTime.parse(it.quest.targetDateTime,dateFormattingPattern).toLocalDate()]?.plus(setCalendarDisplayString("A",it))
+        }
+        return m
+    }
+
+    fun getCompletedQuests(startDate: LocalDate, endDate:LocalDate,result:MutableMap<LocalDate,List<String>>): MutableMap<LocalDate,List<String>> {
+        val valid =  selectedCharacterWithStuff.character.completedQuests.filter{
+            //val formatter =
+            //val formatted = current.format(formatter)
+            val q = LocalDateTime.parse(it.value.first,dateFormattingPattern)
+            q.isAfter(startDate.atStartOfDay()) && q.isBefore(endDate.atTime(23,59))
+
+        }
+       /* val numbersMaps = (0 until valid.size).map { i ->
+            i+1 to numbers[it]
+        }*/
+
+        //val result : MutableMap<LocalDate,List<String>> = mutableMapOf()
+        valid.forEach{//now have moments in target
+            //want sorted like date x strings
+            result[LocalDateTime.parse(it.value.first,dateFormattingPattern).toLocalDate()]?.plus(setCalendarDisplayString(it.value.second))
+        }
+        return result
+    }
+
+    private fun setCalendarDisplayString(s: String="",q: QuestWithObjectives?=null): String {
+
+        if (q!=null){
+            return s+q.quest.describe()
+        }
+        return s
+    }
+    fun getCompletedHabits(startDate: LocalDate, endDate:LocalDate, m: MutableMap<LocalDate,List<String>>): MutableMap<LocalDate,List<String>> {
+        val valid =  selectedCharacterWithStuff.character.completedQuests.filter{
+            val q = LocalDateTime.parse(it.value.first,dateFormattingPattern)
+            q.isAfter(startDate.atStartOfDay()) && q.isBefore(endDate.atTime(23,59))
+
+        }
+        /* val numbersMaps = (0 until valid.size).map { i ->
+             i+1 to numbers[it]
+         }*/
+
+        val result : MutableMap<LocalDate,List<String>> = mutableMapOf()
+        valid.forEach{//now have moments in target
+            //want sorted like date x strings
+            result[LocalDateTime.parse(it.value.first,dateFormattingPattern).toLocalDate()]?.plus(setCalendarDisplayString(it.value.second))
+        }
+        return result
+    }
     fun updateByCharacterList(selectedCharacter: CharacterWithStuff=selectedCharacterWithStuff) {
 
         if (selectedCharacterIndex>=0) {

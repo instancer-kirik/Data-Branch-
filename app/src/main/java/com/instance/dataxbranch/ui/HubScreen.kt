@@ -41,11 +41,7 @@ fun HubScreen(viewModel: UserViewModel = hiltViewModel(),
 
 
     val context = LocalContext.current
-    Scaffold(
-
-
-
-    ) { padding ->
+    Scaffold { padding ->
         if (viewModel.singleConditionsDialog.value) {
             if (viewModel.termsDialogState.value) {
                 TermsPopupAlertDialog(viewModel,navigator)

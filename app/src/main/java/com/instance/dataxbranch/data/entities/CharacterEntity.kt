@@ -4,6 +4,7 @@ package com.instance.dataxbranch.data.entities
 
 import androidx.room.*
 import com.instance.dataxbranch.data.MapConverter
+import com.instance.dataxbranch.domain.getNow
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.utils.Converters
 import com.squareup.moshi.JsonClass
@@ -144,7 +145,7 @@ data class CharacterEntity @JvmOverloads constructor(
 //store list of authored quests, nuggets,abilities,items etc
 
 //progression 11/1/2022
-    @ColumnInfo(name = "completedQuests") var completedQuests: Map<Long,Pair<String,String>> =mapOf(),//by id:Title (Or a recognizable String stamp of quest completion with time, xp, etc)
+    @ColumnInfo(name = "completedQuests") var completedQuests: Map<Long,Pair<String,String>> =mapOf(11L to Pair(getNow(),"R"),12L to Pair(LocalDateTime.now().toString(),"Q")),//by id:Title (Or a recognizable String stamp of quest completion with time, xp, etc)
     //Map<ID,Pair<date,slug>>
     //I want dates. to see when you complete a quest.
     //build a calendar. see marks for quest completed. and marks for each habit. Lets get that library

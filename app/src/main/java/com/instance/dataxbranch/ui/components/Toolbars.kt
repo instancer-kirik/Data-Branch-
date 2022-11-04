@@ -170,7 +170,7 @@ fun UserToolbar(navigator: DestinationsNavigator,viewModel:UserViewModel,context
                     if (expanded) {
                         //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                         //only room for 3 buttons this way
-                        Row() {
+                        Row {
                             Button(
                                 onClick = { navigator.navigate(UserScreenDestination) },
                                 modifier = Modifier.padding(2.dp)
@@ -455,7 +455,7 @@ fun QuestToolbar(navigator: DestinationsNavigator) {
                         if (expanded) {
                             //Button(onClick = {navigator.navigate(CloudQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("to cloud quests")}
                             //only room for 3 buttons this way
-                            Row() {
+                            Row {
                                 Button(
                                     onClick = { navigator.navigate(UserScreenDestination) },
                                     modifier = Modifier.padding(2.dp)
