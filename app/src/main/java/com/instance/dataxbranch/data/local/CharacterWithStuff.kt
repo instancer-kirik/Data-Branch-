@@ -1,8 +1,10 @@
 package com.instance.dataxbranch.data.local
 
 //import androidx.coort androidx.comport androidx.compose.runtireber
+import android.util.Log
 import androidx.room.Embedded
 import androidx.room.Relation
+import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.entities.*
 import com.instance.dataxbranch.domain.getNow
 //import com.instance.dataxbranch.data.firestore.FirestoreCharacter
@@ -34,8 +36,9 @@ data class CharacterWithStuff (
     var quests: Array<QuestWithObjectives>,
     //val aidList: Array<String>
 
-){
-val uuid = character.uuid
+) {
+    val uuid = character.uuid
+
     @Relation(
         parentColumn = "inventory",
         entityColumn = "id",
@@ -43,27 +46,28 @@ val uuid = character.uuid
 
         )
     //var inventory: Array<ItemEntity> = arrayOf()
-    var inventory: MutableMap<ItemEntity,Int> = mutableMapOf()
+    var inventory: MutableMap<ItemEntity, Int> = mutableMapOf()
+
     //val aidList: Array<String>
     /*var equipment: MutableMap<String, Long?> = mutableMapOf("L" to null, "R" to null,
         "Head" to null,"Necklace" to null, "Torso" to null,"Legs" to null,"Feets" to null,
         "Shoulders" to null,"Arms" to null,"Wrists" to null, "Hands" to null,
         "Ring1" to null,"Ring2" to null,"Ring3" to null,"Ring4" to null,"Ring5" to null )*/
-    fun fixattunement(){
+    fun fixattunement() {
         //val them=abilities.filter{ it.inloadout }
-        character.attuned = abilities.filter{it.inloadout}.size
+        character.attuned = abilities.filter { it.inloadout }.size
 
-        }
+    }
 
-    fun clearLoadoutAbilities(){
-        abilities.filter{ it.inloadout }.forEach { ae ->
-            ae.inloadout=false
+    fun clearLoadoutAbilities() {
+        abilities.filter { it.inloadout }.forEach { ae ->
+            ae.inloadout = false
         }
     }
 
-    fun combine(tangent: CharacterWithStuff){
+    fun combine(tangent: CharacterWithStuff) {
         character.combine(tangent.character)
-        abilities+=tangent.abilities
+        abilities += tangent.abilities
     }
     /*fun toFireStoreCharacter(fsid:String?=null):FirestoreCharacter{
         if(fsid != null){
@@ -132,27 +136,14 @@ val uuid = character.uuid
         result = 31 * result + quests.contentHashCode()
         return result
     }
-    fun setCompletedFakeQuests(){
-        character.completedQuests = mapOf(11L to Pair(getNow(),"R"),12L to Pair(LocalDateTime.now().toString(),"Q"))//by id:Title (Or a recognizable String stamp of quest completion with time, xp, etc)
 
+    fun setCompletedFakeQuests() {
+        Log.d(TAG,"IN SET fun setCompletedFakeQuests() " )
+
+        character.setCompletedFakeQuests()
     }
-    fun setCompletedFakeHabits(){
-        character.habitTracker = mapOf(11L to Pair(
-            listOf(
-                getNow(),
-                LocalDateTime.of(2022,11,1,11,11).toString(),
-                LocalDateTime.of(2022,11,2,11,11).toString(),
-                LocalDateTime.of(2022,11,3,11,11).toString(),
-                LocalDateTime.of(2022,11,4,11,11).toString(),
-                LocalDateTime.of(2022,11,5,11,11).toString())
-            ,"R"),
-            12L to Pair(listOf(
-                getNow(),
-                LocalDateTime.of(2022,11,1,11,11).toString(),
-                LocalDateTime.of(2022,11,2,11,11).toString(),
-                LocalDateTime.of(2022,11,3,11,11).toString(),
-                LocalDateTime.of(2022,11,4,11,11).toString(),
-                LocalDateTime.of(2022,11,5,11,11).toString()),"Q"))//by id:Title (Or a recognizable String stamp of quest completion with time, xp, etc)
+    fun setCompletedFakeHabits() {
+        character.setCompletedFakeHabits()
     }
 }
    /* fun setStats(m:Map<String,Int>){

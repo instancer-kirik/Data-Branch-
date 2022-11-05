@@ -18,6 +18,7 @@ import com.instance.dataxbranch.data.entities.*
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.domain.dateFormattingPattern
+import com.instance.dataxbranch.domain.parse
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import kotlinx.coroutines.*
 import java.time.LocalDate
@@ -120,7 +121,8 @@ class GeneralRepository(application: Application, db: AppDatabase,
                     mcharacters.indexOfFirst { it.character.uuid == me.selectedCharacterID }
                 if(mcharacters.isNotEmpty()&&selectedCharacterIndex>=0){
                     selectedCharacterWithStuff =mcharacters[selectedCharacterIndex]
-                    Log.d(TAG,"SETS CHARACTER ")
+                    Log.d(TAG,"SETS CHARACTER ${selectedCharacterWithStuff} ")
+
                 }
                 initialized=true
             }
@@ -196,7 +198,12 @@ class GeneralRepository(application: Application, db: AppDatabase,
             mcharacters = CharacterWithStuff(ncharacters)
            //mcharacters.forEach {Log.d(TAG,"REPO BUILT, ${it.toString()} IN LIST")}
             if(selectedCharacterWithStuff.character.name=="DEFAULT_NAME") {
-                selectedCharacterWithStuff = mcharacters.first { it.character.name == "ME" }
+                //11/5/2022 added checking to fix coldstart crash with firstOrNull
+               mcharacters.firstOrNull { it.character.name == "ME" }.also{
+                   if(it!=null)
+                    selectedCharacterWithStuff =it
+                }
+
                 selectedCharacterIndex = 0}
                 if (selectedCharacterWithStuff.abilities.isEmpty()) {
                     putAbilityOnCharacter(AbilityEntity(title = "Add Custom Ability (click +)"))
@@ -381,7 +388,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
     fun resetAndSet(new_me: UserWithAbilities){
         CoroutineScope(Dispatchers.IO).launch {
             uDao.nukeTable()
-            uDao.setMe(me_container.user)
+            uDao.setMe(new_me.user)
         }
         needsSync=true
     }
@@ -465,15 +472,18 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
 
     }}
     */
-    fun computeForCalendar(startDate: LocalDate=LocalDate.of(2022,11,1), endDate:LocalDate=LocalDate.now(),completedQuests:Boolean = true,habits: Boolean = true, quests:Boolean = true):Map<LocalDate,List<String>>{//want date by display
+    fun computeForCalendar(startDate: LocalDate=LocalDate.of(2022,10,1), endDate:LocalDate=LocalDate.of(2023,10,1),completedQuests:Boolean = true,habits: Boolean = true, quests:Boolean = true):Map<LocalDate,List<String>>{//want date by display
         val result : MutableMap<LocalDate,List<String>> = mutableMapOf()
+
         getCompletedQuests(startDate,endDate,result)
-            .also {
-                getCompletedHabits(startDate,endDate,m = it)
+            .also {//return is passed down
+                Log.d(TAG, "result is now $it \n stuff is now  ${selectedCharacterWithStuff.character.habitTracker} ${selectedCharacterWithStuff.character.completedQuests} ${selectedCharacterWithStuff.character.activeQuests}")
+                getCompletedHabits(startDate,endDate,m = it).also{it2->
+                    Log.d(TAG, "result is now $it2")
+                    return getActiveQuests(startDate,endDate,m = it2)
+                }
             }
-            .also{it2->
-                return getActiveQuests(startDate,endDate,m = it2)
-            }
+
     }
 
     private fun getActiveQuests(
@@ -482,7 +492,8 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         m: MutableMap<LocalDate, List<String>>
     ): MutableMap<LocalDate, List<String>> {
         val valid =  selectedCharacterWithStuff.quests.filter{
-            val q = LocalDateTime.parse(it.quest.targetDateTime)
+            val q = parse(it.quest.targetDateTime)
+            Log.d("SPAM","$q ${q.isAfter(startDate.atStartOfDay())} ${q.isBefore(endDate.atTime(23,59))}")
             q.isAfter(startDate.atStartOfDay()) && q.isBefore(endDate.atTime(23,59))
 
         }
@@ -493,19 +504,28 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         //val result : MutableMap<LocalDate,List<String>> = mutableMapOf()
         valid.forEach{//now have moments in target
             //want sorted like date x strings
-            m[LocalDateTime.parse(it.quest.targetDateTime,dateFormattingPattern).toLocalDate()]?.plus(setCalendarDisplayString("A",it))
+
+
+            val atDate= parse(it.quest.targetDateTime).toLocalDate()
+            val displayString = setCalendarDisplayString("A",it)
+            m[atDate]=m[atDate]?.plus(displayString)?:listOf(displayString)
         }
+        Log.d(TAG, "getActiveQuests result is now $m , valid is now $valid")
         return m
     }
 
     fun getCompletedQuests(startDate: LocalDate, endDate:LocalDate,result:MutableMap<LocalDate,List<String>>): MutableMap<LocalDate,List<String>> {
+
         val valid =  selectedCharacterWithStuff.character.completedQuests.filter{
             //val formatter =
             //val formatted = current.format(formatter)
-            val q = LocalDateTime.parse(it.value.first,dateFormattingPattern)
+            val q = parse(it.value.first)
+            Log.d("SPAM","$q ${q.isAfter(startDate.atStartOfDay())} ${q.isBefore(endDate.atTime(23,59))}")
             q.isAfter(startDate.atStartOfDay()) && q.isBefore(endDate.atTime(23,59))
 
+
         }
+        Log.d(TAG,"Completed quests are ${selectedCharacterWithStuff.character.completedQuests} ,valid = $valid" )
        /* val numbersMaps = (0 until valid.size).map { i ->
             i+1 to numbers[it]
         }*/
@@ -513,7 +533,9 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         //val result : MutableMap<LocalDate,List<String>> = mutableMapOf()
         valid.forEach{//now have moments in target
             //want sorted like date x strings
-            result[LocalDateTime.parse(it.value.first,dateFormattingPattern).toLocalDate()]?.plus(setCalendarDisplayString(it.value.second))
+            val atDate= parse(it.value.first).toLocalDate()
+            val displayString = setCalendarDisplayString(it.value.second)
+            result[atDate]=result[atDate]?.plus(displayString)?:listOf(displayString)
         }
         return result
     }
@@ -526,21 +548,35 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         return s
     }
     fun getCompletedHabits(startDate: LocalDate, endDate:LocalDate, m: MutableMap<LocalDate,List<String>>): MutableMap<LocalDate,List<String>> {
-        val valid =  selectedCharacterWithStuff.character.completedQuests.filter{
-            val q = LocalDateTime.parse(it.value.first,dateFormattingPattern)
-            q.isAfter(startDate.atStartOfDay()) && q.isBefore(endDate.atTime(23,59))
+
+        selectedCharacterWithStuff.character.habitTracker.forEach{
+            var q:LocalDate
+                it.value.first.forEach{it2->
+                    q=parse(it2).toLocalDate()
+                    val displayString = setCalendarDisplayString(it.value.second)
+                    //m.put(q.toLocalDate(),it.value.second)
+                    m[q]=m[q]?.plus(displayString)?:listOf(displayString)
+                    Log.d("SPAM","$q ${q.isAfter(startDate)} ${q.isBefore(endDate)}")
+                }
+
+
+            //q.isAfter(startDate.atStartOfDay()) && q.isBefore(endDate.atTime(23,59))
 
         }
         /* val numbersMaps = (0 until valid.size).map { i ->
              i+1 to numbers[it]
          }*/
 
-        val result : MutableMap<LocalDate,List<String>> = mutableMapOf()
+       /* //val result : MutableMap<LocalDate,List<String>> = mutableMapOf()
         valid.forEach{//now have moments in target
             //want sorted like date x strings
-            result[LocalDateTime.parse(it.value.first,dateFormattingPattern).toLocalDate()]?.plus(setCalendarDisplayString(it.value.second))
-        }
-        return result
+            //m[parse(it.value.first).toLocalDate()]?.plus(setCalendarDisplayString(it.value.second))
+            val atDate= parse(it.value.first).toLocalDate()
+
+            m[atDate]=m[atDate]?.plus(displayString)?:listOf(displayString)
+        }*/
+        Log.d(TAG, "HABITS result is now $m ")
+        return m
     }
     fun updateByCharacterList(selectedCharacter: CharacterWithStuff=selectedCharacterWithStuff) {
 
@@ -597,7 +633,7 @@ fun MutableMap<ItemEntity, Int>.plus(item: ItemEntity): MutableMap<ItemEntity, I
     return this
 }
 fun Map<Long, Int>.plus(iid: Long,isStackable:Boolean): Map<Long, Int> {
-    val result = this as MutableMap<Long, Int>
+    val result:MutableMap<Long,Int> = this as MutableMap<Long, Int>
     if (isStackable){
         //present + stackable
         //absent + stackable

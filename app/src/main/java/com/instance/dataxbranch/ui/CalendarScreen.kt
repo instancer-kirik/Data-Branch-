@@ -51,7 +51,7 @@ fun CalendarScreen(
         Column {
             val stuff = uViewModel.getCalendarStuff()
             StaticCalendar(modifier= Modifier,stuff)
-            Text("$padding\n$stuff")
+            Text("$padding\n stuff is $stuff")
 
 
         }

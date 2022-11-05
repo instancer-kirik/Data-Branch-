@@ -29,8 +29,6 @@ w
 Gapp/src/main/java/com/instance/dataxbranch/data/entities/MathProblem.kt,1\0\101925b7de30e01fa8cdb41687cf3aae77261afc
 n
 >app/src/main/java/com/instance/dataxbranch/data/local/Entry.kt,6\4\648bde80a48165e88d59884fa8233b7bffe55d68
-z
-Japp/src/main/java/com/instance/dataxbranch/data/local/UserWithAbilities.kt,b\e\be1975757804d88f83542ee3793fa9570dca9c30
 r
 Bapp/src/main/java/com/instance/dataxbranch/data/DataOrException.kt,f\1\f1c18423feb8d9d9294091dfb0030fa7b45bee1b
 r
@@ -77,8 +75,6 @@ Uapp/src/main/java/com/instance/dataxbranch/ui/components/AddQuestEntityAlertDia
 Rapp/src/main/java/com/instance/dataxbranch/ui/components/AddResponseAlertDialog.kt,3\d\3d63c1f95056eb224f4930b3a02987a91d6d63bc
 z
 Japp/src/main/java/com/instance/dataxbranch/ui/components/DetailActivity.kt,4\5\456f0cdf79688ef376aa7c989a92890363ac8c0a
-à
-Xapp/src/main/java/com/instance/dataxbranch/ui/components/EditAbilityEntityAlertDialog.kt,7\1\715d5c37af27b19d4b2f621ed5cd8261eccf5ed4
 Ç
 Rapp/src/main/java/com/instance/dataxbranch/ui/components/EditLoadoutAlertDialog.kt,b\9\b96d135f24239b95be6e18ececfad1c56b84ba08
 z
@@ -93,8 +89,6 @@ u
 Eapp/src/main/java/com/instance/dataxbranch/ui/components/QuestCard.kt,e\d\ed841f8cddbaca0e32032638057f6c5d378389db
 y
 Iapp/src/main/java/com/instance/dataxbranch/ui/viewModels/ItemViewModel.kt,9\3\937ed37bada164bf1874401efc53dd193ff65acc
-t
-Dapp/src/main/java/com/instance/dataxbranch/ui/AbilityDetailScreen.kt,0\9\09639f50cae19fc0036af293ad50edb97ec329bc
 {
 Kapp/src/main/java/com/instance/dataxbranch/ui/CharacterQuestDetailScreen.kt,9\f\9f780278531b195dc3b47005b74e3bb69a71fc72
 u
@@ -153,8 +147,6 @@ p
 @app/src/main/java/com/instance/dataxbranch/ui/InventoryScreen.kt,3\d\3dfec1849dd140cb0895139affc280234b7e5440
 v
 Fapp/src/main/java/com/instance/dataxbranch/ui/CharacterSelectScreen.kt,0\8\08d000f97fbb168fc03a4503586429263a039b02
-o
-?app/src/main/java/com/instance/dataxbranch/data/daos/UserDao.kt,2\e\2e96603f92ea9d0d62d2d2a288c5a993eab8cf32
 Ñ
 Tapp/src/main/java/com/instance/dataxbranch/ui/components/AddItemEntityAlertDialog.kt,7\d\7de2e722d1b4a8c5bf931ceeee37fe4e2ed30a31
 ê
@@ -185,12 +177,6 @@ p
 @app/src/main/java/com/instance/dataxbranch/ui/AbilitiesScreen.kt,e\1\e1506c007b959ac9c9126b7b83ef3061412698ea
 l
 <app/src/main/java/com/instance/dataxbranch/core/Constants.kt,e\f\efd79d22c064fa431bbf205333959cf5513e1eb4
-Å
-Qapp/src/main/java/com/instance/dataxbranch/ui/components/TermsPopupAlertDialog.kt,e\8\e878ab92068bf0b95e7143487a4daa230b148f27
-t
-Dapp/src/main/java/com/instance/dataxbranch/ui/components/Toolbars.kt,5\f\5fa9a3c2d574e39789fcae277e649a7a592bdf96
-l
-<app/src/main/java/com/instance/dataxbranch/ui/LoginScreen.kt,e\8\e899b378da4ab1879b60988ce29b5c7c1c61be81
 p
 @app/src/main/java/com/instance/dataxbranch/data/entities/User.kt,2\e\2ecb26f588ed083781324a2b551f4c89a77aac3d
 F
@@ -207,3 +193,5 @@ y
 Iapp/src/main/java/com/instance/dataxbranch/data/cloud/QuestsRepository.kt,b\e\bea00a08fe6b38d2ac2007bd864403b9a8fdbbdc
 |
 Lapp/src/main/java/com/instance/dataxbranch/data/cloud/QuestRepositoryImpl.kt,3\5\3591557447593412edd4b2142df584ae72f3fee7
+y
+Iapp/src/main/java/com/instance/dataxbranch/ui/viewModels/UserViewModel.kt,d\3\d3fd52bf122d8859e12c8943b4eb345860af3788

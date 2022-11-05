@@ -145,7 +145,7 @@ data class CharacterEntity @JvmOverloads constructor(
 //store list of authored quests, nuggets,abilities,items etc
 
 //progression 11/1/2022
-    @ColumnInfo(name = "completedQuests") var completedQuests: Map<Long,Pair<String,String>> =mapOf(11L to Pair(getNow(),"R"),12L to Pair(LocalDateTime.now().toString(),"Q")),//by id:Title (Or a recognizable String stamp of quest completion with time, xp, etc)
+    @ColumnInfo(name = "completedQuests") var completedQuests: Map<Long,Pair<String,String>> =mapOf(),//by id:Title (Or a recognizable String stamp of quest completion with time, xp, etc)
     //Map<ID,Pair<date,slug>>
     //I want dates. to see when you complete a quest.
     //build a calendar. see marks for quest completed. and marks for each habit. Lets get that library
@@ -345,5 +345,34 @@ return newer
             editing[quest.quest.id]=Pair(LocalDateTime.now().toString(),quest.quest.describe())
         }
         completedQuests=editing//done
+    }
+    fun setCompletedFakeHabits(){
+        habitTracker = mapOf(11L to Pair(
+            listOf(
+                getNow(),
+                LocalDateTime.of(2022,11,1,11,11).toString(),
+                LocalDateTime.of(2022,11,2,11,11).toString(),
+                LocalDateTime.of(2022,11,3,11,11).toString(),
+                LocalDateTime.of(2022,11,4,11,11).toString(),
+                LocalDateTime.of(2022,11,5,11,11).toString(),
+                LocalDateTime.of(2022,11,6,11,11).toString(),
+                LocalDateTime.of(2022,11,7,11,11).toString(),
+                LocalDateTime.of(2022,11,8,11,11).toString(),
+                LocalDateTime.of(2022,11,9,11,11).toString())
+            ,"R"),
+            12L to Pair(listOf(
+                getNow(),
+                LocalDateTime.of(2022,11,1,11,11).toString(),
+                LocalDateTime.of(2022,11,2,11,11).toString(),
+                LocalDateTime.of(2022,11,3,11,11).toString(),
+                LocalDateTime.of(2022,11,4,11,11).toString(),
+                LocalDateTime.of(2022,11,9,11,11).toString(),
+                LocalDateTime.of(2022,11,12,11,11).toString(),
+                LocalDateTime.of(2022,11,5,11,11).toString()),"Q"))//by id:Title (Or a recognizable String stamp of quest completion with time, xp, etc)
+    }
+    fun setCompletedFakeQuests(){
+        completedQuests = mapOf(14L to Pair(getNow(),"S"),16L to Pair(LocalDateTime.now().toString(),"T"),
+            17L to Pair (LocalDateTime.of(2022,11,1,11,11).toString(),"W"))//by id:Title (Or a recognizable String stamp of quest completion with time, xp, etc)
+
     }
 }
