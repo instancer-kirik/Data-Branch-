@@ -536,6 +536,7 @@ return "me @ userViewModel"
 
 
     fun save(c: CharacterWithStuff?=null) {
+        Log.d(TAG, "BISH save input handler")
         if (c != null) {
             generalRepository.save(c)
         }else{generalRepository.save()}//by default uses selected in repo

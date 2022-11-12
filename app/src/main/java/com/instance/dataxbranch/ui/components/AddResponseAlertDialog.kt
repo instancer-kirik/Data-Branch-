@@ -76,7 +76,7 @@ fun AddResponseAlertDialog (
                 TextButton(
                     onClick = {
                         viewModel.openDialogState.value = false
-                        viewModel.addResponse(title, description,me.user.uname,authorid=(me.user.fsid +""))
+                        viewModel.addResponse(title, description,me.user.uname,authorid=(me.user.me_id +""))
                     }
                 ) {
                     Text(

@@ -1,4 +1,4 @@
-package com.instance.dataxbranch.ui.calendar
+package com.instance.dataxbranch.ui.calendar.custom
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import java.time.DayOfWeek
+import com.instance.dataxbranch.ui.calendar.WeekDay
 
 import java.time.format.TextStyle
 import java.util.*
@@ -19,8 +19,8 @@ internal data class Week(
 )
 
 @Composable
-fun DefaultWeekHeader(
-    daysOfWeek: List<DayOfWeek>,
+fun Default12dWeekHeader(
+    daysOfWeek: List<DayOf12dWeek>,
     modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier) {

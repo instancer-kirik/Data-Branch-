@@ -1,4 +1,4 @@
-package com.instance.dataxbranch.ui.calendar
+package com.instance.dataxbranch.ui.calendar.custom
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -10,14 +10,15 @@ import androidx.compose.ui.platform.testTag
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import java.time.DayOfWeek
-
-
+import com.instance.dataxbranch.ui.calendar.DayState
+import com.instance.dataxbranch.ui.calendar.SelectionState
 import java.time.LocalDate
+
+
 import java.time.YearMonth
 
 
-internal const val DaysOfWeek = 7
+internal const val DaysOfWeek = 12
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -25,11 +26,11 @@ internal fun <T : SelectionState> MonthPager(
     showAdjacentMonths: Boolean,
     selectionState: T,
     monthState: MonthState,
-    daysOfWeek: List<DayOfWeek>,
+    daysOfWeek: List<DayOf12dWeek>,
     today: LocalDate,
     modifier: Modifier = Modifier,
     dayContent: @Composable BoxScope.(DayState<T>) -> Unit,
-    weekHeader: @Composable BoxScope.(List<DayOfWeek>) -> Unit,
+    weekHeader: @Composable BoxScope.(List<DayOf12dWeek>) -> Unit,
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit,
 ) {
     val startIndex = PagerItemCount / 2
@@ -50,7 +51,7 @@ internal fun <T : SelectionState> MonthPager(
         state = pagerState,
         verticalAlignment = Alignment.Top,
     ) { index ->
-        MonthContent(
+        Month12Content(
             showAdjacentMonths = showAdjacentMonths,
             selectionState = selectionState,
             currentMonth = monthPagerState.getMonthForPage(index.toIndex()),
@@ -65,15 +66,15 @@ internal fun <T : SelectionState> MonthPager(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-internal fun <T : SelectionState> MonthContent(
+internal fun <T : SelectionState> Month12Content(
     showAdjacentMonths: Boolean,
     selectionState: T,
     currentMonth: YearMonth,
-    daysOfWeek: List<DayOfWeek>,
+    daysOfWeek: List<DayOf12dWeek>,
     today: LocalDate,
     modifier: Modifier = Modifier,
     dayContent: @Composable BoxScope.(DayState<T>) -> Unit,
-    weekHeader: @Composable BoxScope.(List<DayOfWeek>) -> Unit,
+    weekHeader: @Composable BoxScope.(List<DayOf12dWeek>) -> Unit,
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit,
 ) {
     Column {

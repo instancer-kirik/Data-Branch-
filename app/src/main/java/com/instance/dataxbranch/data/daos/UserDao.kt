@@ -2,6 +2,7 @@ package com.instance.dataxbranch.data.daos
 
 //import android.util.Log
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.entities.*
@@ -51,14 +52,20 @@ abstract class UserDao {
         insert(user)
      }
 
-    @Transaction
+
+
+    @Query("SELECT * FROM characters ORDER BY uuid LIMIT 1")
+    abstract fun isPrimed(): CharacterEntity
+
+
+
     @Upsert
     fun save(user: User){
         Log.d(TAG,"selected character id is ${user.selectedCharacterID}")}
 
-    @Transaction
+
     @Upsert
-    abstract fun save(char: CharacterEntity)
+    fun save(char: CharacterEntity){Log.d(TAG,"BISH, IN SAVE")}
 
     @Transaction
     @Query("SELECT * FROM abilities")

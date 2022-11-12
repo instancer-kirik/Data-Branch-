@@ -1,20 +1,22 @@
-package com.instance.dataxbranch.ui.calendar
+package com.instance.dataxbranch.ui.calendar.custom
 
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.instance.dataxbranch.ui.calendar.*
+import com.instance.dataxbranch.ui.calendar.custom.DaysOfWeek
+import com.instance.dataxbranch.ui.calendar.custom.MonthPager
+import com.instance.dataxbranch.ui.calendar.custom.rotateRight
 
 
-import java.time.DayOfWeek
 import java.time.LocalDate
+
+
 import java.time.YearMonth
 import java.time.temporal.WeekFields
 import java.util.Locale
@@ -54,21 +56,21 @@ class CalendarState<T : SelectionState>(
  * @param monthContainer container composable for all the days in current month
  */
 @Composable
-fun SelectableCalendar(
+fun SelectableCalendar12(
     modifier: Modifier = Modifier,
-    firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek,
+    firstDayOfWeek: DayOf12dWeek = getFirstDayOfWeek(),
     today: LocalDate = LocalDate.now(),
     showAdjacentMonths: Boolean = true,
     horizontalSwipeEnabled: Boolean = true,
     calendarState: CalendarState<DynamicSelectionState> = rememberSelectableCalendarState(),
     dayContent: @Composable BoxScope.(DayState<DynamicSelectionState>) -> Unit = { DisplayDay(it) },
     monthHeader: @Composable ColumnScope.(MonthState) -> Unit = { DefaultMonthHeader(it) },
-    weekHeader: @Composable BoxScope.(List<DayOfWeek>) -> Unit = { DefaultWeekHeader(it) },
+    weekHeader: @Composable BoxScope.(List<DayOf12dWeek>) -> Unit = { Default12dWeekHeader(it) },
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit = { content ->
         Box { content(PaddingValues()) }
     },
 ) {
-    Calendar(
+    Calendar12(
         modifier = modifier,
         firstDayOfWeek = firstDayOfWeek,
         today = today,
@@ -105,26 +107,31 @@ fun SelectableCalendar(
  * @param monthContainer container composable for all the days in current month
  */
 @Composable
-fun StaticCalendar(
+fun StaticCalendar12(
 
     modifier: Modifier,
     data:Map<LocalDate, List<String>>,
-    firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek,
+    firstDayOfWeek: DayOf12dWeek = getFirstDayOfWeek(),
     today: LocalDate = LocalDate.now(),
     showAdjacentMonths: Boolean = true,
     horizontalSwipeEnabled: Boolean = true,
     calendarState: CalendarState<EmptySelectionState> = rememberCalendarState(),
     dayContent: @Composable BoxScope.(DayState<EmptySelectionState>) -> Unit = {
+        //asdf.date
         //this works like if you've got data in passed map for day, it displays it, else does prime arg val
-        data[it.date]?.let { it1 -> DisplayDay(it,displayData=it1) }?: DisplayDay(state = it)
+        //data[asdf.date]?.let { it1 -> DisplayDay(asdf,displayData=it1) }?:run{DisplayDay(asdf)}
+        com.instance.dataxbranch.ui.calendar.DisplayDay(state = it)
+
+        // data[it.date]?.let { it1 -> DisplayDay(it,displayData=it1) }?:
     },
+
     monthHeader: @Composable ColumnScope.(MonthState) -> Unit = { DefaultMonthHeader(it) },
-    weekHeader: @Composable BoxScope.(List<DayOfWeek>) -> Unit = { DefaultWeekHeader(it) },
+    weekHeader: @Composable BoxScope.(List<DayOf12dWeek>) -> Unit = { Default12dWeekHeader(it) },
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit = { content ->
         Box { content(PaddingValues()) }
     },
 ) {
-    Calendar(
+    Calendar12(
         modifier = modifier,
         firstDayOfWeek = firstDayOfWeek,
         today = today,
@@ -156,23 +163,23 @@ fun StaticCalendar(
  * @param monthContainer container composable for all the days in current month
  */
 @Composable
-fun <T : SelectionState> Calendar(
+fun <T : SelectionState> Calendar12(
     calendarState: CalendarState<T>,
     modifier: Modifier = Modifier,
-    firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek,
+    firstDayOfWeek: DayOf12dWeek = getFirstDayOfWeek(),
     today: LocalDate = LocalDate.now(),
     showAdjacentMonths: Boolean = true,
     horizontalSwipeEnabled: Boolean = true,
     dayContent: @Composable BoxScope.(DayState<T>) -> Unit = { DisplayDay(it) },
     monthHeader: @Composable ColumnScope.(MonthState) -> Unit = { DefaultMonthHeader(it) },
-    weekHeader: @Composable BoxScope.(List<DayOfWeek>) -> Unit = { DefaultWeekHeader(it) },
+    weekHeader: @Composable BoxScope.(List<DayOf12dWeek>) -> Unit = { Default12dWeekHeader(it) },
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit = { content ->
-        Box { content(PaddingValues()) }
+        BoxWithConstraints { content(PaddingValues()) }
     },
 ) {
 
     val daysOfWeek = remember(firstDayOfWeek) {
-        DayOfWeek.values().rotateRight(DaysOfWeek - firstDayOfWeek.ordinal)
+       DayOf12dWeek.values().rotateRight(DaysOfWeek - firstDayOfWeek.ordinal)
     }
 
     Column(
@@ -191,7 +198,7 @@ fun <T : SelectionState> Calendar(
                 monthContainer = monthContainer,
             )
         } else {
-            MonthContent(
+            Month12Content(
                 currentMonth = calendarState.monthState.currentMonth,
                 showAdjacentMonths = showAdjacentMonths,
                 selectionState = calendarState.selectionState,
@@ -205,6 +212,10 @@ fun <T : SelectionState> Calendar(
     }
 }
 
+fun getFirstDayOfWeek() = DayOf12dWeek.A
+
+
+fun standardGetFirstDayOfWeek()=WeekFields.of(Locale.getDefault()).firstDayOfWeek
 /**
  * Helper function for providing a [CalendarState] implementation with selection mechanism.
  *

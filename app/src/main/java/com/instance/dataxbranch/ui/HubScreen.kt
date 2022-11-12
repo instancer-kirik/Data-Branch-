@@ -49,7 +49,7 @@ fun HubScreen(viewModel: UserViewModel = hiltViewModel(),
         }
         //startActivity(context, StartupActivity.createIntent(context),null)
         var me = viewModel.getMeWithAbilities()
-        if (me.user.fsid=="-1")
+        //if (me.user.fsid=="-1")
         if (me.user.uname ==DEFAULT_UNAME && !me.user.initflag){viewModel.refresh(true,true)
             //Log.d(TAG,"REPEATER")
             /*navigator.navigate(

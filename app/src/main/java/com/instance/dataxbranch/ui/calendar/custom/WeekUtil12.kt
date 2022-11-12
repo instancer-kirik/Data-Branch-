@@ -1,18 +1,19 @@
-package com.instance.dataxbranch.ui.calendar
+package com.instance.dataxbranch.ui.calendar.custom
 
 
 
 
-import java.time.DayOfWeek
+
+import com.instance.dataxbranch.ui.calendar.WeekDay
 import java.time.LocalDate
 import java.time.YearMonth
 
 
-private const val DaysInAWeek = 7
+var DaysInAWeek = 12
 
 internal fun YearMonth.getWeeks(
     includeAdjacentMonths: Boolean,
-    firstDayOfTheWeek: DayOfWeek,
+    firstDayOfTheWeek: DayOf12dWeek,
     today: LocalDate = LocalDate.now(),
 ): List<Week> {
     val daysLength = lengthOfMonth()
@@ -40,16 +41,25 @@ internal fun YearMonth.getWeeks(
                         return@mapNotNull null
                     }
                 }
-
-                WeekDay(
+ WeekDay(
                     date = date,
                     isFromCurrentMonth = isFromCurrentMonth,
                     isCurrentDay = date.equals(today),
                 )
+               /* LocalDate.toThis(date)?.let {
+                    WeekDay12(
+                        date = it,
+                        isFromCurrentMonth = isFromCurrentMonth,
+                        isCurrentDay = date.equals(today),
+                    )
+                }*/
             }
         )
     }
 }
+// fun YearMonth.atDay(dayOfMonth: Int): LocalDate? {
+//    throw RuntimeException("Stub!")
+//}
 // internal infix fun DayOfWeek.daysUntil(other: DayOfWeek) = (7 + (value - other.value)) % 7
 //private infix fun java.time.DayOfWeek.daysUntil(other: DayOfWeek)= (7 + (value - other.value)) % 7
 ///IF i want to have 12 day weeks, need to make:

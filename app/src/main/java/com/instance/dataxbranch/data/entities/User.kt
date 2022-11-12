@@ -24,7 +24,7 @@ import java.util.*
 @JsonClass(generateAdapter=true)
 data class User @JvmOverloads constructor(
     @ColumnInfo(name = "me_id")@PrimaryKey val me_id: String = java.util.UUID.randomUUID().toString(),
-    @ColumnInfo(name = "firestore_id") var fsid: String = "-1",
+    //@ColumnInfo(name = "firestore_id") var fsid: String = "-1",
    // @ColumnInfo(name = "title") var title: String? = null,
     @ColumnInfo(name = "uid")val uid: Long = 1L,
     //@ColumnInfo(name = "id") var id: Long=0,

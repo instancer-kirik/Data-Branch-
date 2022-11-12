@@ -1,4 +1,4 @@
-package com.instance.dataxbranch.ui.calendar
+package com.instance.dataxbranch.ui.calendar.custom
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -15,7 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.instance.dataxbranch.ui.calendar.DayState
+import com.instance.dataxbranch.ui.calendar.SelectionState
 import java.time.LocalDate
+
 
 @Composable
 fun <T : SelectionState> DisplayDay(
@@ -35,8 +38,8 @@ fun <T : SelectionState> DisplayDay(
     Card(
         modifier = modifier
             .aspectRatio(1f)
-            .padding(2.dp),
-        elevation = if (state.isFromCurrentMonth) 4.dp else 0.dp,
+            .padding(0.dp),
+        elevation = if (state.isFromCurrentMonth) 1.dp else 0.dp,
         border = if (state.isCurrentDay) BorderStroke(1.dp, currentDayColor) else null,
         contentColor = if (isSelected) selectionColor else contentColorFor(
             backgroundColor = MaterialTheme.colors.surface

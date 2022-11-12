@@ -1,31 +1,26 @@
 package com.instance.dataxbranch.data.repository
 
-import android.app.Application
-import android.util.Log
 //import android.util.Log
 
+//import com.instance.dataxbranch.data.firestore.CloudUser
+
+import android.app.Application
+import android.util.Log
+import androidx.lifecycle.LiveData
 import com.instance.dataxbranch.core.Constants.TAG
-
-import com.instance.dataxbranch.data.daos.AbilityDao
-
-import com.instance.dataxbranch.data.daos.UserDao
-
 import com.instance.dataxbranch.data.AppDatabase
+import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.ItemDao
 import com.instance.dataxbranch.data.daos.QuestDao
+import com.instance.dataxbranch.data.daos.UserDao
 import com.instance.dataxbranch.data.entities.*
-//import com.instance.dataxbranch.data.firestore.CloudUser
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
-import com.instance.dataxbranch.domain.dateFormattingPattern
 import com.instance.dataxbranch.domain.parse
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import kotlinx.coroutines.*
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
-
 import javax.inject.Singleton
 import kotlin.properties.Delegates
 
@@ -81,27 +76,29 @@ class GeneralRepository(application: Application, db: AppDatabase,
         }
     }
 
-    fun primeCharacters() {
-    mcharacters = listOf(
-        CharacterWithStuff(
-        CharacterEntity(name ="ME"),
-        listOf(AbilityEntity(title = "add an ability (tap +)")),
-        arrayOf(QuestWithObjectives(QuestEntity(title="Add A Quest") ,listOf()))
-        ),
-        CharacterWithStuff(
-        CharacterEntity(name ="PRIME1"),
-//        listOf(AbilityEntity(title = "APRIME1")),
-//        arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME1") ,listOf()))
-        ),
-        CharacterWithStuff(
-        CharacterEntity(name ="PRIME2"),
-//        listOf(AbilityEntity(title = "APRIME2")),
-//        arrayOf(QuestWithObjectives(QuestEntity(title="QPRIME2") ,listOf()))
-        )
-    )
-        //selectedCharacterWithStuff= mcharacters.first { it.character.name == "ME" }
-        CoroutineScope(Dispatchers.IO).launch {
-            mcharacters.forEach{uDao.prime(it.character)}  }
+    fun primeCharacters(): List<CharacterWithStuff>? {
+    //selectedCharacterWithStuff= mcharacters.first { it.character.name == "ME" }
+        if (uDao.isPrimed()==null) {
+            //table is empty
+
+
+            val charme = CharacterWithStuff(
+                CharacterEntity(name ="ME"),
+
+            listOf(AbilityEntity(title = "add an ability (tap +)")),
+            arrayOf(QuestWithObjectives(QuestEntity(title="Add A Quest") ,listOf()))
+            )
+            uDao.prime(charme.character)//should keep abilities maybe
+            uDao.prime( CharacterEntity(name ="PRIME1") )
+            uDao.prime( CharacterEntity(name ="PRIME2"))
+
+            //  mcharacters.forEach{uDao.prime()}  }
+        } else {
+            // table is not empty
+            Log.d("GeneralRepo -- primeCharacters", "NO OP ")
+        }
+
+        return CharacterWithStuff(uDao.getAllCharacters())
 }
     fun sync(andItems:Boolean = false, andQuests:Boolean = false){
 //        fixInventory()
@@ -171,11 +168,15 @@ class GeneralRepository(application: Application, db: AppDatabase,
             //Log.d(TAG,"FUCKING SAVED ${char.character}" )
 //            selectedCharacterWithStuff=char
             ////////////////////////////////////////////////might switch order. this was the way it was
-            uDao.save(char.character)
+            try {
+                uDao.save(char.character)
+            }catch (e: Exception){
+                Log.d(TAG,"GOTCHA BISH $e")
+            }
             updateByCharacterList(char)
-            /*char.quests.forEach {qDao.update(it)}
-            char.abilities.forEach{aDao.update(it)}
-            char.inventory.forEach{iDao.update(it)}*/
+            //char.quests.forEach {qDao.update(it)}
+            //char.abilities.forEach{aDao.update(it)}
+            //char.inventory.forEach{iDao.update(it)}
             needsSync=true
         }
     fun syncAE(ae:AbilityEntity=selectedAE): Job = CoroutineScope(Dispatchers.IO).launch {
@@ -190,12 +191,13 @@ class GeneralRepository(application: Application, db: AppDatabase,
     fun getAllCharacters():Job =
 
         CoroutineScope(Dispatchers.IO).launch {
-            if (mcharacters.isEmpty()){ primeCharacters()
-
+            if (mcharacters.isEmpty()){
+                mcharacters = primeCharacters()?:CharacterWithStuff(uDao.getAllCharacters())
             }
-            ncharacters = uDao.getAllCharacters()
-            //Log.d(TAG,"REPO BUILT, ${ncharacters} IN LIST")
-            mcharacters = CharacterWithStuff(ncharacters)
+            else{ ncharacters = uDao.getAllCharacters()
+                //Log.d(TAG,"REPO BUILT, ${ncharacters} IN LIST")
+                mcharacters = CharacterWithStuff(ncharacters)}
+
            //mcharacters.forEach {Log.d(TAG,"REPO BUILT, ${it.toString()} IN LIST")}
             if(selectedCharacterWithStuff.character.name=="DEFAULT_NAME") {
                 //11/5/2022 added checking to fix coldstart crash with firstOrNull
@@ -245,9 +247,12 @@ class GeneralRepository(application: Application, db: AppDatabase,
             Log.d(TAG,"REPO CALLED, seen $seen ALREADY IN LIST")*/
 
 
-    private fun CharacterWithStuff(character: CharacterEntity,) : CharacterWithStuff {
+    /*private fun CharacterWithStuff(character: CharacterEntity) : CharacterWithStuff {
         return CharacterWithStuff(character,getAbilitiesbyCharacter(character),getQuestsbyCharacter(character))
-    }
+    }*/
+//    private fun CharacterWithStuff(character: CharacterEntity) : CharacterWithStuff {
+//        return CharacterWithStuff(character,getAbilitiesbyCharacter(character),getQuestsbyCharacter(character))
+//    }
     private fun CharacterWithStuff(characters: List<CharacterEntity>) :List<CharacterWithStuff> {
         var result : MutableList<CharacterWithStuff> = mutableListOf()
         characters.forEach {character->
@@ -293,18 +298,8 @@ class GeneralRepository(application: Application, db: AppDatabase,
                     // do something else
 
             }*/
-     fun getCharacterWithStuff(uuid: UUID): CharacterWithStuff {
-        //var abilities: List<AbilityEntity> =listOf()
-        //var qwos: Array<QuestWithObjectives> =questsRepository.getQuests()
+    private fun getCharacterWithStuff(uuid: UUID): CharacterWithStuff {
            val character = uDao.getCharacterEntity(uuid)
-            //character.abilities.forEach{ abilities=abilities.plus(aDao.getAbilitesByaid(it))}
-           // abilities =
-            //character.quests.forEach{qwos = qwos.plus(questsRepository.questById(it))}
-           // qwos =
-           //val objectives: List<ObjectiveEntity> = getObjectiveEntityList(id)
-           //val qwo = QuestWithObjectives(quest,objectives)
-
-        //qwos.filter{it.quest.id in character.quests}.toTypedArray()
            return CharacterWithStuff(character,
                mabilities.filter{it.aid in character.abilities},
                getQuestsbyCharacter(character))
@@ -319,6 +314,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
     }
         fun putQuestOnCharacter(questEntity: QuestEntity){
             //var qwo: QuestWithObjectives =
+            Log.d(TAG, "BISH QUESTED")
             CoroutineScope(Dispatchers.IO).launch {
                 selectedCharacterWithStuff.character.quests=selectedCharacterWithStuff.character.quests.plus(qDao.save(questEntity))
                 //uDao.save(selectedCharacterWithStuff.character)
@@ -329,6 +325,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
         }
     fun putQuestOnCharacter(quest: QuestWithObjectives){
         //var qwo: QuestWithObjectives =
+        Log.d(TAG, "BISH QUESTED2")
         CoroutineScope(Dispatchers.IO).launch {
             selectedCharacterWithStuff.character.quests=selectedCharacterWithStuff.character.quests.plus(qDao.save(quest))
             //uDao.save(selectedCharacterWithStuff.character)
@@ -341,13 +338,14 @@ class GeneralRepository(application: Application, db: AppDatabase,
         selectedCharacterWithStuff.character.abilities=selectedCharacterWithStuff.character.abilities.plus(ae.aid)
         selectedCharacterWithStuff.abilities= selectedCharacterWithStuff.abilities.plus(ae)
         CoroutineScope(Dispatchers.IO).launch {
+            Log.d(TAG, "BISH Ability")
             save()
             // udao.update(me)
         }
     }
 
     fun putItemOnCharacter(item: ItemEntity=itemRepository.selectedItem) {
-
+        Log.d(TAG, "BISH item got")
         selectedCharacterWithStuff.character.inventory=selectedCharacterWithStuff.character.inventory.plus(item.iid,item.stackable)
 
         selectedCharacterWithStuff.inventory= selectedCharacterWithStuff.inventory.plus(item)
@@ -590,8 +588,8 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         //Log.d("REPO", "mcharacters updated index $selectedCharacterIndex with $selectedCharacter ================================from --------------OLD--------------- $old")
     }
 
-    fun deleteCharacter(character: CharacterWithStuff, ) {
-        mcharacters=mcharacters.filter { it.character.uuid != character.uuid }
+    fun deleteCharacter(character: CharacterWithStuff) {
+        mcharacters=mcharacters.filter { it.character.uuid != character.character.uuid }
         CoroutineScope(Dispatchers.IO).launch {
             uDao.delete(character.character) //check to see if not deleting quests/abilities
         }
@@ -633,7 +631,8 @@ fun MutableMap<ItemEntity, Int>.plus(item: ItemEntity): MutableMap<ItemEntity, I
     return this
 }
 fun Map<Long, Int>.plus(iid: Long,isStackable:Boolean): Map<Long, Int> {
-    val result:MutableMap<Long,Int> = this as MutableMap<Long, Int>
+    //gets around empty map cast as mutablemap err
+    val result:MutableMap<Long,Int> = if(this.isEmpty()){ mutableMapOf() }else{ this as MutableMap<Long, Int>}
     if (isStackable){
         //present + stackable
         //absent + stackable

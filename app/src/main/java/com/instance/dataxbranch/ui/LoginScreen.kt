@@ -60,10 +60,10 @@ fun LoginScreen (viewModel: UserViewModel = hiltViewModel(),
         }
         Column {
             val fsid = viewModel.whoAmI()
-            val myfsid = viewModel.getMeWithAbilities().user.fsid
+            //val myfsid = viewModel.getMeWithAbilities().user.fsid
             Text("These should match if logged in: $fsid ...from Auth")
             Text("FUNCTIONALITY BROKEN CLOUD DATABASE REMOVED")
-            Text( "$myfsid  ...from local")
+            //Text( "$myfsid  ...from local")
             /*Button(
                 synchronize())*/
 //            ChatClient.instance().getCurrentToken()?.let { Text(it) }

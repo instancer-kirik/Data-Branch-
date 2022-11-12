@@ -12,7 +12,7 @@ import com.instance.dataxbranch.quests.QuestWithObjectives
 import java.time.LocalDateTime
 
 
-data class CharacterWithStuff (
+data class CharacterWithStuff(
     @Embedded
     var character: CharacterEntity,
 
@@ -33,7 +33,7 @@ data class CharacterWithStuff (
 
 
         )
-    var quests: Array<QuestWithObjectives>,
+    var quests: Array<QuestWithObjectives> =arrayOf(),
     //val aidList: Array<String>
 
 ) {

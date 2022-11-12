@@ -136,7 +136,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 dependencies {
-    implementation platform('androidx.compose:compose-bom:2022.10.00')
+    implementation platform('androidx.compose:compose-bom:2022.11.00')
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.material:material"
@@ -144,25 +144,25 @@ dependencies {
     implementation "androidx.compose.foundation:foundation"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4"
 //HTTP
-    implementation "com.squareup.okhttp3:okhttp:4.9.3"
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
     debugImplementation "androidx.compose.ui:ui-tooling"
-    implementation 'androidx.activity:activity-compose:1.6.0'
+    implementation 'androidx.activity:activity-compose:1.6.1'
 
     implementation "androidx.compose.material:material-icons-extended"
     /*implementation('io.github.raamcosta.compose-destinations:core:1.5.12-beta')
     ksp('io.github.raamcosta.compose-destinations:ksp:1.6.12-beta')
 */
-    ksp 'io.github.raamcosta.compose-destinations:ksp:1.6.12-beta'
-    implementation 'io.github.raamcosta.compose-destinations:core:1.5.12-beta'
+    ksp 'io.github.raamcosta.compose-destinations:ksp:1.7.25-beta'
+    implementation 'io.github.raamcosta.compose-destinations:core:1.7.25-beta'
 // Paging 3.0
-    implementation 'androidx.paging:paging-compose:1.0.0-alpha16'
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha17'
     implementation "androidx.room:room-paging:2.4.3"
     //hilt
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
-    implementation 'com.google.dagger:hilt-android:2.43.1'
-    kapt 'com.google.dagger:hilt-compiler:2.43.1'
+    implementation 'com.google.dagger:hilt-android:2.44'
+    kapt 'com.google.dagger:hilt-compiler:2.44'
 
-    implementation 'androidx.fragment:fragment-ktx:1.5.3'
+    implementation 'androidx.fragment:fragment-ktx:1.5.4'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
 
@@ -177,9 +177,9 @@ dependencies {
     //implementation "com.google.firebase:firebase-crashlytics:"
     //implementation 'com.google.firebase:firebase-crashlytics-ktx'
     //implementation 'com.firebaseui:firebase-ui-database:8.0.1'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.21'
     implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.android.material:material:1.7.0'
     //implementation 'com.google.firebase:firebase-auth-ktx:21.0.8'
 
 
@@ -187,15 +187,15 @@ dependencies {
 
 
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
 
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 
     //implementation("androidx.compose.compiler:compiler:")
 
 
-    implementation 'com.github.bumptech.glide:glide:4.13.2'
-    kapt 'com.github.bumptech.glide:compiler:4.13.2'
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    kapt 'com.github.bumptech.glide:compiler:4.14.2'
 
     implementation "androidx.room:room-ktx:$room_version"
     //implementation "androidx.room:room-runtime:$room_version"
@@ -203,11 +203,11 @@ dependencies {
     //implementation "androidx.compose.compiler:compiler:1.2.0"
 
     //Pager
-    implementation "com.google.accompanist:accompanist-pager:0.23.0"
-    implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
+    implementation 'com.google.accompanist:accompanist-pager:0.27.0'
+    implementation 'com.google.accompanist:accompanist-pager-indicators:0.27.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.23.0"
+    implementation 'com.google.accompanist:accompanist-systemuicontroller:0.27.0'
     testImplementation "androidx.room:room-testing:$room_version"
     // optional - RxJava2 support for Room
     //implementation "androidx.room:room-rxjava2:$room_version"
@@ -227,8 +227,8 @@ dependencies {
     //implementation 'com.devbrackets.android:exomedia:4.3.0'
     implementation 'com.devbrackets.android:playlistcore:2.1.0'
     //implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     //////STREAM CHAT 
     //implementation 'io.getstream:stream-chat-android-compose:5.6.1'
     //implementation "io.getstream:stream-chat-android-ui-components:4.13.0"
@@ -253,11 +253,11 @@ dependencies {
     //implementation "androidx.room:room-ktx:2.4.2"
 
 
-    implementation 'com.google.code.gson:gson:2.9.0'
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3"
+    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
 
-    implementation("com.squareup.moshi:moshi:1.13.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
+    implementation('com.squareup.moshi:moshi:1.14.0')
+    kapt('com.squareup.moshi:moshi-kotlin-codegen:1.14.0')
 
-    implementation('com.google.devtools.ksp:symbol-processing-api:1.7.10-1.0.6')
+    implementation('com.google.devtools.ksp:symbol-processing-api:1.7.21-1.0.8')
 }
