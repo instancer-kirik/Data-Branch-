@@ -11,4 +11,6 @@ internal fun Collection<LocalDate>.addOrRemoveIfExists(date: LocalDate) =
         this + date
     }
 
+internal infix fun DayOf12dWeek.daysUntil(other: DayOf12dWeek) = (DaysInAWeek + (value - other.value)) % DaysInAWeek
+//would neet at(date) to work to 12dweek
 internal infix fun DayOfWeek.daysUntil(other: DayOf12dWeek) = (DaysInAWeek + (value - other.value)) % DaysInAWeek

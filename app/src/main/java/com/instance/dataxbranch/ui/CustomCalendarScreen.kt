@@ -52,10 +52,10 @@ fun CustomCalendarScreen(
       /*  if (uViewModel.characterDialogState.value) {
             AddQuestEntityOnCharacterAlertDialog()
         }*/
-            val stuff: Map<LocalDate, List<String>> =mapOf()//uViewModel.getCalendarStuff()
+            val stuff: Map<LocalDate, List<String>> =uViewModel.getCalendarStuff()
         Column{
 
-            StaticCalendar12(modifier = Modifier, data =stuff )
+            StaticCalendar12(modifier = Modifier, data =stuff ,repo = uViewModel.generalRepository)
 
             Text("$padding\n stuff is $stuff")
 

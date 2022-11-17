@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -42,6 +39,82 @@ fun GOTOButton(navigator:DestinationsNavigator, expanded: MutableState<Boolean>,
         } else Text("GOTO")
     }
 }
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun Spinner(
+    options: List<String> = listOf("Food", "Bill Payment", "Recharges", "Outing", "Other"),
+   // expanded : MutableState<Boolean>//
+){
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(options[0]) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            expanded = !expanded
+        }) {
+        TextField(
+            readOnly = true,
+            value = selectedOptionText,
+            onValueChange = { },
+            label = { Text("Categories") },
+            trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
+            options.forEach { selectionOption ->
+                DropdownMenuItem(onClick = {
+                    selectedOptionText = selectionOption
+                    expanded = false
+                }) {
+                    Text(text = selectionOption)
+                }}}}
+}
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun NavSpinner(
+    navi: DestinationsNavigator,
+    options: List<TypedDestination<*>> =NavGraphs.root.destinations,
+    // expanded : MutableState<Boolean>//
+){
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(options[0].route) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            expanded = !expanded
+        }) {
+        TextField(
+            readOnly = true,
+            value = selectedOptionText,
+            onValueChange = { },
+            label = { Text("Categories") },
+            trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
+            options.forEach { selectionOption ->
+                DropdownMenuItem(onClick = {
+                    selectedOptionText = selectionOption.route
+                    expanded = false
+                    navi.navigate(selectedOptionText)
+                }) {
+                    Text(text = selectionOption.route)
+                }}}}
+}
 @Composable
 fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator, context: Context) {
 
@@ -66,8 +139,8 @@ fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator, conte
                     //Button(onClick = {navigator.navigate(LoadoutScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("loadout") }
                     //Button(onClick = {viewModel.openDialogState3.value=true}, modifier= Modifier.padding(2.dp)){ Text("edit loadout") }
 
-                    Button(onClick = {navigator.navigate(LoginScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("Auth") }
-
+                    //Button(onClick = {navigator.navigate(LoginScreenDestination)}, modifier= Modifier.padding(2.dp)){ Text("Auth") }
+                    NavSpinner(navigator,NavGraphs.root.destinations)
 
 
 

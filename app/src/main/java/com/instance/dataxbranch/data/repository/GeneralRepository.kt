@@ -6,7 +6,6 @@ package com.instance.dataxbranch.data.repository
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.AppDatabase
 import com.instance.dataxbranch.data.daos.AbilityDao
@@ -18,6 +17,7 @@ import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.domain.parse
 import com.instance.dataxbranch.quests.QuestWithObjectives
+import com.instance.dataxbranch.ui.calendar.custom.DayOf12dWeek
 import kotlinx.coroutines.*
 import java.time.LocalDate
 import java.util.*
@@ -47,7 +47,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
     var ncharacters:List<CharacterEntity> = listOf()
     private lateinit var me: User
     lateinit var selectedAE: AbilityEntity
-
+    val totalDates: MutableMap<LocalDate,DayOf12dWeek> = mutableMapOf()
     //var selectedItem: ItemEntity = ItemEntity()
     var selectedCharacterIndex by Delegates.observable(0) { property, oldValue, newValue ->
         Log.d(TAG,"SELECTED $property IS NOW $newValue")
@@ -57,8 +57,20 @@ class GeneralRepository(application: Application, db: AppDatabase,
 
     init {
         sync()
-
+        calendarPreprocessing()
         //CoroutineScope(Dispatchers.IO).launch {}//on conflict abort
+    }
+
+    private fun calendarPreprocessing() {
+
+        var start = LocalDate.of(2022,1,1)
+        val end = LocalDate.now().plusYears(5)
+        var dayOfWeek= DayOf12dWeek.A
+        while (!start.isAfter(end)) {
+            totalDates[start] = dayOfWeek
+            dayOfWeek += 1
+            start = start.plusDays(1)
+        }
     }
 
     private fun getMeWithAbilities() {

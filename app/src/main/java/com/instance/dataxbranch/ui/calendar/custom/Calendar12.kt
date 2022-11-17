@@ -8,9 +8,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.instance.dataxbranch.data.repository.GeneralRepository
 import com.instance.dataxbranch.ui.calendar.*
-import com.instance.dataxbranch.ui.calendar.custom.DaysOfWeek
-import com.instance.dataxbranch.ui.calendar.custom.MonthPager
+
+
 import com.instance.dataxbranch.ui.calendar.custom.rotateRight
 
 
@@ -26,13 +27,13 @@ import java.util.Locale
  *
  * @property monthState currently showed month
  * @property selectionState handler for the calendar's selection
- */
+ *
 @Stable
 class CalendarState<T : SelectionState>(
     val monthState: MonthState,
     val selectionState: T,
 )
-
+*/
 /**
  * [Calendar] implementation using a [DynamicSelectionState] as a selection handler.
  *
@@ -69,6 +70,7 @@ fun SelectableCalendar12(
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit = { content ->
         Box { content(PaddingValues()) }
     },
+    repo: GeneralRepository
 ) {
     Calendar12(
         modifier = modifier,
@@ -80,7 +82,8 @@ fun SelectableCalendar12(
         dayContent = dayContent,
         monthHeader = monthHeader,
         weekHeader = weekHeader,
-        monthContainer = monthContainer
+        monthContainer = monthContainer,
+        repo = repo
     )
 }
 
@@ -120,9 +123,9 @@ fun StaticCalendar12(
         //asdf.date
         //this works like if you've got data in passed map for day, it displays it, else does prime arg val
         //data[asdf.date]?.let { it1 -> DisplayDay(asdf,displayData=it1) }?:run{DisplayDay(asdf)}
-        com.instance.dataxbranch.ui.calendar.DisplayDay(state = it)
+        //com.instance.dataxbranch.ui.calendar.DisplayDay(state = it)
 
-        // data[it.date]?.let { it1 -> DisplayDay(it,displayData=it1) }?:
+        data[it.date]?.let { it1 -> DisplayDay(it,displayData=it1) }?:DisplayDay(it)
     },
 
     monthHeader: @Composable ColumnScope.(MonthState) -> Unit = { DefaultMonthHeader(it) },
@@ -130,6 +133,7 @@ fun StaticCalendar12(
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit = { content ->
         Box { content(PaddingValues()) }
     },
+    repo: GeneralRepository
 ) {
     Calendar12(
         modifier = modifier,
@@ -141,7 +145,8 @@ fun StaticCalendar12(
         dayContent = dayContent,
         monthHeader = monthHeader,
         weekHeader = weekHeader,
-        monthContainer = monthContainer
+        monthContainer = monthContainer,
+        repo = repo
     )
 }
 
@@ -174,12 +179,13 @@ fun <T : SelectionState> Calendar12(
     monthHeader: @Composable ColumnScope.(MonthState) -> Unit = { DefaultMonthHeader(it) },
     weekHeader: @Composable BoxScope.(List<DayOf12dWeek>) -> Unit = { Default12dWeekHeader(it) },
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit = { content ->
-        BoxWithConstraints { content(PaddingValues()) }
+        Box { content(PaddingValues()) }
     },
+    repo:GeneralRepository
 ) {
 
     val daysOfWeek = remember(firstDayOfWeek) {
-       DayOf12dWeek.values().rotateRight(DaysOfWeek - firstDayOfWeek.ordinal)
+       DayOf12dWeek.values().rotateRight(DaysOfWeek- firstDayOfWeek.ordinal)
     }
 
     Column(
@@ -187,7 +193,7 @@ fun <T : SelectionState> Calendar12(
     ) {
         monthHeader(calendarState.monthState)
         if (horizontalSwipeEnabled) {
-            MonthPager(
+            CustomMonthPager(
                 showAdjacentMonths = showAdjacentMonths,
                 monthState = calendarState.monthState,
                 selectionState = calendarState.selectionState,
@@ -196,6 +202,7 @@ fun <T : SelectionState> Calendar12(
                 dayContent = dayContent,
                 weekHeader = weekHeader,
                 monthContainer = monthContainer,
+                repo = repo
             )
         } else {
             Month12Content(
@@ -207,6 +214,7 @@ fun <T : SelectionState> Calendar12(
                 dayContent = dayContent,
                 weekHeader = weekHeader,
                 monthContainer = monthContainer,
+                repo = repo
             )
         }
     }

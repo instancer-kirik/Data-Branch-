@@ -10,7 +10,9 @@ import androidx.compose.ui.platform.testTag
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.instance.dataxbranch.data.repository.GeneralRepository
 import com.instance.dataxbranch.ui.calendar.DayState
+import com.instance.dataxbranch.ui.calendar.MonthState
 import com.instance.dataxbranch.ui.calendar.SelectionState
 import java.time.LocalDate
 
@@ -18,11 +20,11 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 
-internal const val DaysOfWeek = 12
+var DaysOfWeek = DayOf12dWeek.values().size
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-internal fun <T : SelectionState> MonthPager(
+internal fun <T : SelectionState> CustomMonthPager(
     showAdjacentMonths: Boolean,
     selectionState: T,
     monthState: MonthState,
@@ -32,6 +34,7 @@ internal fun <T : SelectionState> MonthPager(
     dayContent: @Composable BoxScope.(DayState<T>) -> Unit,
     weekHeader: @Composable BoxScope.(List<DayOf12dWeek>) -> Unit,
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit,
+    repo: GeneralRepository
 ) {
     val startIndex = PagerItemCount / 2
     val pagerState = rememberPagerState(initialPage = startIndex)
@@ -59,7 +62,8 @@ internal fun <T : SelectionState> MonthPager(
             daysOfWeek = daysOfWeek,
             dayContent = dayContent,
             weekHeader = weekHeader,
-            monthContainer = monthContainer
+            monthContainer = monthContainer,
+        repo = repo
         )
     }
 }
@@ -76,6 +80,7 @@ internal fun <T : SelectionState> Month12Content(
     dayContent: @Composable BoxScope.(DayState<T>) -> Unit,
     weekHeader: @Composable BoxScope.(List<DayOf12dWeek>) -> Unit,
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit,
+    repo: GeneralRepository
 ) {
     Column {
         Box(
@@ -95,6 +100,7 @@ internal fun <T : SelectionState> Month12Content(
                     includeAdjacentMonths = showAdjacentMonths,
                     firstDayOfTheWeek = daysOfWeek.first(),
                     today = today,
+                    repo = repo
                 ).forEach { week ->
                     WeekContent(
                         week = week,
