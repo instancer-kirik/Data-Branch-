@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.instance.dataxbranch.ui.NavGraphs
 import com.instance.dataxbranch.data.local.UserWithAbilities
@@ -56,6 +57,8 @@ fun HubScreen(viewModel: UserViewModel = hiltViewModel(),
                 HubScreenDestination)*/}
         me = viewModel.getMeWithAbilities()
 
+//        val currentDestination: TypedDestination<*>? = navController.appCurrentDestinationAsState().value
+//            ?: NavGraphs.root.startAppDestination
        // val which = me.user.defaultScreen
         val dests = NavGraphs.root.destinations
         if (me.user.terms_status ==""){//if user has not accepted terms

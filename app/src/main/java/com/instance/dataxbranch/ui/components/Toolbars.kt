@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
@@ -16,6 +17,7 @@ import com.instance.dataxbranch.ui.*
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
+import com.instance.dataxbranch.utils.navigate
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -110,7 +112,7 @@ fun NavSpinner(
                 DropdownMenuItem(onClick = {
                     selectedOptionText = selectionOption.route
                     expanded = false
-                    navi.navigate(selectedOptionText)
+                    navi.navigate(rte = selectedOptionText, custom = "true")
                 }) {
                     Text(text = selectionOption.route)
                 }}}}
@@ -147,7 +149,10 @@ fun DevToolbar(viewModel: UserViewModel, navigator: DestinationsNavigator, conte
 
 
                     Button(onClick = {viewModel.generalRepository.resetAndSet(UserWithAbilities(User(),listOf()))}, modifier= Modifier.padding(2.dp)){ Text("clear local") }
-                } else Text("DEBUG")
+                } else Text("DEBUG ")
+
+
+   //NavGraphs.root.route
 
             }
             //startActivity(context, ChannelsActivity.createIntent(context),null)}

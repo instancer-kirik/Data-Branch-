@@ -21,6 +21,7 @@ import com.instance.dataxbranch.ui.components.DevToolbar
 import com.instance.dataxbranch.ui.components.GOTOButton
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
+import com.instance.dataxbranch.utils.navigate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -61,7 +62,7 @@ fun CharacterSelectScreen (viewModel: UserViewModel = hiltViewModel(),
                 ) {
                     if (expanded2) {
                         Button(onClick = { viewModel.addCharacterEntity("Dummy") }, modifier= Modifier.padding(2.dp)) { Text("Add") }
-                        Button(onClick = { navigator.navigate(EditCharacterScreenDestination)}, modifier= Modifier.padding(2.dp)) { Text("Edit") }
+                        Button(onClick = { navigator.navigate(direction = EditCharacterScreenDestination)/*com.instance.dataxbranch.utils*/}, modifier= Modifier.padding(2.dp)) { Text("Edit") }
                         Button(onClick = { viewModel.delete(viewModel.getSelectedCharacter()) }, modifier= Modifier.padding(2.dp)) { Text("Delete") }
                     } else Text("MOD")
                 }

@@ -1,6 +1,5 @@
 package com.instance.dataxbranch.di
 
-import com.instance.dataxbranch.data.daos.QuestDao
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
@@ -10,15 +9,13 @@ import androidx.room.Room
 //import com.google.firebase.firestore.ktx.firestore
 //import com.google.firebase.ktx.Firebase
 import com.instance.dataxbranch.core.Constants.QUESTS
-import com.instance.dataxbranch.data.daos.AbilityDao
-import com.instance.dataxbranch.data.daos.UserDao
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.quests.QuestWithObjectives
 
 import com.instance.dataxbranch.data.AppDatabase
 
 import com.instance.dataxbranch.data.cloud.*
-import com.instance.dataxbranch.data.daos.ItemDao
+import com.instance.dataxbranch.data.daos.*
 
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.data.repository.GeneralRepository
@@ -191,6 +188,10 @@ object AppModule {
     @Provides
     fun provideAbilityDao(db: AppDatabase): AbilityDao {
         return db.abilityDao()
+    }
+    @Provides
+    fun provideNoteDao(db:AppDatabase): NoteDao {
+        return db.noteDao()
     }
     @Provides
     fun provideLocalQuests(localrepo: LocalQuestsRepository):Array<QuestWithObjectives>{

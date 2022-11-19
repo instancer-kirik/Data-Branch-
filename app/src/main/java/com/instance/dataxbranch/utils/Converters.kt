@@ -1,5 +1,6 @@
 package com.instance.dataxbranch.utils
 
+import android.content.Context
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -72,6 +73,16 @@ class Converters {
     fun fromArrayList(list: ArrayList<String?>?): String {
         val gson = Gson()
         return gson.toJson(list)
+    }
+    @TypeConverter
+    fun fromContext(context: Context): String {
+        val gson = Gson()
+        return gson.toJson(context)
+    }
+    @TypeConverter
+    fun fromContext(contextIn: String): Context {
+        val gson = Gson()
+        return gson.fromJson(contextIn)
     }
     @TypeConverter
     fun toStringList(value: String): List<String> {
