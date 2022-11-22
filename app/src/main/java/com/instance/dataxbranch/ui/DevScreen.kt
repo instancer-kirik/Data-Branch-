@@ -19,8 +19,7 @@ import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.cloud.CloudResponse
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
-import com.instance.dataxbranch.ui.components.AddResponseAlertDialog
-import com.instance.dataxbranch.ui.components.DevToolbar
+import com.instance.dataxbranch.ui.components.*
 import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
@@ -31,6 +30,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Destination
 @Composable
 fun DevScreen (viewModel: UserViewModel =hiltViewModel(),
@@ -49,21 +49,27 @@ fun DevScreen (viewModel: UserViewModel =hiltViewModel(),
                 // EditAbilityEntityFloatingActionButton()
             }
         ) {padding ->
+
             if (devViewModel.openDialogState.value) {
                 AddResponseAlertDialog(viewModel=devViewModel)
             }
             Column{
-                /*val crashButton=*/Button(onClick= {
+                Row {
+                    Column{
+                    /*val crashButton=*/Button(onClick = {
                     throw RuntimeException("Test Crash") // Force a crash
                 }
-                ){Text("Crash Button")}
+                ) { Text("Crash Button") }
 
 
-                Text("HTTP TEST: ${devViewModel.HTTPResponse}\n")
-                httpButton1(viewModel = devViewModel)
+                    Text("HTTP TEST: ${devViewModel.HTTPResponse}\n")
+                    httpButton1(viewModel = devViewModel)
+                }
+                    PayMeBlock()
+                }
+                //dragBox()//BottomSheet()
+                BottomSheetContainer()
 
-
-                PayMeBlock()
                 ResponseBlock(context=context, me = me, )
                 Button(onClick = {navigator.navigate(HubScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("Default screen")}
 }
@@ -71,6 +77,7 @@ fun DevScreen (viewModel: UserViewModel =hiltViewModel(),
 
 @Composable
 fun PayMeBlock() {
+    Column{
     Text("Merch and livestreams and such. TO DO")
     val text = remember {
         mutableStateOf("https://www.__patreon.com/instance_select?fan_landing=true")
@@ -88,7 +95,7 @@ fun PayMeBlock() {
         Text("future user qualifier eg Long Star Ranger")///(Rascal, Knight of Guild,)
         Text("So submit bug reports and special features requests or something")
     }*/
-}
+}}
 
 
 @Composable
