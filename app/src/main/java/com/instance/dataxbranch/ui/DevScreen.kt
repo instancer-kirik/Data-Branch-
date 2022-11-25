@@ -65,7 +65,7 @@ fun DevScreen (viewModel: UserViewModel =hiltViewModel(),
                     Text("HTTP TEST: ${devViewModel.HTTPResponse}\n")
                     httpButton1(viewModel = devViewModel)
                 }
-                    PayMeBlock()
+                    //PayMeBlock()
                 }
                 //dragBox()//BottomSheet()
                 BottomSheetContainer()

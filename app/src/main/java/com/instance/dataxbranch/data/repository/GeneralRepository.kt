@@ -517,7 +517,7 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
 
 
             val atDate= parse(it.quest.targetDateTime).toLocalDate()
-            val displayString = setCalendarDisplayString("A",it)
+            val displayString = setCalendarDisplayString("Q",it)
             m[atDate]=m[atDate]?.plus(displayString)?:listOf(displayString)
         }
         Log.d(TAG, "getActiveQuests result is now $m , valid is now $valid")

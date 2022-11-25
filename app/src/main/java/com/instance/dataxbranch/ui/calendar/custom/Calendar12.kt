@@ -1,6 +1,7 @@
 package com.instance.dataxbranch.ui.calendar.custom
 
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -9,10 +10,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.instance.dataxbranch.data.repository.GeneralRepository
+
 import com.instance.dataxbranch.ui.calendar.*
 
 
 import com.instance.dataxbranch.ui.calendar.custom.rotateRight
+import kotlinx.coroutines.launch
 
 
 import java.time.LocalDate
@@ -64,7 +67,10 @@ fun SelectableCalendar12(
     showAdjacentMonths: Boolean = true,
     horizontalSwipeEnabled: Boolean = true,
     calendarState: CalendarState<DynamicSelectionState> = rememberSelectableCalendarState(),
-    dayContent: @Composable BoxScope.(DayState<DynamicSelectionState>) -> Unit = { DisplayDay(it) },
+    dayContent: @Composable BoxScope.(DayState<DynamicSelectionState>) -> Unit = { DisplayDay(it,onClick={day->
+        Log.d("day12",day.toString())
+
+    }) },
     monthHeader: @Composable ColumnScope.(MonthState) -> Unit = { DefaultMonthHeader(it) },
     weekHeader: @Composable BoxScope.(List<DayOf12dWeek>) -> Unit = { Default12dWeekHeader(it) },
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit = { content ->
@@ -125,7 +131,13 @@ fun StaticCalendar12(
         //data[asdf.date]?.let { it1 -> DisplayDay(asdf,displayData=it1) }?:run{DisplayDay(asdf)}
         //com.instance.dataxbranch.ui.calendar.DisplayDay(state = it)
 
-        data[it.date]?.let { it1 -> DisplayDay(it,displayData=it1) }?:DisplayDay(it)
+        data[it.date]?.let { it1 -> DisplayDay(it,displayData=it1,onClick={day->
+            Log.d("day12WithData",day.toString())
+
+        }) }?:DisplayDay(it,onClick={day->
+            Log.d("day12default",day.toString())
+
+        })
     },
 
     monthHeader: @Composable ColumnScope.(MonthState) -> Unit = { DefaultMonthHeader(it) },
@@ -175,7 +187,10 @@ fun <T : SelectionState> Calendar12(
     today: LocalDate = LocalDate.now(),
     showAdjacentMonths: Boolean = true,
     horizontalSwipeEnabled: Boolean = true,
-    dayContent: @Composable BoxScope.(DayState<T>) -> Unit = { DisplayDay(it) },
+    dayContent: @Composable BoxScope.(DayState<T>) -> Unit = { DisplayDay(it,onClick={day->
+        Log.d("day12BASE",day.toString())//this doesn't get called, specific ones do
+
+    }) },
     monthHeader: @Composable ColumnScope.(MonthState) -> Unit = { DefaultMonthHeader(it) },
     weekHeader: @Composable BoxScope.(List<DayOf12dWeek>) -> Unit = { Default12dWeekHeader(it) },
     monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit = { content ->

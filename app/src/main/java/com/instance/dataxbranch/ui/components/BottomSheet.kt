@@ -1,12 +1,17 @@
 package com.instance.dataxbranch.ui.components
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.R
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,25 +19,24 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.core.content.ContextCompat.getSystemService
+import com.google.android.material.internal.ContextUtils.getActivity
+
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.ui.theme.*
-
 import kotlinx.coroutines.launch
-
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalTextApi::class)
@@ -84,23 +88,25 @@ fun BottomSheet (){
             Text(text = "Toggle Bottom Sheet")
 
         GoogleButton(imageVector = ImageVector.Builder("AA",8.dp,8.dp,1F,1F).build(), buttonText = "yooooo", backgroundColor = Color.Red, fontColor = Color.Black,
-            modifier = modifier.draggable(draggableState, orientation = Orientation.Vertical, startDragImmediately = true,
+            modifier = modifier.draggable(
+                draggableState, orientation = Orientation.Vertical, startDragImmediately = true,
                 onDragStopped = { Log.d(TAG, "onDragStopped: $draggableText") },
-                onDragStarted = { Log.d(TAG, "onDragStarted: $draggableText")
+                onDragStarted = {
+                    Log.d(TAG, "onDragStarted: $draggableText")
                     coroutineScope.launch {
                         if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
 
-                                bottomSheetScaffoldState.bottomSheetState.expand()
+                            bottomSheetScaffoldState.bottomSheetState.expand()
 
                         } else {
-                            if(draggableText.toFloat() > 0){
+                            if (draggableText.toFloat() > 0) {
                                 bottomSheetScaffoldState.bottomSheetState.collapse()
                             }
                             bottomSheetScaffoldState.bottomSheetState.collapse()
                         }
                     }
-                                },
-              )
+                },
+            )
         )
 Text("move or click lol")
 //GoogleButton()
@@ -185,7 +191,8 @@ fun dragTab(bottomSheetScaffoldState: BottomSheetScaffoldState, modifier: Modifi
         .fillMaxWidth()
         .height(20.dp)
         .background(Color.Red)
-        .draggable(draggableState, orientation = Orientation.Vertical, startDragImmediately = true,
+        .draggable(
+            draggableState, orientation = Orientation.Vertical, startDragImmediately = true,
             onDragStopped = { Log.d(TAG, "onDragStopped: ") },
             onDragStarted = { Log.d(TAG, "onDragStarted: ") },
         )
@@ -330,22 +337,32 @@ fun ScrollableSample() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheetContainer() {
+    val context = LocalContext.current
     val sheetState = rememberBottomSheetState(
         initialValue = BottomSheetValue.Collapsed
     )
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = sheetState
     )
+    var noteText by remember { mutableStateOf("Hello from sheet") }
     val scope = rememberCoroutineScope()
     val tabHeight = 36.dp
     val modifier = Modifier
+    if (sheetState.isAnimationRunning) {
+        Log.d(TAG, "BottomSheetContainer: isAnimationRunning")
+        context.getActivity()?.let { it1 -> hideKeyboard(it1) }
+    }
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetContent = {
-            Box(modifier = modifier.fillMaxWidth().height(tabHeight).background(Color.Transparent)) {
+            Box(modifier = modifier
+                .fillMaxWidth()
+                .height(tabHeight)
+                .background(Color.Transparent)) {
                 Box(
-                    modifier = modifier.zIndex(4f)
-                        .clip( RoundedCornerShape(tabHeight/2, tabHeight/2, 0.dp, 0.dp))
+                    modifier = modifier
+                        .zIndex(4f)
+                        .clip(RoundedCornerShape(tabHeight / 2, tabHeight / 2, 0.dp, 0.dp))
                         .width(100.dp)
                         .height(tabHeight)
                         .align(Alignment.Center)
@@ -356,18 +373,42 @@ fun BottomSheetContainer() {
                 ){
                     Text("^^^",color = Color.Black)
                 }
-                Box(modifier = modifier.align(Alignment.TopCenter).height(tabHeight/2+2.dp).width(130.dp).background(MaterialTheme.colors.background).zIndex(1f))
-            Row(modifier = modifier.clip(RoundedCornerShape(tabHeight/2, tabHeight/2, tabHeight/2, tabHeight/2)).height(tabHeight).align(alignment=Alignment.Center).background(notepad)) {
+                Box(modifier = modifier
+                    .align(Alignment.TopCenter)
+                    .height(tabHeight / 2 + 2.dp)
+                    .width(130.dp)
+                    .background(MaterialTheme.colors.background)
+                    .zIndex(1f))
+            Row(modifier = modifier
+                .clip(
+                    RoundedCornerShape(
+                        tabHeight / 2,
+                        tabHeight / 2,
+                        tabHeight / 2,
+                        tabHeight / 2
+                    )
+                )
+                .height(tabHeight)
+                .align(alignment = Alignment.Center)
+                .background(notepad)) {
 
                     Box(
                     modifier = modifier
                         .size(tabHeight)
-                        .clip( RoundedCornerShape(tabHeight/2,tabHeight/2,tabHeight/2,tabHeight/2))
+                        .clip(
+                            RoundedCornerShape(
+                                tabHeight / 2,
+                                tabHeight / 2,
+                                tabHeight / 2,
+                                tabHeight / 2
+                            )
+                        )
                         .background(MaterialTheme.colors.background)
                         .zIndex(.3f))
                     Box(
-                modifier = modifier.zIndex(4f)
-                    .clip( RoundedCornerShape(tabHeight/2, tabHeight/2, 0.dp, 0.dp))
+                modifier = modifier
+                    .zIndex(4f)
+                    .clip(RoundedCornerShape(tabHeight / 2, tabHeight / 2, 0.dp, 0.dp))
                     .width(100.dp)
                     .height(tabHeight)
                     .align(Alignment.CenterVertically)
@@ -381,7 +422,14 @@ fun BottomSheetContainer() {
                 Box(
                     modifier = Modifier
                         .size(tabHeight)
-                        .clip( RoundedCornerShape(tabHeight/2,tabHeight/2,tabHeight/2,tabHeight/2,))
+                        .clip(
+                            RoundedCornerShape(
+                                tabHeight / 2,
+                                tabHeight / 2,
+                                tabHeight / 2,
+                                tabHeight / 2,
+                            )
+                        )
                         .background(MaterialTheme.colors.background)
                 )
             }}
@@ -392,11 +440,21 @@ fun BottomSheetContainer() {
                     .background(color = notepad),
                 contentAlignment = Alignment.Center
             ) {
+                Column{
                 Text(
+
                     text = "Bottom sheet",
                     fontSize = 60.sp
                 )
-            }
+                TextField(
+                    value = noteText,
+                    onValueChange = { noteText = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        , colors = TextFieldDefaults.textFieldColors(   backgroundColor = notepad, focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent, cursorColor = Color.Black, textColor = Color.Black)
+                )
+            }}
         },
         sheetBackgroundColor = Color.Transparent,
         sheetPeekHeight = 30.dp
@@ -407,18 +465,41 @@ fun BottomSheetContainer() {
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
+            val view: View = LocalView.current
             Button(onClick = {
-                scope.launch {
-                    if (sheetState.isCollapsed) {
+                if (sheetState.isCollapsed) {
+                    scope.launch {
+
                         sheetState.expand()
-                    } else {
-                        sheetState.collapse()
                     }
-                }
+                    } else {
+                        scope.launch {
+                            sheetState.collapse()
+
+
+                        }
+                    context.getActivity()?.let { it1 -> hideKeyboard(it1) }
+                    }
+
             }) {
 
                 Text(text = "Bottom sheet fraction: ${sheetState.progress.fraction}")
             }
         }
     }
+}
+fun hideKeyboard(activity: Activity) {
+    val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    //Find the currently focused view, so we can grab the correct window token from it.
+    var view: View? = activity.getCurrentFocus()
+    //If no view currently has focus, create a new one, just so we can grab a window token from it
+    if (view == null) {
+        view = View(activity)
+    }
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
+}
+fun Context.getActivity(): AppCompatActivity? = when (this) {
+    is AppCompatActivity -> this
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
 }
