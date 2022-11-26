@@ -4,18 +4,13 @@ package com.instance.dataxbranch.ui.calendar.custom
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.instance.dataxbranch.data.EntityType
 import com.instance.dataxbranch.data.repository.GeneralRepository
 
 import com.instance.dataxbranch.ui.calendar.*
-
-
-import com.instance.dataxbranch.ui.calendar.custom.rotateRight
-import kotlinx.coroutines.launch
 
 
 import java.time.LocalDate
@@ -119,7 +114,7 @@ fun SelectableCalendar12(
 fun StaticCalendar12(
 
     modifier: Modifier,
-    data:Map<LocalDate, List<String>>,
+    data:Map<LocalDate, List<DayDisplayData>>,
     firstDayOfWeek: DayOf12dWeek = getFirstDayOfWeek(),
     today: LocalDate = LocalDate.now(),
     showAdjacentMonths: Boolean = true,
@@ -131,7 +126,7 @@ fun StaticCalendar12(
         //data[asdf.date]?.let { it1 -> DisplayDay(asdf,displayData=it1) }?:run{DisplayDay(asdf)}
         //com.instance.dataxbranch.ui.calendar.DisplayDay(state = it)
 
-        data[it.date]?.let { it1 -> DisplayDay(it,displayData=it1,onClick={day->
+        data[it.date]?.let { it1 -> DisplayDay(it,displayData=it1,onClick={day,p2->
             Log.d("day12WithData",day.toString())
 
         }) }?:DisplayDay(it,onClick={day->
@@ -275,3 +270,47 @@ fun rememberCalendarState(
         MonthState(initialMonth = initialMonth)
     },
 ): CalendarState<EmptySelectionState> = remember { CalendarState(monthState, EmptySelectionState) }
+@Composable
+fun StaticCalendarForBottomSheet12(
+
+    modifier: Modifier,
+    onClick: (LocalDate,List<DayDisplayData>) -> Unit= { _, _ -> },
+    data:Map<LocalDate, List<DayDisplayData>>,
+    firstDayOfWeek: DayOf12dWeek = getFirstDayOfWeek(),
+    today: LocalDate = LocalDate.now(),
+    showAdjacentMonths: Boolean = true,
+    horizontalSwipeEnabled: Boolean = true,
+    calendarState: CalendarState<EmptySelectionState> = rememberCalendarState(),
+    dayContent: @Composable BoxScope.(DayState<EmptySelectionState>) -> Unit = {
+        //asdf.date
+        //this works like if you've got data in passed map for day, it displays it, else does prime arg val
+        //data[asdf.date]?.let { it1 -> DisplayDay(asdf,displayData=it1) }?:run{DisplayDay(asdf)}
+        //com.instance.dataxbranch.ui.calendar.DisplayDay(state = it)
+
+        data[it.date]?.let { it1 -> DisplayDay(it,displayData=it1,onClick=onClick) }?:DisplayDay(it,onClick=onClick)
+    },
+
+    monthHeader: @Composable ColumnScope.(MonthState) -> Unit = { DefaultMonthHeader(it) },
+    weekHeader: @Composable BoxScope.(List<DayOf12dWeek>) -> Unit = { Default12dWeekHeader(it) },
+    monthContainer: @Composable (content: @Composable (PaddingValues) -> Unit) -> Unit = { content ->
+        Box { content(PaddingValues()) }
+    },
+    repo: GeneralRepository
+) {
+    Calendar12(
+        modifier = modifier,
+        firstDayOfWeek = firstDayOfWeek,
+        today = today,
+        showAdjacentMonths = showAdjacentMonths,
+        horizontalSwipeEnabled = horizontalSwipeEnabled,
+        calendarState = calendarState,
+        dayContent = dayContent,
+        monthHeader = monthHeader,
+        weekHeader = weekHeader,
+        monthContainer = monthContainer,
+        repo = repo
+    )
+}
+data class DayDisplayData(val uuid:String, val type:Enum<EntityType>, val text:String)
+
+/*enum class for data type*/

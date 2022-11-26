@@ -11,6 +11,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import com.instance.dataxbranch.ui.calendar.custom.DayDisplayData
 
 
 import java.time.DayOfWeek
@@ -108,7 +109,7 @@ fun SelectableCalendar(
 fun StaticCalendar(
 
     modifier: Modifier,
-    data:Map<LocalDate, List<String>>,
+    data:Map<LocalDate, List<DayDisplayData>>,
     firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek,
     today: LocalDate = LocalDate.now(),
     showAdjacentMonths: Boolean = true,

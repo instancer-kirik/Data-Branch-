@@ -27,8 +27,8 @@ fun <T : SelectionState> DisplayDay(
     modifier: Modifier = Modifier,
     selectionColor: Color = MaterialTheme.colors.secondary,
     currentDayColor: Color = MaterialTheme.colors.primary,
-    onClick: (LocalDate) -> Unit = {},
-    displayData:List<String> = listOf(" "),
+    onClick: (LocalDate,List<DayDisplayData>) -> Unit = { _, _ -> },
+    displayData:List<DayDisplayData> = listOf(),
 ) {
     val date = state.date
     val selectionState = state.selectionState
@@ -47,7 +47,7 @@ fun <T : SelectionState> DisplayDay(
     ) {
         Box(
             modifier = Modifier.clickable {
-                onClick(date)
+                onClick(date,displayData)
                 selectionState.onDateSelected(date)
             },
             contentAlignment = Alignment.Center,

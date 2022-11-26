@@ -8,10 +8,10 @@ import com.instance.dataxbranch.data.repository.LocalQuestsRepository
 class AddNewQuestEntity (
     private val repo: LocalQuestsRepository
     ) {
-        operator fun invoke(title: String,description:String, author: String): Long {
+        operator fun invoke(title: String,description:String, author: String): String {
             repo.insertQuestEntity(QuestEntity(title =title,description=description, author = author).also{
 //                Log.d("USE CASE",it.toString())
-                return it.id
+                return it.uuid
             })
 
         }

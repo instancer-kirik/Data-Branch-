@@ -23,26 +23,26 @@ abstract class QuestDao {
     abstract fun save(objectives: List<ObjectiveEntity>)
 */
     @Upsert
-    abstract fun save(quest:QuestEntity):Long
+    abstract fun save(quest:QuestEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    /*@Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertQuestEntity(quest: QuestEntity?):Long
-
-    @Insert
+*/
+    @Upsert
     abstract fun insertObjectiveEntityList(objectives: List<ObjectiveEntity>?)
 
-    @Query("SELECT * FROM quests WHERE id =:id")
-    abstract fun getQuestEntity(id: Long): QuestEntity
+    @Query("SELECT * FROM quests WHERE uuid =:id")
+    abstract fun getQuestEntity(id: String): QuestEntity
 
-    @Query("SELECT * FROM objectives WHERE id =:id")
-    abstract fun getObjectiveEntityList(id: Long): List<ObjectiveEntity>
+    @Query("SELECT * FROM objectives WHERE qid =:id")
+    abstract fun getObjectiveEntityList(id: String): List<ObjectiveEntity>
 
 
     @Query("DELETE FROM quests")
     abstract fun deleteAll()
     @Query("DELETE FROM quests")
     abstract fun deleteAllRows()
-    open fun getQuestWithObjectives(id: Long): QuestWithObjectives {
+    open fun getQuestWithObjectives(id: String): QuestWithObjectives {
         val quest = getQuestEntity(id)
         val objectives: List<ObjectiveEntity> = getObjectiveEntityList(id)
         val qwo = QuestWithObjectives(quest,objectives)
@@ -51,17 +51,20 @@ abstract class QuestDao {
 
 
 
-    fun insert(qwo: QuestWithObjectives) {
-        val id = insertQuestEntity(qwo.quest)
-        qwo.objectives.forEach { i -> i.id= id }
+    fun insert(qwo: QuestWithObjectives):String {
+        //val qid = insertQuestEntity(qwo.quest)
+        save(qwo.quest)
+
+        qwo.objectives.forEach { i -> i.qid= qwo.quest.uuid}
         insertAll(qwo.objectives)
+        return qwo.quest.uuid
     }
 
-    fun save(qwo: QuestWithObjectives): Long {
-        val id = save(qwo.quest)
-        qwo.objectives.forEach { i -> i.id= id }
+    fun save(qwo: QuestWithObjectives): String {
+        save(qwo.quest)
+        qwo.objectives.forEach { i -> i.qid= qwo.quest.uuid }
         updateAll(qwo.objectives)
-        return id
+        return qwo.quest.uuid
     }
     /*@Transaction
 
@@ -84,9 +87,9 @@ abstract class QuestDao {
         delete(QuestWithObjectives.quest, QuestWithObjectives.objectives)
     }
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertAll(objectives: Iterable<ObjectiveEntity>?)
-    @Update
+    @Upsert
     abstract fun updateAll(objectives: List<ObjectiveEntity?>?)
     //
     //abstract fun insertQuestEntity(recipe: QuestEntity?): Long //return type is the key here.
@@ -99,8 +102,8 @@ abstract class QuestDao {
 
 //    @Update
 //    abstract fun update(quest: QuestEntity?):Int
-    @Update
-    abstract fun update(vararg quest:QuestEntity):Int
+    @Upsert
+    abstract fun update(vararg quest:QuestEntity)
     @Upsert
     abstract fun save(objective: ObjectiveEntity)
 

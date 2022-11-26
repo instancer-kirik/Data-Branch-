@@ -96,8 +96,8 @@ class Quest(val qid: String= "-1",
 ){
     suspend fun toRoom(dao: QuestDao) {
 
-        val h=dao.save(QuestEntity(
-                qid = this.qid,
+        val h=QuestEntity(
+                uuid = this.qid,
                 title = this.title,
                 description = this.description,
                 country = this.country,
@@ -107,11 +107,12 @@ class Quest(val qid: String= "-1",
                 sourceUrl = this.sourceUrl,
                 ingredients = this.ingredients,
                 author = this.author
-            ))
-        convertobjectives(id=h,dao)
+            )
+        dao.save(h)
+        convertobjectives(id=h.uuid,dao)
         }
 
-    private fun convertobjectives(id:Long, dao: QuestDao){
+    private fun convertobjectives(id:String, dao: QuestDao){
         //var objs: List<ObjectiveEntity> = listOf()
         objectives.forEach { dao.save(it.convert(id))
 
@@ -148,9 +149,9 @@ class Quest(val qid: String= "-1",
             //"", hashMapOf<Any, Any>(),
             //-1, LinkedTreeMap<Any, Any>()
         )
-        fun convert(id:Long):ObjectiveEntity{
+        fun convert(id:String):ObjectiveEntity{
             return ObjectiveEntity(
-                id=id,
+                qid=id,
                 obj = obj,
                 beginDateAndTime = beginDateAndTime,
                 desc = desc,

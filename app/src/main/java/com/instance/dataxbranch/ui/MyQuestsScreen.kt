@@ -253,7 +253,7 @@ fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewM
                     .fillMaxWidth()
                     .background(Color.Black.copy(alpha = 0.5f))
             ) {
-                Text(text = "Title:            id= ${quest.quest.id}")
+                Text(text = "Title:            id= ${quest.quest.uuid}")
                 Text(
 
                     text = quest.quest.title + "",

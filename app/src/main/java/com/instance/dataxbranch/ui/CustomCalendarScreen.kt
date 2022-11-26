@@ -12,12 +12,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -26,9 +23,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.ui.calendar.custom.DefaultMonthHeader
+import com.instance.dataxbranch.ui.calendar.custom.DayDisplayData
 
-import com.instance.dataxbranch.ui.calendar.custom.StaticCalendar12
+import com.instance.dataxbranch.ui.calendar.custom.StaticCalendarForBottomSheet12
 
 import com.instance.dataxbranch.ui.components.QuestToolbar
 import com.instance.dataxbranch.ui.components.getActivity
@@ -69,13 +66,13 @@ fun CustomCalendarScreen(
       /*  if (uViewModel.characterDialogState.value) {
             AddQuestEntityOnCharacterAlertDialog()
         }*/
-            val stuff: Map<LocalDate, List<String>> =uViewModel.getCalendarStuff()
+            val stuff: Map<LocalDate, List<DayDisplayData>> =uViewModel.getCalendarStuff()
         Column{
 
 
-            Text("$padding\n stuff is $stuff")
-            CalendarContainerWithBottomSheet(uViewModel,stuff)
 
+            CalendarContainerWithBottomSheet(uViewModel,stuff)
+            Text("$padding\n stuff is $stuff")
         }
     }
     }
@@ -110,7 +107,7 @@ fun AddFloatingActionButtonCustomCalendar(uViewModel: UserViewModel = hiltViewMo
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CalendarContainerWithBottomSheet(viewModel: UserViewModel,stuff:Map<LocalDate, List<String>> =viewModel.getCalendarStuff(),) {
+fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDate, List<DayDisplayData>> =viewModel.getCalendarStuff(),) {
     val context = LocalContext.current
     val sheetState = rememberBottomSheetState(
         initialValue = BottomSheetValue.Collapsed
@@ -209,8 +206,8 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel,stuff:Map<LocalDat
                 }}
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    //.height(400.dp)
+                    .fillMaxWidth()
+                    .height(400.dp)
                     .background(color = grey200),
                 contentAlignment = Alignment.Center
             ) {
@@ -242,7 +239,16 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel,stuff:Map<LocalDat
             val view: View = LocalView.current
 Column {
     Text("Calendar")
-    StaticCalendar12(modifier = Modifier, data = stuff, repo = viewModel.generalRepository)
+    StaticCalendarForBottomSheet12(modifier = Modifier, data = stuff, repo = viewModel.generalRepository,
+        onClick={date,strList->
+            noteText = strList.toString()
+            //viewModel.setCalendarStuff(date,strList)
+            scope.launch {
+                sheetState.expand()
+            }
+        }
+
+    )
 
     Button(onClick = {
         if (sheetState.isCollapsed) {

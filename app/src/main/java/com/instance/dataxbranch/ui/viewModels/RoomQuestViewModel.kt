@@ -131,7 +131,7 @@ class RoomQuestViewModel @Inject constructor(
     fun loadObjectivesa(quest: QuestWithObjectives):List<ObjectiveEntity> {
 
         CoroutineScope(Dispatchers.IO).launch {
-            quest.objectives = dao.getObjectiveEntityList(id = quest.quest.id)
+            quest.objectives = dao.getObjectiveEntityList(id = quest.quest.uuid)
         }
         return quest.objectives
     }
@@ -168,7 +168,7 @@ class RoomQuestViewModel @Inject constructor(
 
     }*/
 
-    fun getQuestWithObjectives(id:Long): QuestWithObjectives {
+    fun getQuestWithObjectives(id:String): QuestWithObjectives {
 
         return dao.getQuestWithObjectives(id) }
 
@@ -184,7 +184,7 @@ class RoomQuestViewModel @Inject constructor(
         refresh()
     }
 
-    fun selectedQuest(activeQuest: Long): String {
+    fun selectedQuest(/*activeQuest: String*/): String {
     return selectedQuest.quest.title.toString()
     }
 

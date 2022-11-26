@@ -14,7 +14,7 @@ import java.util.*
 @Entity(
     tableName = "quests",
     indices = [
-        Index(value = ["id"], unique = true),
+        Index(value = ["uuid"], unique = true),
         //Index(value = ["oid"])
         //Index(value = ["trakt_id"], unique = true),
         //Index(value = ["tmdb_id"])
@@ -38,10 +38,9 @@ INSERT INTO "main"."quests" VALUES('2','0','','','','0','','','','','','','','',
 )
 @TypeConverters(Converters::class)
 @JsonClass(generateAdapter=true)
-//@JvmOverloads for constuctor
  data class QuestEntity @JvmOverloads constructor(
-    @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) val id: Long=0,
-    @ColumnInfo(name = "qid") var qid: String? = "-1",
+    @ColumnInfo(name = "uuid") @PrimaryKey val uuid:String = UUID.randomUUID().toString(),//(autoGenerate = true)
+    //@ColumnInfo(name = "qid") var qid: String? = "-1",
 
     @ColumnInfo(name = "title") var title: String? = null,
     @ColumnInfo(name = "original_title") val originalTitle: String? = null,

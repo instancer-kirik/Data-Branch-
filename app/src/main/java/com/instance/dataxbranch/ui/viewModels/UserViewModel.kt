@@ -26,6 +26,7 @@ import com.instance.dataxbranch.data.repository.plus
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
 import com.instance.dataxbranch.quests.QuestWithObjectives
+import com.instance.dataxbranch.ui.calendar.custom.DayDisplayData
 
 
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -581,8 +582,8 @@ return "me @ userViewModel"
         save()
     }
     fun delete(quest: QuestWithObjectives) {
-        getSelectedCharacter().quests=getSelectedCharacter().quests.filter{it.quest.id != quest.quest.id}.toTypedArray()
-        getSelectedCharacter().character.quests=getSelectedCharacter().character.quests.filter{it != quest.quest.id}
+        getSelectedCharacter().quests=getSelectedCharacter().quests.filter{it.quest.uuid != quest.quest.uuid}.toTypedArray()
+        getSelectedCharacter().character.quests=getSelectedCharacter().character.quests.filter{it != quest.quest.uuid}
         generalRepository.questsRepository.deleteQuest(quest)
         save()
     }
@@ -611,7 +612,7 @@ return "me @ userViewModel"
         //Log.d("uViewModel","delete called on a ${it::class}; not implemented")
     }
 
-    fun getCalendarStuff(): Map<LocalDate, List<String>> {
+    fun getCalendarStuff(): Map<LocalDate, List<DayDisplayData>> {
         return generalRepository.computeForCalendar()
     }
 

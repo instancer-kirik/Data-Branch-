@@ -26,10 +26,9 @@ class AddQuestEntitybyQuest(
         value: Quest
 
     ) =CoroutineScope(Dispatchers.IO).launch{
-
-        dao.save(QuestEntity(
+        val q =QuestEntity(
             //id = value.id.toLong() doesn't set here. autogens
-            qid = value.qid,
+            uuid = value.qid,
             title=value.title + "",
             originalTitle = value.originalTitle,
             country = value.country,
@@ -42,8 +41,9 @@ class AddQuestEntitybyQuest(
             sourceUrl = value.sourceUrl,
             ingredients = value.ingredients,
             region = value.region
-        )).also {
-            value.objectives.forEach { objective -> dao.save(objective.convert(it)) }}
+        )
+        dao.save(q).also {
+            value.objectives.forEach { objective -> dao.save(objective.convert(q.uuid)) }}
 
 
     }

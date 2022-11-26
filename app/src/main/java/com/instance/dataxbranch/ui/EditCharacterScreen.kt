@@ -359,7 +359,7 @@ fun CharacterSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, c:
             modifier = Modifier.padding(8.dp)
         )
         //stringblock("fsid: " ,c.character.fsid +"")
-        stringblock("active/selected quest: " ,   roomQuestViewModel.selectedQuest(c.character.getActiveQuest()))
+        stringblock("selected quest: " ,   roomQuestViewModel.selectedQuest(/*c.character.getActiveQuest()*/))
         stringblock("rating: " ,c.character.rating.toString() +"/"+ c.character.rating_denominator.toString())
         //stringblock("id:  " ,c.character.id.toString())
         stringblock("uuid: " ,c.character.uuid.toString())

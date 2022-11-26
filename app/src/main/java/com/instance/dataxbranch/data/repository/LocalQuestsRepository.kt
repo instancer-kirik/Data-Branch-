@@ -40,12 +40,12 @@ class LocalQuestsRepository @Inject constructor(application: Application, db: Ap
         }
     fun newObjectiveEntity(quest: QuestWithObjectives): Job =
         CoroutineScope(Dispatchers.IO).launch {
-            val oe = ObjectiveEntity(id = quest.quest.id,)// quest = quest.toString())
+            val oe = ObjectiveEntity(qid = quest.quest.uuid,)// quest = quest.toString())
             questDao.save(oe)
         }
     fun bind(quest: QuestWithObjectives,oe:ObjectiveEntity): Job =
         CoroutineScope(Dispatchers.IO).launch {
-            oe.apply{id = quest.quest.id}
+            oe.apply{qid = quest.quest.uuid}
             quest.objectives += oe
             //val oe = ObjectiveEntity()// quest = quest.toString())
             questDao.save(oe)
@@ -66,7 +66,7 @@ class LocalQuestsRepository @Inject constructor(application: Application, db: Ap
 
         }
     fun deleteQuest(quest: QuestWithObjectives) {
-        mquests= mquests.filter{it.quest.id !=quest.quest.id}.toTypedArray()
+        mquests= mquests.filter{it.quest.uuid !=quest.quest.uuid}.toTypedArray()
             CoroutineScope(Dispatchers.IO).launch {
                 questDao.delete(quest)
             }
@@ -112,13 +112,13 @@ class LocalQuestsRepository @Inject constructor(application: Application, db: Ap
         CoroutineScope(Dispatchers.IO).launch {
 
             objectives.forEach{obj->
-                obj.id=quest.id
+                obj.qid=quest.uuid
                 questDao.save(obj) }
         }
 
 
     }
-    fun questById(id: Long): QuestWithObjectives = questDao.getQuestWithObjectives(id)
+    fun questById(id: String): QuestWithObjectives = questDao.getQuestWithObjectives(id)
 
     /*fun objForOId(oid: Long): Flow<ObjectiveEntity> { Let's avoid flow+liveData for now, too much headache
         return _objectives.map { it.first { it.oid == oid } }

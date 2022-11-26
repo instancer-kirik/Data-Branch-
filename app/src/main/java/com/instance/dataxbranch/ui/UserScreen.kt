@@ -244,7 +244,7 @@ fun UserSpiel(navigator:DestinationsNavigator, viewModel: UserViewModel, me: Use
             modifier = Modifier.padding(8.dp)
         )
        // stringblock("fsid: " ,me.user.fsid +"")
-        stringblock("active/selected quest: " ,   roomQuestViewModel.selectedQuest(me.user.getActiveQuest()))
+        stringblock("active/selected quest: " ,   roomQuestViewModel.selectedQuest(/*me.user.getActiveQuest()*/))
         stringblock("rating: " ,me.user.rating.toString() +"/"+ me.user.rating_denominator.toString())
         stringblock("id:  " ,me.user.me_id.toString())
         stringblock("uid: " ,me.user.uid.toString())

@@ -7,10 +7,10 @@ import com.instance.dataxbranch.data.daos.*
 import com.instance.dataxbranch.data.entities.*
 import com.instance.dataxbranch.utils.Converters
 
-
+//also has relevant enums below
 @Database(entities = [QuestEntity::class, ObjectiveEntity::class, AbilityEntity::class,
     User::class, CharacterEntity::class, ItemEntity::class,NoteEntity::class],
-    version = 61)
+    version = 62)
 @TypeConverters(Converters::class)
  abstract class AppDatabase() : RoomDatabase(){
     //abstract fun addQuestEntity(title: String, author: String): Any
@@ -58,4 +58,16 @@ import com.instance.dataxbranch.utils.Converters
 
 
 
+}
+enum class QuestType{
+    DAILY, WEEKLY, MONTHLY, YEARLY, ONCE, REPEATABLE
+}
+enum class QuestStatus{
+    ACTIVE, COMPLETED, FAILED, CANCELLED
+}
+enum class EntityType{
+    QUEST, OBJECTIVE, HABIT, NOTE, DEFAULT, NONE
+}
+enum class CalendarDataType{//made by github copilot
+    QUEST, OBJECTIVE, ABILITY, ITEM, NOTE, EVENT, TASK, REMINDER, APPOINTMENT, MEETING, DEADLINE, BIRTHDAY, ANNIVERSARY, HOLIDAY, VACATION, OTHER, DEFAULT
 }

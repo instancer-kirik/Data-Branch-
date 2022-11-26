@@ -313,7 +313,7 @@ fun CharacterSpielStatic(navigator:DestinationsNavigator, viewModel: UserViewMod
             modifier = Modifier.padding(8.dp)
         )
         //stringblock("fsid: " ,c.character.fsid +"")
-        stringblock("active/selected quest: " ,   roomQuestViewModel.selectedQuest(c.character.getActiveQuest()))
+        stringblock("selected quest: " ,   roomQuestViewModel.selectedQuest(/*c.character.getActiveQuest()*/))
         stringblock("rating: " ,c.character.rating.toString() +"/"+ c.character.rating_denominator.toString())
         //stringblock("id:  " ,c.character.id.toString())
         stringblock("uid: " ,c.character.uuid.toString())

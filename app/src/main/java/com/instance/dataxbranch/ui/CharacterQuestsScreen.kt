@@ -267,7 +267,7 @@ fun CharacterLocalQuestCardContent(navi: DestinationsNavigator, quest: QuestWith
                     .fillMaxWidth()
                     .background(Color.Black.copy(alpha = 0.5f))
             ) {
-                Text(text = "Title:          id= ${quest.quest.id}")
+                Text(text = "Title:          id= ${quest.quest.uuid}")
                 Text(
 
                     text = quest.quest.title + "",
@@ -388,7 +388,7 @@ fun CharacterHabitCardContent(navi: DestinationsNavigator, quest: QuestWithObjec
                 .fillMaxWidth()
                 .background(Color.Black.copy(alpha = 0.5f))
         ) {
-            Text(text = "HABIT:          id= ${quest.quest.id}")
+            Text(text = "HABIT:          id= ${quest.quest.uuid}")
             Text(
 
                 text = quest.quest.title + "",
@@ -523,11 +523,11 @@ fun CharacterObjectiveViewEdit( oe: ObjectiveEntity,uViewModel:UserViewModel) {
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp)
         ) {
-            Text("id:${oe.id}, oid:${oe.oid}")
+
             Row(modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()) {
-
+                Text("oid:${oe.uuid}, qid:${oe.qid}")
                 OutlinedButton(
                     onClick = {
                         expanded = !expanded
