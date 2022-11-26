@@ -104,8 +104,24 @@ abstract class QuestDao {
 //    abstract fun update(quest: QuestEntity?):Int
     @Upsert
     abstract fun update(vararg quest:QuestEntity)
-    @Upsert
+
+//@Upsert doesn't work lolz
+   /* @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun save(objective: ObjectiveEntity)
+*/
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insert(item: ObjectiveEntity): Long
+    @Update
+    abstract fun update(item: ObjectiveEntity): Int
+
+    @Transaction
+   open fun save(item: ObjectiveEntity) {
+        val rowsUpdated = update(item)
+        if (rowsUpdated == 0) insert(item)
+    }
+
+
+
 
     /*@Query("SELECT * FROM quests WHERE active != 0")
     //alter this on active select in lazycolumnwithselection

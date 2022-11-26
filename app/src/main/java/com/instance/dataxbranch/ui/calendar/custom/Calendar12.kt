@@ -3,10 +3,15 @@ package com.instance.dataxbranch.ui.calendar.custom
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.instance.dataxbranch.data.EntityType
 import com.instance.dataxbranch.data.repository.GeneralRepository
 
@@ -311,6 +316,31 @@ fun StaticCalendarForBottomSheet12(
         repo = repo
     )
 }
-data class DayDisplayData(val uuid:String, val type:Enum<EntityType>, val text:String)
+data class DayDisplayData(val uuid:String="", val type:Enum<EntityType> = EntityType.NONE, val text:String="")
 
 /*enum class for data type*/
+
+@Composable
+fun EventCardForBottomSheet(event:DayDisplayData, onClick: (DayDisplayData) -> Unit ={}){
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp),
+        elevation = 4.dp,
+        //shape = RoundedCornerShape(8.dp)
+    ) {
+        Row{
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(text = event.text, style = MaterialTheme.typography.h6)
+                Text(text = event.type.toString(), style = MaterialTheme.typography.body2)
+
+            }
+            Text(text = "uuid: ${event.uuid}", style = MaterialTheme.typography.body2)
+        }
+
+    }
+}

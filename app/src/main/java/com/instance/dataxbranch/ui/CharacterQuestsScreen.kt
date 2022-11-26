@@ -527,7 +527,7 @@ fun CharacterObjectiveViewEdit( oe: ObjectiveEntity,uViewModel:UserViewModel) {
             Row(modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()) {
-                Text("oid:${oe.uuid}, qid:${oe.qid}")
+                //Text("oid:${oe.uuid}, qid:${oe.qid}")
                 OutlinedButton(
                     onClick = {
                         expanded = !expanded

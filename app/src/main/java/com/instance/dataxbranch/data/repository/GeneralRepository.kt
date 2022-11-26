@@ -135,11 +135,12 @@ class GeneralRepository(application: Application, db: AppDatabase,
                     Log.d(TAG,"SETS CHARACTER ${selectedCharacterWithStuff} ")
 
                 }
+                mabilities = aDao.getAbilites()
+                getMeWithAbilities()
+                getAllCharacters()
+                characterSetup()
                 initialized=true
             }
-            mabilities = aDao.getAbilites()
-            getMeWithAbilities()
-            getAllCharacters()
 
         }
             if(andItems){
@@ -221,29 +222,29 @@ class GeneralRepository(application: Application, db: AppDatabase,
                 }
 
                 selectedCharacterIndex = 0}
-                if (selectedCharacterWithStuff.abilities.isEmpty()) {
-                    putAbilityOnCharacter(AbilityEntity(title = "Add Custom Ability (click +)"))
-                }
-                if (selectedCharacterWithStuff.quests.isEmpty()) {
-                    putQuestOnCharacter(
-                        QuestWithObjectives(
-                            QuestEntity(title = "Add A Custom Quest"), listOf(
-                                ObjectiveEntity(obj = "click the +")
-                            )
-                        )
-                    )
-                }
-                if (selectedCharacterWithStuff.inventory.isEmpty()) {
 
-                    putItemOnCharacter(ItemEntity(name = "skeleton"))
-                    putItemOnCharacter(ItemEntity(name = "mesh"))
-                    putItemOnCharacter(ItemEntity(name = "meat"))
-                    putItemOnCharacter(ItemEntity(name = "stuff"))
-
-            }
         }
 
-
+fun characterSetup(){
+    if (selectedCharacterWithStuff.abilities.isEmpty()) {
+        putAbilityOnCharacter(AbilityEntity(title = "Add Custom Ability (click +)"))
+    }
+    if (selectedCharacterWithStuff.quests.isEmpty()) {
+        putQuestOnCharacter(
+            QuestWithObjectives(
+                QuestEntity(title = "Add A Custom Quest"), listOf(
+                    ObjectiveEntity(obj = "click the +")
+                )
+            )
+        )
+    }
+    if (selectedCharacterWithStuff.inventory.isEmpty()) {
+        putItemOnCharacter(ItemEntity(name = "skeleton"))
+        putItemOnCharacter(ItemEntity(name = "mesh"))
+        putItemOnCharacter(ItemEntity(name = "meat"))
+        putItemOnCharacter(ItemEntity(name = "stuff"))
+    }
+}
           /*  var seen: Int=0
             val gotten = uDao.getAllCharacters()
             Log.d(TAG,"REPO CALLED, seen $seen ALREADY IN LIST")
@@ -600,16 +601,24 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         Log.d(TAG, "HABITS result is now $m ")
         return m
     }
-    fun updateByCharacterList(selectedCharacter: CharacterWithStuff=selectedCharacterWithStuff) {
 
+    fun updateByCharacterList(selectedCharacter: CharacterWithStuff=selectedCharacterWithStuff) {
+//takes in selected character.  If it's not the same as the current one, it updates the current one
+try{
+        //switches to mutable list? and updates selected character.
         if (selectedCharacterIndex>=0) {
+
             val old = mcharacters[selectedCharacterIndex].toString()
             mcharacters = mcharacters.toMutableList().apply {
                 this[selectedCharacterIndex] = selectedCharacter
             }
         }
-        else{selectedCharacterIndex=mcharacters.size}//this might break. find which character, set to that index?
+        else{selectedCharacterIndex=mcharacters.size-1}//this might break. find which character, set to that index? added -1
         //Log.d("REPO", "mcharacters updated index $selectedCharacterIndex with $selectedCharacter ================================from --------------OLD--------------- $old")
+    }catch (e: Exception){
+        Log.d("REPO", "mcharacters updated index $selectedCharacterIndex with $selectedCharacter ================================from --------------OLD--------------- $e")
+
+    }
     }
 
     fun deleteCharacter(character: CharacterWithStuff) {

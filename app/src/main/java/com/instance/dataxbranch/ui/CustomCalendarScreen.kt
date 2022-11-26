@@ -4,7 +4,11 @@ import android.util.Log
 import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,6 +28,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.ui.calendar.custom.DayDisplayData
+import com.instance.dataxbranch.ui.calendar.custom.EventCardForBottomSheet
 
 import com.instance.dataxbranch.ui.calendar.custom.StaticCalendarForBottomSheet12
 
@@ -115,6 +120,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = sheetState
     )
+    var selectedDateStuff by remember { mutableStateOf(listOf(DayDisplayData())) }
     var noteText by remember { mutableStateOf("Hello from sheet") }
     val scope = rememberCoroutineScope()
     val tabHeight = 36.dp
@@ -210,22 +216,38 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                     .height(400.dp)
                     .background(color = grey200),
                 contentAlignment = Alignment.Center
-            ) {
-                Column{
+            ) {/////////////////////////////////////BOTTOM SHEET////////////////////////////////////////
+                Column {
                     Text(
 
                         text = "Bottom sheet",
-                        fontSize = 60.sp
+                        fontSize = 20.sp,
+                        modifier=Modifier.align(Alignment.CenterHorizontally)
                     )
-                    TextField(
-                        value = noteText,
-                        onValueChange = { noteText = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                        , colors = TextFieldDefaults.textFieldColors(   backgroundColor = grey200, focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent, cursorColor = Color.Black, textColor = Color.Black)
-                    )
-                }}
+                LazyColumn( modifier.fillMaxWidth()){
+
+                    itemsIndexed(selectedDateStuff) { ix, item ->
+                        Row {
+                            Text(ix.toString())
+                            EventCardForBottomSheet(event = item, onClick = {
+                            })//viewModel.selectedEvent.value)
+                            //Text(text = it.toString())
+                        }
+                    }
+                    item{
+                        TextField(
+                            value = noteText,
+                            onValueChange = { noteText = it },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                            , colors = TextFieldDefaults.textFieldColors(   backgroundColor = grey200, focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent, cursorColor = Color.Black, textColor = Color.Black)
+                        )}}
+
+                    }
+
+                }
+
         },
         sheetBackgroundColor = Color.Transparent,
         sheetPeekHeight = 30.dp
@@ -240,8 +262,9 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
 Column {
     Text("Calendar")
     StaticCalendarForBottomSheet12(modifier = Modifier, data = stuff, repo = viewModel.generalRepository,
-        onClick={date,strList->
-            noteText = strList.toString()
+        onClick={date,eventList->
+            selectedDateStuff = eventList
+            noteText = eventList.toString()
             //viewModel.setCalendarStuff(date,strList)
             scope.launch {
                 sheetState.expand()

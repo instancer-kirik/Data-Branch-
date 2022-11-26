@@ -117,6 +117,7 @@ class UserViewModel @Inject constructor(
     fun setSelectedCharacter(index: Int){
 
         generalRepository.selectedCharacterIndex = index
+        Log.d(TAG, "SELECTED char index updating in viewmodel: ${generalRepository.selectedCharacterIndex}")
         generalRepository.selectedCharacterWithStuff=generalRepository.mcharacters[generalRepository.selectedCharacterIndex]
         update(meWithAbilities.user.apply{selectedCharacterID=generalRepository.selectedCharacterWithStuff.character.uuid})
         Log.d(TAG,"updating user with id ${generalRepository.selectedCharacterWithStuff.character.uuid} ")

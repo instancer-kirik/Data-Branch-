@@ -28,7 +28,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.R
 import com.instance.dataxbranch.core.Constants.ADD_QUEST
 import com.instance.dataxbranch.core.Utils.Companion.printError
-import com.instance.dataxbranch.ui.destinations.*
 import com.instance.dataxbranch.domain.Response
 import com.instance.dataxbranch.quests.Quest
 import com.instance.dataxbranch.ui.components.AddQuestAlertDialog
@@ -57,7 +56,7 @@ fun CloudQuestsScreen(
         }
         when (val questsResponse = viewModel.questsState.value) {
             is Response.Loading -> ProgressBar()
-            is Response.Success -> LazyColumn(viewModel, questsResponse.data, modifier = Modifier
+            is Response.Success -> LazyColumn1(viewModel, questsResponse.data, modifier = Modifier
                 .fillMaxSize()
                 .padding(padding))
             is Response.Error -> OnlyText("Error",questsResponse.message)
@@ -88,7 +87,7 @@ fun CloudQuestsScreen(
 
 }
 @Composable
-fun LazyColumn(viewModel: QuestsViewModel, questsResponse: List<Quest>, modifier: Modifier) {
+fun LazyColumn1(viewModel: QuestsViewModel, questsResponse: List<Quest>, modifier: Modifier) {
     var selectedIndex by remember { mutableStateOf(0) }
     val onItemClick = { index: Int -> selectedIndex = index}
     LazyColumn(
