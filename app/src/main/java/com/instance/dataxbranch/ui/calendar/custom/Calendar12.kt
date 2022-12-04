@@ -2,6 +2,7 @@ package com.instance.dataxbranch.ui.calendar.custom
 
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -325,7 +326,8 @@ fun EventCardForBottomSheet(event:DayDisplayData, onClick: (DayDisplayData) -> U
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp),
+            .padding(4.dp)
+            .clickable(onClick = { onClick.invoke(event) }),
         elevation = 4.dp,
         //shape = RoundedCornerShape(8.dp)
     ) {

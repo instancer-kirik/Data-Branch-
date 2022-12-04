@@ -597,6 +597,74 @@ fun CharacterObjectiveViewEdit( oe: ObjectiveEntity,uViewModel:UserViewModel) {
             }
         }
 }
+
+@Composable//Checkable, no edit
+fun CharacterObjectiveView( oe: ObjectiveEntity,uViewModel:UserViewModel) {
+
+
+    //var value by remember { mutableStateOf() }
+    //var expanded by remember { mutableStateOf(false) }
+    //var value2 by remember { mutableStateOf() }
+//    val extraPadding by animateDpAsState(
+//        if (expanded) 48.dp else 0.dp
+//    )
+    Surface(
+        color = MaterialTheme.colors.primaryVariant,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+
+        Row(modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,) {
+            //Text("oid:${oe.uuid}, qid:${oe.qid}")
+            /*OutlinedButton(
+                onClick = {
+                    expanded = !expanded
+                    if (!expanded) {//since save triggers expanded, handle saving here with value: String
+                        //Log.d("saved the objective", "$value")
+                        oe.obj =
+                            value// updates quest. needs method to push back to cloud
+                        oe.desc = value2
+                        uViewModel.save(oe)
+                    }
+                }*/
+
+                    Column {
+                        Text(""+oe.obj
+                        )
+                        Text(""+oe.desc)
+                    }
+
+            //Spacer(modifier = Modifier.padding(8.dp))
+      /*      Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(bottom = extraPadding)
+                    .fillMaxWidth()
+
+            ) {
+*/
+                //Text(text = "Objective ")
+                //Text(text = oe.obj.toString())
+
+                    val checkedState = remember { mutableStateOf(oe.completed) }
+                    Checkbox(
+                        checked = checkedState.value,
+                        onCheckedChange = {
+                            checkedState.value = it
+                            oe.apply { completed = it }
+                            uViewModel.onObjCheckedChanged(oe, it)
+                        })
+
+            //CompleteCheckBox(oe) oe.apply { completed = it }
+            //                        viewModel.onObjCheckedChanged(oe,it)
+
+        }
+    }
+}
 /*@Composable//, onClick: (Int) -> Unit
 fun LocalQuestViewNoSel(viewModel: RoomQuestViewModel, quest: QuestWithObjectives,navi: DestinationsNavigator,uViewModel: UserViewModel) {
     Box(modifier = Modifier

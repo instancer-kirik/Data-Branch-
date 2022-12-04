@@ -70,7 +70,7 @@ fun HubScreen(viewModel: UserViewModel = hiltViewModel(),
                 )
             }*/
         }
-        Column{Text(me.user.uname)
+        Column{Text(viewModel.getSelectedCharacter().character.name)//me.user.uname)
             //Text("GO TO USER SCREEN -> save")
             DefaultLazyColumn(navigator,context,viewModel, screens = dests, modifier = Modifier.padding(2.dp))
         }

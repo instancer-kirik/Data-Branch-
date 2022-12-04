@@ -347,7 +347,7 @@ fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewM
 
                 }
             }
-                Button(onClick = { uViewModel.generalRepository.putQuestOnCharacter(quest) }) {
+                Button(onClick = { uViewModel.generalRepository.putQuestOnCharacter(quest.quest) }) {
                     Text(
                         "GET"
                     )

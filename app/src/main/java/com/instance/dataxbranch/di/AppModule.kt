@@ -21,6 +21,7 @@ import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.data.repository.GeneralRepository
 import com.instance.dataxbranch.data.repository.ItemRepository
 import com.instance.dataxbranch.data.repository.LocalQuestsRepository
+import com.instance.dataxbranch.data.repository.NoteRepository
 
 import com.instance.dataxbranch.domain.use_case.*
 import com.instance.dataxbranch.utils.constants.FIRESTORE_COLLECTION
@@ -127,9 +128,15 @@ object AppModule {
     }
     @Singleton
     @Provides
-    fun provideGeneralRepository(app:Application,db: AppDatabase,questsRepository: LocalQuestsRepository,itemRepository: ItemRepository):
+    fun provideNoteRepository(app:Application,db: AppDatabase):
+            NoteRepository {
+        return NoteRepository(app,db)
+    }
+    @Singleton
+    @Provides
+    fun provideGeneralRepository(app:Application,db: AppDatabase,questsRepository: LocalQuestsRepository,itemRepository: ItemRepository, noteRepository: NoteRepository):
             GeneralRepository {
-        return GeneralRepository(app,db,questsRepository, itemRepository)
+        return GeneralRepository(app,db,questsRepository, itemRepository,noteRepository)
     }
 
     /*@Singleton THIS IS FOR ROOM

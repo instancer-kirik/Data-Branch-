@@ -10,7 +10,7 @@ import com.instance.dataxbranch.utils.Converters
 //also has relevant enums below
 @Database(entities = [QuestEntity::class, ObjectiveEntity::class, AbilityEntity::class,
     User::class, CharacterEntity::class, ItemEntity::class,NoteEntity::class],
-    version = 62)
+    version = 63, exportSchema = false)
 @TypeConverters(Converters::class)
  abstract class AppDatabase() : RoomDatabase(){
     //abstract fun addQuestEntity(title: String, author: String): Any
@@ -53,7 +53,28 @@ import com.instance.dataxbranch.utils.Converters
             questDao.insert(QuestEntity(title =title, author = author))
         }*/
 
-
+/*@Database(entities = [TodoItem::class], version = 1)
+abstract class TodoDatabase : RoomDatabase() {
+    abstract fun todoDao(): TodoDatabaseDao
+    companion object {
+         private var INSTANCE: TodoDatabase? = null
+         fun getInstance(context: Context): TodoDatabase {
+            synchronized(this) {
+                var instance = INSTANCE
+                if (instance == null) {
+                    instance = Room.databaseBuilder(
+                        context.applicationContext,
+                        TodoDatabase::class.java,
+                        "todo_list_database"
+                    ).fallbackToDestructiveMigration()
+                     .build()
+                 INSTANCE = instance
+               }
+             return instance
+           }
+       }
+   }
+}*/
     }
 
 

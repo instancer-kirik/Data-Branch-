@@ -135,7 +135,7 @@ class ItemRepository @Inject constructor(application: Application, db: AppDataba
 
 }
 
-private fun ItemEntity.stringify(): String {
+private fun ItemEntity.describe(): String {
 return "ITEM ${this.name} id: ${this.iid}"
 }
 

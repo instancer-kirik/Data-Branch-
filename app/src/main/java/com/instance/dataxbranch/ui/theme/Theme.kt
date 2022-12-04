@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
         primary = primarydark,
@@ -26,7 +27,7 @@ private val LightColorPalette = lightColors(
     onSurface = Color.Black,
     */
 )
-
+val RainbowColors = listOf(Color.Cyan, Color.Blue, purple400, Color.Red, Color.Yellow)
 @Composable
 fun DataXBranchTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
     val colors = if (darkTheme) {

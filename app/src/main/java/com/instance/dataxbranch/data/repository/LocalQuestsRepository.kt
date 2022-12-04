@@ -118,8 +118,8 @@ class LocalQuestsRepository @Inject constructor(application: Application, db: Ap
 
 
     }
-    fun questById(id: String): QuestWithObjectives = questDao.getQuestWithObjectives(id)
-
+    fun loadQuestById(id: String): QuestWithObjectives = questDao.getQuestWithObjectives(id)
+    fun getQuestById(id: String): QuestWithObjectives = mquests.first{it.quest.uuid==id}
     /*fun objForOId(oid: Long): Flow<ObjectiveEntity> { Let's avoid flow+liveData for now, too much headache
         return _objectives.map { it.first { it.oid == oid } }
     }*/

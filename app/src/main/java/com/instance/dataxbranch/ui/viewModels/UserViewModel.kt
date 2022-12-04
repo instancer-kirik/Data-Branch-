@@ -75,6 +75,7 @@ class UserViewModel @Inject constructor(
     var characterDialogState = mutableStateOf(false)
     var allabilities = mutableStateOf(false)
     var inventoryModeState = mutableStateOf(false)
+    var selectedDisplayData = mutableStateOf(DayDisplayData())
     //var mfsid:String = "-2"
 //    val handyString: MutableLiveData<String> by lazy {
 //        MutableLiveData<String>()
@@ -262,9 +263,11 @@ class UserViewModel @Inject constructor(
             //Log.d(TAG, "character quests: ${getSelectedCharacter().quests.size}")
             /*    CoroutineScope(Dispatchers.IO).launch {
             result =useCases.addNewQuestEntity(title,description, author) }*/
-        }
+
     }
-    fun putQuestOnCharacter(){
+    /*fun putQuestOnCharacter(char:CharacterWithStuff= getSelectedCharacter(),quest:QuestWithObjectives){
+        generalRepository.putQuestOnCharacter(quest)
+    }*/
 
     }
     fun getMeWithAbilities(): UserWithAbilities {

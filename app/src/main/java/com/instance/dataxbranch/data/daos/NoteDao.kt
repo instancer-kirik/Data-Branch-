@@ -27,9 +27,9 @@ abstract class NoteDao {
     /*@Query("SELECT * FROM abilities WHERE uid=:uid") not many to many here, no need
     abstract fun getAbilites(uid:Long): List<NoteEntity>*/
     @Query("SELECT * FROM notes")
-    abstract fun getNotes(): List<NoteEntity>
+    abstract fun getNotes(): Array<NoteEntity>
     @Query("SELECT * FROM notes WHERE uuid = :uuid")
-    abstract fun getNotesByUuid(uuid:Long): NoteEntity
+    abstract fun getNotesByUuid(uuid:String): NoteEntity
     @Query("SELECT * FROM notes WHERE context = :context")
     abstract fun getNotesByContext(context: Context): NoteEntity
 }

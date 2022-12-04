@@ -16,6 +16,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -27,10 +29,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
+import com.instance.dataxbranch.data.EntityType
+import com.instance.dataxbranch.data.entities.NoteEntity
+import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.ui.calendar.custom.DayDisplayData
 import com.instance.dataxbranch.ui.calendar.custom.EventCardForBottomSheet
 
 import com.instance.dataxbranch.ui.calendar.custom.StaticCalendarForBottomSheet12
+import com.instance.dataxbranch.ui.components.AddQuestEntityOnCharacterAlertDialog
 
 import com.instance.dataxbranch.ui.components.QuestToolbar
 import com.instance.dataxbranch.ui.components.getActivity
@@ -64,7 +70,9 @@ fun CustomCalendarScreen(
             AddFloatingActionButtonCustomCalendar()
         }
     ) { padding ->
-
+            if (uViewModel.characterDialogState.value) {
+               EventDisplayAlertDialog()
+            }
         if (recomposeState.value){
             recomposeState.value =false
             }
@@ -97,7 +105,7 @@ fun AddFloatingActionButtonCustomCalendar(uViewModel: UserViewModel = hiltViewMo
 ) {
     FloatingActionButton(
         onClick = {
-
+        TODO()
             //uViewModel.characterDialogState.value = true
         },
         backgroundColor = MaterialTheme.colors.primary
@@ -230,6 +238,8 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                         Row {
                             Text(ix.toString())
                             EventCardForBottomSheet(event = item, onClick = {
+                                viewModel.selectedDisplayData.value = item
+                               viewModel.characterDialogState.value = true
                             })//viewModel.selectedEvent.value)
                             //Text(text = it.toString())
                         }
@@ -258,7 +268,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                 .fillMaxSize(),
             contentAlignment = Alignment.TopCenter//Center
         ) {
-            val view: View = LocalView.current
+           // val view: View = LocalView.current
 Column {
     Text("Calendar")
     StaticCalendarForBottomSheet12(modifier = Modifier, data = stuff, repo = viewModel.generalRepository,
@@ -292,7 +302,140 @@ Column {
 
         Text(text = "Bottom sheet fraction: ${sheetState.progress.fraction}")
     }
+    Spacer(modifier = Modifier.height(50.dp))
+   Column(modifier = Modifier.align(Alignment.CenterHorizontally)){
+    Text(LocalDate.now().toString())
+    Text("Todays events are\n ${stuff[LocalDate.now()]?.toString()}")
+
+}
 }
         }
     }
+}
+//has 1 event DayDisplayData(val uuid:String="", val type:Enum<EntityType> = EntityType.NONE, val text:String="")
+@Composable
+fun EventDisplayAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :DayDisplayData = viewModel.selectedDisplayData.value
+) {
+    //var title by remember { mutableStateOf(data.text) }
+    //val focusRequester = FocusRequester()
+    val focusRequester = remember { FocusRequester() }
+    if (viewModel.characterDialogState.value) {
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.characterDialogState.value = false
+            },
+            title = {
+                Text(
+                    text = Constants.ADD_QUEST
+                )
+            },
+            text = {
+                Column(modifier = Modifier.focusRequester(focusRequester)) {
+                    Text(data.text)
+                        //modifier = Modifier.focusRequester(focusRequester)
+
+                    LaunchedEffect(Unit) {
+                        coroutineContext.job.invokeOnCompletion {
+                            focusRequester.requestFocus()
+                        }
+                    }
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
+                    /*enum class EntityType{
+    QUEST, OBJECTIVE, HABIT, NOTE, DEFAULT, NONE
+}*/
+                    when(data.type) {
+                        EntityType.QUEST ->
+                            QuestEventCard(quest = viewModel.generalRepository.questsRepository.getQuestById(data.uuid), viewModel = viewModel )
+                        EntityType.NOTE ->
+                            NoteEventCard(note = viewModel.generalRepository.notes.getNoteById(data.uuid), viewModel = viewModel )
+                        EntityType.HABIT ->
+                            HabitEventCard(habit = viewModel.generalRepository.questsRepository.getQuestById(data.uuid), viewModel = viewModel )
+
+                        else ->
+                            DefaultEventCard(event = data, viewModel = viewModel)
+                            //throw UnsupportedOperationException()
+                    }
+
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.characterDialogState.value = false
+                        Log.d("AlertDialog", "Confirm")
+                        //viewModel.addNewQuestEntity(title,description, author)//viewModel.selectedQuest =
+                    }
+                ) {
+                    Text(
+                        text = Constants.CLOSE
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.characterDialogState.value = false
+                    }
+                ) {
+                    Text(
+                        text = Constants.DISMISS
+                    )
+                }
+            }
+        )
+    }
+}
+
+/*
+
+usable:
+    QUEST, HABIT, NOTE,  DEADLINE,
+
+undecided:
+    BIRTHDAY, ANNIVERSARY, HOLIDAY,
+*/
+
+
+
+
+@Composable
+fun QuestEventCard(quest:QuestWithObjectives,viewModel: UserViewModel){
+    Column {
+        Text(""+quest.quest.title)
+        Text(quest.quest.describe())
+        LazyColumn(){
+            itemsIndexed(quest.objectives){ix,objective->
+                CharacterObjectiveView(oe =objective , uViewModel = viewModel)
+                //Text(""+objective.obj)
+            }
+        }
+
+    }
+}
+@Composable// habits are quests until I make a habit class
+fun HabitEventCard(habit: QuestWithObjectives, viewModel: UserViewModel){
+    Column {
+        Text(""+habit.quest.title)
+        Text(habit.quest.describe())
+    }
+}
+@Composable
+fun NoteEventCard(note: NoteEntity, viewModel: UserViewModel){
+    Column {
+        Text(""+note.title)
+        Text(note.describe())
+
+    }
+
+}
+@Composable
+fun DefaultEventCard(event: DayDisplayData, viewModel: UserViewModel){
+    Column {
+        Text(""+event.text)
+        Text(event.type.toString())
+        Text(event.uuid.toString())
+    }
+
 }
