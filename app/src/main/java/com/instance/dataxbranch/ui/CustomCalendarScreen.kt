@@ -3,6 +3,7 @@ package com.instance.dataxbranch.ui
 import android.util.Log
 import android.view.View
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -32,15 +33,13 @@ import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.EntityType
 import com.instance.dataxbranch.data.entities.NoteEntity
 import com.instance.dataxbranch.quests.QuestWithObjectives
+import com.instance.dataxbranch.ui.calendar.custom.DayData
 import com.instance.dataxbranch.ui.calendar.custom.DayDisplayData
-import com.instance.dataxbranch.ui.calendar.custom.EventCardForBottomSheet
+
 
 import com.instance.dataxbranch.ui.calendar.custom.StaticCalendarForBottomSheet12
-import com.instance.dataxbranch.ui.components.AddQuestEntityOnCharacterAlertDialog
+import com.instance.dataxbranch.ui.components.*
 
-import com.instance.dataxbranch.ui.components.QuestToolbar
-import com.instance.dataxbranch.ui.components.getActivity
-import com.instance.dataxbranch.ui.components.hideKeyboard
 import com.instance.dataxbranch.ui.theme.grey200
 import com.instance.dataxbranch.ui.theme.notepad
 import com.instance.dataxbranch.ui.theme.purple400
@@ -73,13 +72,16 @@ fun CustomCalendarScreen(
             if (uViewModel.characterDialogState.value) {
                EventDisplayAlertDialog()
             }
+            if(uViewModel.openDialogState.value) {
+                AddNoteEntityAlertDialog()
+            }
         if (recomposeState.value){
             recomposeState.value =false
             }
       /*  if (uViewModel.characterDialogState.value) {
             AddQuestEntityOnCharacterAlertDialog()
         }*/
-            val stuff: Map<LocalDate, List<DayDisplayData>> =uViewModel.getCalendarStuff()
+            val stuff: Map<LocalDate, DayData> =uViewModel.getCalendarStuff()
         Column{
 
 
@@ -105,8 +107,7 @@ fun AddFloatingActionButtonCustomCalendar(uViewModel: UserViewModel = hiltViewMo
 ) {
     FloatingActionButton(
         onClick = {
-        TODO()
-            //uViewModel.characterDialogState.value = true
+        uViewModel.openDialogState.value = true
         },
         backgroundColor = MaterialTheme.colors.primary
     ) {
@@ -120,7 +121,7 @@ fun AddFloatingActionButtonCustomCalendar(uViewModel: UserViewModel = hiltViewMo
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDate, List<DayDisplayData>> =viewModel.getCalendarStuff(),) {
+fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDate, DayData> =viewModel.getCalendarStuff(),) {
     val context = LocalContext.current
     val sheetState = rememberBottomSheetState(
         initialValue = BottomSheetValue.Collapsed
@@ -272,9 +273,9 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
 Column {
     Text("Calendar")
     StaticCalendarForBottomSheet12(modifier = Modifier, data = stuff, repo = viewModel.generalRepository,
-        onClick={date,eventList->
-            selectedDateStuff = eventList
-            noteText = eventList.toString()
+        onClick={date,data->
+            selectedDateStuff = data.DisplayData
+            noteText = data.toString()
             //viewModel.setCalendarStuff(date,strList)
             scope.launch {
                 sheetState.expand()
@@ -326,7 +327,7 @@ fun EventDisplayAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :Da
             },
             title = {
                 Text(
-                    text = Constants.ADD_QUEST
+                    text = Constants.OK
                 )
             },
             text = {
@@ -339,12 +340,10 @@ fun EventDisplayAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :Da
                             focusRequester.requestFocus()
                         }
                     }
-                    Spacer(
-                        modifier = Modifier.height(16.dp)
-                    )
+                    Spacer(modifier = Modifier.height(2.dp))
                     /*enum class EntityType{
     QUEST, OBJECTIVE, HABIT, NOTE, DEFAULT, NONE
-}*/
+}*/                 Text("DDDDDDDD "+data.type.toString())
                     when(data.type) {
                         EntityType.QUEST ->
                             QuestEventCard(quest = viewModel.generalRepository.questsRepository.getQuestById(data.uuid), viewModel = viewModel )
@@ -357,7 +356,7 @@ fun EventDisplayAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :Da
                             DefaultEventCard(event = data, viewModel = viewModel)
                             //throw UnsupportedOperationException()
                     }
-
+                    Text("VVVVVVVVV")
                 }
             },
             confirmButton = {
@@ -399,12 +398,13 @@ undecided:
 
 
 
-
+//////////////////////////////////////////////THESE ARE IN THE ALERT DIALOG////////////////////////////////////////
 @Composable
 fun QuestEventCard(quest:QuestWithObjectives,viewModel: UserViewModel){
     Column {
-        Text(""+quest.quest.title)
+        Text("Q: "+quest.quest.title)
         Text(quest.quest.describe())
+        Text("id: "+quest.quest.uuid)
         LazyColumn(){
             itemsIndexed(quest.objectives){ix,objective->
                 CharacterObjectiveView(oe =objective , uViewModel = viewModel)
@@ -417,15 +417,17 @@ fun QuestEventCard(quest:QuestWithObjectives,viewModel: UserViewModel){
 @Composable// habits are quests until I make a habit class
 fun HabitEventCard(habit: QuestWithObjectives, viewModel: UserViewModel){
     Column {
-        Text(""+habit.quest.title)
+        Text("H: "+habit.quest.title)
         Text(habit.quest.describe())
+        Text("id: "+habit.quest.uuid)
     }
 }
 @Composable
 fun NoteEventCard(note: NoteEntity, viewModel: UserViewModel){
     Column {
-        Text(""+note.title)
+        Text("N: "+note.title)
         Text(note.describe())
+        Text("id: "+note.uuid)
 
     }
 
@@ -433,9 +435,37 @@ fun NoteEventCard(note: NoteEntity, viewModel: UserViewModel){
 @Composable
 fun DefaultEventCard(event: DayDisplayData, viewModel: UserViewModel){
     Column {
-        Text(""+event.text)
+        Text("X: "+event.text)
         Text(event.type.toString())
         Text(event.uuid.toString())
+
     }
 
+}
+
+@Composable
+fun EventCardForBottomSheet(event:DayDisplayData, onClick: (DayDisplayData) -> Unit ={}){
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+            .clickable(onClick = { onClick.invoke(event) }),
+        elevation = 4.dp,
+        //shape = RoundedCornerShape(8.dp)
+    ) {
+        Row{
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(text = event.text, style = MaterialTheme.typography.h6)
+                Text(text = event.type.toString(), style = MaterialTheme.typography.body2)
+                Text(text = "uuid: ${event.uuid}", style = MaterialTheme.typography.body2)
+            }
+            Text(text = "invisible2")
+
+        }
+
+    }
 }

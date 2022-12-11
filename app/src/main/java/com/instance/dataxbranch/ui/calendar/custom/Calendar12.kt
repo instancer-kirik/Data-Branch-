@@ -12,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.instance.dataxbranch.data.DayStatus
 import com.instance.dataxbranch.data.EntityType
 import com.instance.dataxbranch.data.repository.GeneralRepository
 
@@ -120,7 +122,7 @@ fun SelectableCalendar12(
 fun StaticCalendar12(
 
     modifier: Modifier,
-    data:Map<LocalDate, List<DayDisplayData>>,
+    data:Map<LocalDate, DayData>,
     firstDayOfWeek: DayOf12dWeek = getFirstDayOfWeek(),
     today: LocalDate = LocalDate.now(),
     showAdjacentMonths: Boolean = true,
@@ -280,8 +282,8 @@ fun rememberCalendarState(
 fun StaticCalendarForBottomSheet12(
 
     modifier: Modifier,
-    onClick: (LocalDate,List<DayDisplayData>) -> Unit= { _, _ -> },
-    data:Map<LocalDate, List<DayDisplayData>>,
+    onClick: (LocalDate,DayData) -> Unit= { _, _ -> },
+    data:Map<LocalDate, DayData>,
     firstDayOfWeek: DayOf12dWeek = getFirstDayOfWeek(),
     today: LocalDate = LocalDate.now(),
     showAdjacentMonths: Boolean = true,
@@ -318,31 +320,7 @@ fun StaticCalendarForBottomSheet12(
     )
 }
 data class DayDisplayData(val uuid:String="", val type:Enum<EntityType> = EntityType.NONE, val text:String="")
+data class DayData(var color: Color = Color.Transparent, var status:Enum<DayStatus> = DayStatus.NONE, var DisplayData:List<DayDisplayData> =listOf())
 
 /*enum class for data type*/
 
-@Composable
-fun EventCardForBottomSheet(event:DayDisplayData, onClick: (DayDisplayData) -> Unit ={}){
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp)
-            .clickable(onClick = { onClick.invoke(event) }),
-        elevation = 4.dp,
-        //shape = RoundedCornerShape(8.dp)
-    ) {
-        Row{
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Text(text = event.text, style = MaterialTheme.typography.h6)
-                Text(text = event.type.toString(), style = MaterialTheme.typography.body2)
-
-            }
-            Text(text = "uuid: ${event.uuid}", style = MaterialTheme.typography.body2)
-        }
-
-    }
-}

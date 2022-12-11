@@ -26,6 +26,7 @@ import com.instance.dataxbranch.data.repository.plus
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
 import com.instance.dataxbranch.quests.QuestWithObjectives
+import com.instance.dataxbranch.ui.calendar.custom.DayData
 import com.instance.dataxbranch.ui.calendar.custom.DayDisplayData
 
 
@@ -530,7 +531,7 @@ return "me @ userViewModel"
         //Regular quest, default case
             meWithAbilities.user.xp += quest.quest.rewardxp
             char.character.xp += quest.quest.rewardxp
-            char.character.QuestAddNow(quest)
+            char.character.addOrUpdateCompletedQuestTimestamp(quest)
             //Plans: to handle other rewards, like tokens and items
             // s tatus updates
             //notification to QuestGiver
@@ -616,7 +617,7 @@ return "me @ userViewModel"
         //Log.d("uViewModel","delete called on a ${it::class}; not implemented")
     }
 
-    fun getCalendarStuff(): Map<LocalDate, List<DayDisplayData>> {
+    fun getCalendarStuff(): Map<LocalDate, DayData> {
         return generalRepository.computeForCalendar()
     }
 

@@ -31,6 +31,8 @@ data class NoteEntity @JvmOverloads constructor(
     @ColumnInfo(name = "context1") var context1: String="",
     @ColumnInfo(name = "context") var context: Context? = null,
     @ColumnInfo(name = "when") var date: String = "",
+    @ColumnInfo(name = "created") var dateOfCreation: String= "",
+    @ColumnInfo(name = "updated") var dateLastUpdated: String = "",
     @ColumnInfo(name = "repeat") var repeat: Int = 0,//0=none, 1=daily, 2=weekly, 3=monthly, 4=yearly
 ) {
 

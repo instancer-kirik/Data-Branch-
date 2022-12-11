@@ -17,10 +17,10 @@ fun getNow():String{
 }
 fun parse(tbd:String):LocalDateTime {
     var result: LocalDateTime
-        try {
-            result = LocalDateTime.parse(tbd, dateFormattingPattern)
-        } catch (e: Exception) {
-            Log.d("DATETIME", "${e.message} \n ${e.printStackTrace()}")
+    try {
+        result = LocalDateTime.parse(tbd, dateFormattingPattern)
+    } catch (e: Exception) {
+        Log.d("DATETIME", "${e.message} \n ${e.printStackTrace()}")
 try {
     result = LocalDateTime.parse(tbd, dateFormattingPattern2)
 
@@ -36,5 +36,6 @@ try {
    // result = LocalDateTime.parse(tbd, dateFormattingPattern3)
 }
         }
+    Log.d("DATETIME4", "result: $result")
     return result
 }

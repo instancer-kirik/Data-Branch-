@@ -19,7 +19,7 @@ data class QuestWithObjectives @Inject constructor(
         parentColumn = "uuid",
         entityColumn = "qid"
     )
-    var objectives: List<ObjectiveEntity>
+    var objectives: List<ObjectiveEntity> = listOf()//just added listOf primer 12/10/22
  ){
 fun toDayDisplayData(): DayDisplayData{
     return DayDisplayData(

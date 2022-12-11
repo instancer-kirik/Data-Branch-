@@ -3,6 +3,8 @@ package com.instance.dataxbranch.data.repository
 
 
 import android.app.Application
+import android.util.Log
+import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
@@ -67,9 +69,9 @@ class LocalQuestsRepository @Inject constructor(application: Application, db: Ap
         }
     fun deleteQuest(quest: QuestWithObjectives) {
         mquests= mquests.filter{it.quest.uuid !=quest.quest.uuid}.toTypedArray()
-            CoroutineScope(Dispatchers.IO).launch {
-                questDao.delete(quest)
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+            questDao.delete(quest)
+        }
     }
     fun update(qwo: QuestWithObjectives): Job =
         CoroutineScope(Dispatchers.IO).launch {
@@ -107,7 +109,12 @@ class LocalQuestsRepository @Inject constructor(application: Application, db: Ap
         }
         return 1
     }
+    fun insertQWOtomquests(qwo: QuestWithObjectives) {
+        Log.d(TAG,"before: mquests is " + mquests )
+            mquests += qwo
+        Log.d(TAG,"after: mquests is " + mquests )
 
+        }
     fun insertObjectivesForQuest(quest: QuestEntity, objectives: List<ObjectiveEntity>) {
         CoroutineScope(Dispatchers.IO).launch {
 

@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.instance.dataxbranch.ui.calendar.custom.DayData
 import com.instance.dataxbranch.ui.calendar.custom.DayDisplayData
 import java.time.LocalDate
 
@@ -26,7 +27,7 @@ fun <T : SelectionState> DisplayDay(
     selectionColor: Color = MaterialTheme.colors.secondary,
     currentDayColor: Color = MaterialTheme.colors.primary,
     onClick: (LocalDate) -> Unit = {},
-    displayData:List<DayDisplayData> = listOf(),
+    displayData: DayData = DayData(),
 ) {
     val date = state.date
     val selectionState = state.selectionState
