@@ -93,7 +93,26 @@ enum class CalendarDataType{//made by github copilot
     QUEST, OBJECTIVE, ABILITY, ITEM, NOTE, EVENT, TASK, REMINDER, APPOINTMENT, MEETING, DEADLINE, BIRTHDAY, ANNIVERSARY, HOLIDAY, VACATION, OTHER, DEFAULT
 }
 enum class DayStatus{
-    FANTASTIC, GOOD, OKAY, BAD, TERRIBLE, NONE,DEFAULT
+    FANTASTIC, GOOD, OKAY, BAD, TERRIBLE, NONE,DEFAULT;
+    companion object{
+        fun getDayStatusFromInt(i: Int): DayStatus{
+            return when(i){
+                0 -> FANTASTIC
+                1 -> GOOD
+                2 -> OKAY
+                3 -> BAD
+                4 -> TERRIBLE
+                else -> NONE
+            }
+        }
+        fun getList(): List<String> {
+            return values().map {
+                it.toString()
+            }
+        }
+
+    }
+
 }
 
 //fantastic, excellent, mediocre, good, bad, awful, abysmal terrible, default

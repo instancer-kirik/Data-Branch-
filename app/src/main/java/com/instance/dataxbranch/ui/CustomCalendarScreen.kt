@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
+import com.instance.dataxbranch.data.DayStatus
 import com.instance.dataxbranch.data.EntityType
 import com.instance.dataxbranch.data.entities.NoteEntity
 import com.instance.dataxbranch.quests.QuestWithObjectives
@@ -129,6 +130,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = sheetState
     )
+    val selectedDate = remember { mutableStateOf(LocalDate.now()) }
     var selectedDateStuff by remember { mutableStateOf(listOf(DayDisplayData())) }
     var noteText by remember { mutableStateOf("Hello from sheet") }
     val scope = rememberCoroutineScope()
@@ -226,6 +228,9 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                     .background(color = grey200),
                 contentAlignment = Alignment.Center
             ) {/////////////////////////////////////BOTTOM SHEET////////////////////////////////////////
+                var selectedOption1 by remember {
+                    mutableStateOf(DayStatus.getList().last())//THIS IS A STRING, NOT A DAYSTATUS
+                }
                 Column {
                     Text(
 
@@ -233,11 +238,29 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                         fontSize = 20.sp,
                         modifier=Modifier.align(Alignment.CenterHorizontally)
                     )
+                    Text(text = "Selected date: ${selectedDate.value}")
+                    //displays status selector
+
+                    MultiSelector(
+                        options = DayStatus.getList(),
+                        selectedOption = selectedOption1,
+                        onOptionSelect = { option ->
+                            selectedOption1 = option
+                            setDayStatus(selectedDate.value,option,viewModel)
+
+                            //also figure what to do about colors
+                        },
+                        modifier = Modifier
+                            .padding(all = 16.dp)
+                            .fillMaxWidth()
+                            .height(56.dp)
+                    )
                 LazyColumn( modifier.fillMaxWidth()){
 
                     itemsIndexed(selectedDateStuff) { ix, item ->
                         Row {
                             Text(ix.toString())
+
                             EventCardForBottomSheet(event = item, onClick = {
                                 viewModel.selectedDisplayData.value = item
                                viewModel.characterDialogState.value = true
@@ -274,6 +297,7 @@ Column {
     Text("Calendar")
     StaticCalendarForBottomSheet12(modifier = Modifier, data = stuff, repo = viewModel.generalRepository,
         onClick={date,data->
+            selectedDate.value=date
             selectedDateStuff = data.DisplayData
             noteText = data.toString()
             //viewModel.setCalendarStuff(date,strList)
@@ -313,6 +337,17 @@ Column {
         }
     }
 }
+
+fun setDayStatus(value: LocalDate?, option: String, viewModel:UserViewModel) {
+    if (value != null) {
+        TODO()
+        //viewModel.setDayStatus(value,option)
+        //needs a list to store day statuses
+        //iewModel.setCalendarStuff(value,option)
+    }
+}
+
+
 //has 1 event DayDisplayData(val uuid:String="", val type:Enum<EntityType> = EntityType.NONE, val text:String="")
 @Composable
 fun EventDisplayAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :DayDisplayData = viewModel.selectedDisplayData.value
@@ -459,6 +494,7 @@ fun EventCardForBottomSheet(event:DayDisplayData, onClick: (DayDisplayData) -> U
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
+
                 Text(text = event.text, style = MaterialTheme.typography.h6)
                 Text(text = event.type.toString(), style = MaterialTheme.typography.body2)
                 Text(text = "uuid: ${event.uuid}", style = MaterialTheme.typography.body2)
