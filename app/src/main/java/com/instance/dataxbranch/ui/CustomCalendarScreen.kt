@@ -229,8 +229,8 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                 contentAlignment = Alignment.Center
             ) {/////////////////////////////////////BOTTOM SHEET////////////////////////////////////////
                 var selectedOption1 by remember {
-                    mutableStateOf(DayStatus.getList().last())//THIS IS A STRING, NOT A DAYSTATUS
-                }
+                    mutableStateOf(viewModel.getDayStatus(selectedDate.value))//THIS IS A STRING, NOT A DAYSTATUS
+                }//I wonder if this updates when the selectedDate changes
                 Column {
                     Text(
 
@@ -298,7 +298,7 @@ Column {
     StaticCalendarForBottomSheet12(modifier = Modifier, data = stuff, repo = viewModel.generalRepository,
         onClick={date,data->
             selectedDate.value=date
-            selectedDateStuff = data.DisplayData
+            selectedDateStuff = data.displayData
             noteText = data.toString()
             //viewModel.setCalendarStuff(date,strList)
             scope.launch {
@@ -340,8 +340,8 @@ Column {
 
 fun setDayStatus(value: LocalDate?, option: String, viewModel:UserViewModel) {
     if (value != null) {
-        TODO()
-        //viewModel.setDayStatus(value,option)
+
+        viewModel.setDayStatus(value,option)
         //needs a list to store day statuses
         //iewModel.setCalendarStuff(value,option)
     }

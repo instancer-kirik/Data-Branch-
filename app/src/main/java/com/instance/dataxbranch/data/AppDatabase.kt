@@ -10,7 +10,7 @@ import com.instance.dataxbranch.utils.Converters
 //also has relevant enums below
 @Database(entities = [QuestEntity::class, ObjectiveEntity::class, AbilityEntity::class,
     User::class, CharacterEntity::class, ItemEntity::class,NoteEntity::class],
-    version = 64, exportSchema = false)
+    version = 65, exportSchema = false)
 @TypeConverters(Converters::class)
  abstract class AppDatabase() : RoomDatabase(){
     //abstract fun addQuestEntity(title: String, author: String): Any
@@ -93,7 +93,7 @@ enum class CalendarDataType{//made by github copilot
     QUEST, OBJECTIVE, ABILITY, ITEM, NOTE, EVENT, TASK, REMINDER, APPOINTMENT, MEETING, DEADLINE, BIRTHDAY, ANNIVERSARY, HOLIDAY, VACATION, OTHER, DEFAULT
 }
 enum class DayStatus{
-    FANTASTIC, GOOD, OKAY, BAD, TERRIBLE, NONE,DEFAULT;
+    FANTASTIC, GOOD, OKAY, BAD, TRAUMATIC, NONE,DEFAULT;
     companion object{
         fun getDayStatusFromInt(i: Int): DayStatus{
             return when(i){
@@ -101,7 +101,7 @@ enum class DayStatus{
                 1 -> GOOD
                 2 -> OKAY
                 3 -> BAD
-                4 -> TERRIBLE
+                4 -> TRAUMATIC
                 else -> NONE
             }
         }
@@ -109,6 +109,9 @@ enum class DayStatus{
             return values().map {
                 it.toString()
             }
+        }
+        fun fromStringOrDefault(string: String): DayStatus {
+            return values().firstOrNull { it.toString() == string } ?: DEFAULT
         }
 
     }

@@ -15,6 +15,7 @@ import com.instance.dataxbranch.data.entities.User
 
 
 import kotlinx.coroutines.*
+import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.properties.Delegates
@@ -132,6 +133,9 @@ class NoteRepository @Inject constructor(application: Application, db: AppDataba
     }*/
     fun loadNoteById(id: String): NoteEntity = noteDao.getNotesByUuid(id)
     fun getNoteById(id: String):NoteEntity = mnotes.first{it.uuid==id}
+
+
+
     /*fun objForOId(oid: Long): Flow<ObjectiveEntity> { Let's avoid flow+liveData for now, too much headache
         return _objectives.map { it.first { it.oid == oid } }
     }*/

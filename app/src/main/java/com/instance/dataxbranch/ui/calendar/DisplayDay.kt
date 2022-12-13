@@ -43,6 +43,19 @@ fun <T : SelectionState> DisplayDay(
         contentColor = if (isSelected) selectionColor else contentColorFor(
             backgroundColor = MaterialTheme.colors.surface
         )
+
+    /* when(data.type) {
+                        EntityType.QUEST ->
+                            QuestEventCard(quest = viewModel.generalRepository.questsRepository.getQuestById(data.uuid), viewModel = viewModel )
+                        EntityType.NOTE ->
+                            NoteEventCard(note = viewModel.generalRepository.notes.getNoteById(data.uuid), viewModel = viewModel )
+                        EntityType.HABIT ->
+                            HabitEventCard(habit = viewModel.generalRepository.questsRepository.getQuestById(data.uuid), viewModel = viewModel )
+
+                        else ->
+                            DefaultEventCard(event = data, viewModel = viewModel)
+                            //throw UnsupportedOperationException()
+                    }*/
     ) {
         Box(
             modifier = Modifier.clickable {

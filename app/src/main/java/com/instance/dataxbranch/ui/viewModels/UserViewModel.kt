@@ -18,6 +18,7 @@ import androidx.lifecycle.viewModelScope
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.AppDatabase
+import com.instance.dataxbranch.data.DayStatus
 import com.instance.dataxbranch.data.entities.*
 
 import com.instance.dataxbranch.data.local.CharacterWithStuff
@@ -619,6 +620,14 @@ return "me @ userViewModel"
 
     fun getCalendarStuff(): Map<LocalDate, DayData> {
         return generalRepository.computeForCalendar()
+    }
+
+    fun setDayStatus(date: LocalDate, option: String) {
+        return generalRepository.setDayStatus(date, option)
+    }
+
+    fun getDayStatus(date: LocalDate?): String {
+        return generalRepository.getDayStatus(date)
     }
 
 

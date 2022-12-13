@@ -3,6 +3,8 @@ package com.instance.dataxbranch.data.entities
 //import android.util.Log
 import androidx.room.*
 import com.instance.dataxbranch.core.Constants.TAG
+import com.instance.dataxbranch.data.MapConverter
+import com.instance.dataxbranch.quests.QuestWithObjectives
 
 import com.instance.dataxbranch.utils.Converters
 import com.instance.dataxbranch.utils.constants.DEFAULT_UNAME
@@ -20,7 +22,7 @@ import java.util.*
     ]
 
 )
-@TypeConverters(Converters::class)
+@TypeConverters(Converters::class, MapConverter::class)
 @JsonClass(generateAdapter=true)
 data class User @JvmOverloads constructor(
     @ColumnInfo(name = "me_id")@PrimaryKey val me_id: String = java.util.UUID.randomUUID().toString(),
@@ -100,6 +102,10 @@ data class User @JvmOverloads constructor(
     @ColumnInfo(name = "characters") var characters: List<String> = listOf(),
     var selectedCharacterID: String="AAAAAA",
 //store list of authored quests, nuggets,abilities,items etc
+
+    var authoredQuests: List<String> = listOf(),
+
+    var dayStatuses:Map<String,String> = mapOf(),
     ) {
 
     fun getActiveQuest(): Long{
@@ -216,7 +222,15 @@ data class User @JvmOverloads constructor(
 return newer
         }
 
-
+    fun setDateStatus(date: String, status: String){
+        var editing =dayStatuses.toMutableMap()
+        dayStatuses[date]?.let {
+            editing[date]=status//Pair(it.first+ LocalDateTime.now().toString(),it.second)
+        }?:run{
+            editing[date]=status//Pair(listOf(LocalDateTime.now().toString()),quest.quest.describe())
+        }
+        dayStatuses=editing//done
+    }
         /*activeCloudQuests +=tangent.activeCloudQuests
         cloudAbilities +=tangent.cloudAbilities
         completedCloudQuests += tangent.completedCloudQuests

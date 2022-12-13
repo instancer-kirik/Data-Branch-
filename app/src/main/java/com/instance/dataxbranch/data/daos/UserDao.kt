@@ -108,6 +108,16 @@ abstract class UserDao {
 
         return me?.let { UserWithAbilities(it,abilities) }
     }
+
+   /* @MapInfo(keyColumn = "date", valueColumn = "option")
+    @Query("SELECT c.name AS name, sum(p.value) AS sum FROM payments p, paymentCategories c WHERE p.categoryId = c.id GROUP BY c.name")
+    abstract fun getCategoryStats(): Map<String, Float>*/
+
+
+
+
+
+
 }
 /*
 @Dao

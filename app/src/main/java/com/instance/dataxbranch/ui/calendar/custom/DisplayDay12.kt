@@ -56,7 +56,7 @@ fun <T : SelectionState> DisplayDay(
 
 
                 Text(text = date.dayOfMonth.toString())
-                Text(displayData.DisplayData.toString())
+                Text(displayData.displayData.toString())
             }
         }    }
 }
