@@ -1,12 +1,14 @@
 package com.instance.dataxbranch.data.entities
 
 //import android.util.Log
+import androidx.compose.ui.graphics.Color
 import androidx.room.*
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.MapConverter
 import com.instance.dataxbranch.quests.QuestWithObjectives
 
 import com.instance.dataxbranch.utils.Converters
+import com.instance.dataxbranch.utils.PairAdapter
 import com.instance.dataxbranch.utils.constants.DEFAULT_UNAME
 import com.squareup.moshi.JsonClass
 import java.text.SimpleDateFormat
@@ -104,8 +106,9 @@ data class User @JvmOverloads constructor(
 //store list of authored quests, nuggets,abilities,items etc
 
     var authoredQuests: List<String> = listOf(),
-
-    var dayStatuses:Map<String,String> = mapOf(),
+//
+    @ColumnInfo(name = "dayStatuses") var dayStatuses: Map<String,Pair<String,String>> = mapOf(),//Map of date to Pair(status,color)
+// @ColumnInfo(name = "completedQu ") var completedQuests: Map<String,Pair<String,String>> =mapOf()
     ) {
 
     fun getActiveQuest(): Long{
@@ -222,12 +225,12 @@ data class User @JvmOverloads constructor(
 return newer
         }
 
-    fun setDateStatus(date: String, status: String){
+    fun setDateStatus(date: String, status: String,color: Color){//color:String
         var editing =dayStatuses.toMutableMap()
         dayStatuses[date]?.let {
-            editing[date]=status//Pair(it.first+ LocalDateTime.now().toString(),it.second)
+            editing[date]=Pair(status,color.toString())//this just overwrites regardless if it exists
         }?:run{
-            editing[date]=status//Pair(listOf(LocalDateTime.now().toString()),quest.quest.describe())
+            editing[date]=Pair(status,color.toString())//Pair(listOf(LocalDateTime.now().toString()),quest.quest.describe())
         }
         dayStatuses=editing//done
     }

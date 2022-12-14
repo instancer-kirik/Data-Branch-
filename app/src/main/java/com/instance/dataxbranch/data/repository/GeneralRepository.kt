@@ -673,9 +673,9 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
                 //val displayData = DayDisplayData( it.key,EntityType.HABIT,it.value.second)
             if(m[q]!=null){//if DayData mapping exists
                 //modifies daystatus, keeps displayData
-                m[q]= m[q]?.copy(status = DayStatus.fromStringOrDefault(it.value)) ?: DayData(color = Color.White,  DayStatus.fromStringOrDefault(it.value), listOf())
+                m[q]= m[q]?.copy(status = DayStatus.fromStringOrDefault(it.value.first)) ?: DayData(color = Color.White,  DayStatus.fromStringOrDefault(it.value.first), listOf())
             }else{//if DayData mapping does not exist
-                m[q]= DayData(color = Color.White, DayStatus.fromStringOrDefault(it.value), listOf())
+                m[q]= DayData(color = Color.White, DayStatus.fromStringOrDefault(it.value.first), listOf())
             }
             Log.d("SPAM2","$q ${q.isAfter(startDate)} ${q.isBefore(endDate)}")
 
@@ -720,8 +720,8 @@ try{
         return
     }
 
-    fun setDayStatus(date: LocalDate, option: String) {
-        me_container.user.setDateStatus(date.toString(), option)
+    fun setDayStatus(date: LocalDate, option: String,color:Color) {
+        me_container.user.setDateStatus(date.toString(), option,color)
         //val dayData = mCalendarData[date]
         //dayData?.status = DayStatus.valueOf(option)
         //mCalendarData[date] = dayData!!
@@ -729,8 +729,8 @@ try{
         //return
     }
 
-    fun getDayStatus(date: LocalDate?): String {
-        return me_container.user.dayStatuses[date.toString()]?:DayStatus.DEFAULT.toString()
+    fun getDayStatus(date: LocalDate?): Pair<String, String> {
+        return me_container.user.dayStatuses[date.toString()]?:Pair(DayStatus.DEFAULT.toString(),Color.Transparent.toString())
     }
 
     /*fun sync(): Job =

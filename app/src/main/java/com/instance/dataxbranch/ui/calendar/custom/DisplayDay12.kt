@@ -42,7 +42,7 @@ fun <T : SelectionState> DisplayDay(
         elevation = if (state.isFromCurrentMonth) 1.dp else 0.dp,
         border = if (state.isCurrentDay) BorderStroke(1.dp, currentDayColor) else null,
         contentColor = if (isSelected) selectionColor else contentColorFor(
-            backgroundColor = MaterialTheme.colors.surface
+            backgroundColor = displayData.color//MaterialTheme.colors.surface
         )
     ) {
         Box(

@@ -258,6 +258,7 @@ dependencies {
 
     implementation('com.squareup.moshi:moshi:1.14.0')
     kapt('com.squareup.moshi:moshi-kotlin-codegen:1.14.0')
-
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
     implementation('com.google.devtools.ksp:symbol-processing-api:1.7.21-1.0.8')
+    implementation 'com.github.SmartToolFactory:Compose-Color-Picker-Bundle:1.0.1'
 }

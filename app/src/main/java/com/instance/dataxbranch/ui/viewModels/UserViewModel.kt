@@ -9,6 +9,7 @@ import com.instance.dataxbranch.data.repository.GeneralRepository
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -54,6 +55,8 @@ class UserViewModel @Inject constructor(
     //var
 
     ): ViewModel() {
+
+
     //lateinit var selectedItem: ItemEntity
     lateinit var selectedAE: AbilityEntity
     lateinit var selectedQuest: QuestWithObjectives
@@ -70,6 +73,7 @@ class UserViewModel @Inject constructor(
     var openDialogState = mutableStateOf(false)
     var openDialogState2 = mutableStateOf(false)
     var openDialogState3 = mutableStateOf(false)
+    var openColorPickerState= mutableStateOf(false)
     var termsDialogState = mutableStateOf(false)
     var refreshWebview = mutableStateOf(false)
     var downloadCloudDialog = mutableStateOf(false)
@@ -78,6 +82,8 @@ class UserViewModel @Inject constructor(
     var allabilities = mutableStateOf(false)
     var inventoryModeState = mutableStateOf(false)
     var selectedDisplayData = mutableStateOf(DayDisplayData())
+    var selectedDayData = mutableStateOf(DayData())
+    var selectedDate = mutableStateOf(LocalDate.now())
     //var mfsid:String = "-2"
 //    val handyString: MutableLiveData<String> by lazy {
 //        MutableLiveData<String>()
@@ -622,11 +628,18 @@ return "me @ userViewModel"
         return generalRepository.computeForCalendar()
     }
 
-    fun setDayStatus(date: LocalDate, option: String) {
-        return generalRepository.setDayStatus(date, option)
+    fun setDayStatus(date: LocalDate, option: String, color:Color) {
+        selectedDayData.value?.let {
+            it.status=DayStatus.fromStringOrDefault(option)
+            it.color=color
+            //generalRepository.updateDayData(it)
+        }
+        Log.d(TAG, "setDayStatus: $date $option $color")
+        Log.d(TAG, "setDayStatus: ${selectedDayData.value}")
+        return generalRepository.setDayStatus(date, option, color)
     }
 
-    fun getDayStatus(date: LocalDate?): String {
+    fun getDayStatus(date: LocalDate?): Pair<String, String> {
         return generalRepository.getDayStatus(date)
     }
 

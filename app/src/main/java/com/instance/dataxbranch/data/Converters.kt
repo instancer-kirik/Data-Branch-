@@ -4,7 +4,7 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-object MapConverter {
+object MapConverter {//also contains Pair<String,String> converter
     @JvmStatic
     @TypeConverter
     fun fromString(value: String): Map<Long, Int> {
@@ -31,7 +31,18 @@ object MapConverter {
         return gson.toJson(map)
     }
 
-
+    @JvmStatic
+    @TypeConverter
+    fun fromStringtoPairSS(value: String): Pair<String,String> {
+        val mapType = object : TypeToken<Pair<String,String>>() {}.type
+        return Gson().fromJson(value, mapType)
+    }
+    @TypeConverter
+    @JvmStatic
+    fun fromPairSS(values: Pair<String,String>): String {
+        val gson = Gson()
+        return gson.toJson(values)
+    }
     @JvmStatic
     @TypeConverter
     fun fromStringtoLongSSMap(value: String): Map<Long,Pair<String,String>> {

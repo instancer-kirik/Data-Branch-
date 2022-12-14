@@ -320,7 +320,7 @@ fun StaticCalendarForBottomSheet12(
     )
 }
 data class DayDisplayData(val uuid:String="", val type:Enum<EntityType> = EntityType.NONE, val text:String="")
-data class DayData(var color: Color = Color.Transparent, var status:Enum<DayStatus> = DayStatus.NONE, var displayData:List<DayDisplayData> =listOf())
+data class DayData( var color: Color = Color.Transparent, var status:Enum<DayStatus> = DayStatus.NONE, var displayData:List<DayDisplayData> =listOf())//var date:LocalDate = LocalDate.now(),)
 
 /*enum class for data type*/
 
