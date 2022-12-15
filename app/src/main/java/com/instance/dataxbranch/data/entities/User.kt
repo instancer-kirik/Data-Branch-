@@ -6,6 +6,7 @@ import androidx.room.*
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.MapConverter
 import com.instance.dataxbranch.quests.QuestWithObjectives
+import com.instance.dataxbranch.ui.calendar.custom.DayData
 
 import com.instance.dataxbranch.utils.Converters
 import com.instance.dataxbranch.utils.PairAdapter
@@ -231,6 +232,15 @@ return newer
             editing[date]=Pair(status,color.toString())//this just overwrites regardless if it exists
         }?:run{
             editing[date]=Pair(status,color.toString())//Pair(listOf(LocalDateTime.now().toString()),quest.quest.describe())
+        }
+        dayStatuses=editing//done
+    }
+    fun setDateStatus(date: String, dayData: DayData){//color:String
+        var editing =dayStatuses.toMutableMap()
+        dayStatuses[date]?.let {
+            editing[date]=Pair(dayData.status.toString(),dayData.color.toString())//this just overwrites regardless if it exists
+        }?:run{
+            editing[date]=Pair(dayData.status.toString(),dayData.color.toString())//Pair(listOf(LocalDateTime.now().toString()),quest.quest.describe())
         }
         dayStatuses=editing//done
     }

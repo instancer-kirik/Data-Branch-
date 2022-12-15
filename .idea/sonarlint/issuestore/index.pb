@@ -187,8 +187,6 @@ w
 Gapp/src/main/java/com/instance/dataxbranch/ui/components/BottomSheet.kt,f\c\fca2d87ffdf46796c97fca3517021b1687063fc7
 m
 =app/src/main/java/com/instance/dataxbranch/domain/Response.kt,2\8\282717c0890d8640bc30cf27019d4f071aa08946
-l
-<app/src/main/java/com/instance/dataxbranch/ui/theme/Color.kt,0\e\0e916668c942317025683de4e7fd5809efd5496a
 }
 Mapp/src/main/java/com/instance/dataxbranch/ui/calendar/custom/DayOf12dWeek.kt,0\2\027a1b4bf30c053339c64493e2fd39d6e8e32df3
 k
@@ -275,8 +273,6 @@ o
 ?app/src/main/java/com/instance/dataxbranch/data/daos/NoteDao.kt,1\5\156a7d0c4e1407e3b97c2d45dff5f4648a89ebaa
 j
 :app/src/main/java/com/instance/dataxbranch/di/AppModule.kt,e\b\ebb9f0c15bd6beaa6908695966bb089e09b6f278
-o
-?app/src/main/java/com/instance/dataxbranch/ui/CalendarScreen.kt,a\d\ad8ff9286cb2fb0396dba61ed8bff50d8388f9dd
 l
 <app/src/main/java/com/instance/dataxbranch/core/Constants.kt,e\f\efd79d22c064fa431bbf205333959cf5513e1eb4
 w
@@ -297,8 +293,6 @@ X
 (gradle/wrapper/gradle-wrapper.properties,f\b\fbe448ebfc3eb2d4e308f6b8b043666f5b57235e
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
-ƒ
-Sapp/src/main/java/com/instance/dataxbranch/data/repository/LocalQuestsRepository.kt,f\e\fe3aab027671e287ebcb28dcfc488e8c9af9f8fb
 y
 Iapp/src/main/java/com/instance/dataxbranch/ui/components/MultiSelector.kt,d\3\d3cc3236092f728fff8075d0f085fa65b49c8a93
 v
@@ -313,3 +307,13 @@ Fapp/src/main/java/com/instance/dataxbranch/ui/calendar/custom/Month.kt,9\5\957
 Lapp/src/main/java/com/instance/dataxbranch/data/repository/NoteRepository.kt,c\5\c5532d58340b8c071c353ac139484d88fdd8c81c
 t
 Dapp/src/main/java/com/instance/dataxbranch/ui/calendar/DisplayDay.kt,3\a\3ace3370e657c5e37bd09cac7d7938e348567771
+h
+8app/src/main/java/com/instance/dataxbranch/utils/Exts.kt,a\e\ae2c15101fb3d6ca1893c1d076072aa924072371
+o
+?app/src/main/java/com/instance/dataxbranch/data/daos/UserDao.kt,2\e\2e96603f92ea9d0d62d2d2a288c5a993eab8cf32
+<
+build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
+n
+>app/src/main/java/com/instance/dataxbranch/data/AppDatabase.kt,c\5\c53b8c89dff61b2605e1c4e26c5e9ea1146254fc
+m
+=app/src/main/java/com/instance/dataxbranch/data/Converters.kt,d\5\d5e33bd1c8930fb8eb35c2875b48a0adbae87ed8

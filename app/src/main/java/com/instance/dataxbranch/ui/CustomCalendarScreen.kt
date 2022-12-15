@@ -230,8 +230,8 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(400.dp)
-                    .background(color = grey200),
+                    .height(500.dp)
+                    .background(color = Color.Black),
                 contentAlignment = Alignment.Center
             ) {/////////////////////////////////////BOTTOM SHEET////////////////////////////////////////
                 var selectedOption1 by remember {
@@ -313,6 +313,10 @@ Column {
         onClick={date,data->
             selectedDate.value=date
             selectedDateStuff = data.displayData
+            viewModel.selectedDate.value = date
+            viewModel.selectedDisplayData.value = data.displayData.firstOrNull()?: DayDisplayData()
+            viewModel.selectedDayData.value = data
+
             noteText = data.toString()
             //viewModel.setCalendarStuff(date,strList)
             scope.launch {
@@ -343,9 +347,10 @@ Column {
     }
     Spacer(modifier = Modifier.height(50.dp))
    Column(modifier = Modifier.align(Alignment.CenterHorizontally)){
-    Text(LocalDate.now().toString())
-    Text("Todays events are\n ${stuff[LocalDate.now()]?.toString()}")
-
+    //Text(LocalDate.now().toString())
+    //Text("Todays events are\n ${stuff[LocalDate.now()]?.toString()}")
+       Text("Selected Color: ${viewModel.selectedColor.value}")
+       Text("Selected Day's color: ${viewModel.selectedDayData.value.color}")
 }
 }
         }
@@ -475,6 +480,8 @@ fun ColorPickerAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :Day
                         onColorChange = { color,hex->
                             Log.d(Constants.TAG, "CalendarContainerWithBottomSheet: onColorChange: $color \n HEX: $hex")
                             viewModel.setDayStatus(viewModel.selectedDate.value,data.status.toString(),color)
+                            viewModel.selectedDayData.value.color=color
+                            viewModel.selectedColor.value = color
                         },
                     )
                     //Text("VVVVVVVVV")
@@ -483,6 +490,7 @@ fun ColorPickerAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :Day
             confirmButton = {
                 TextButton(
                     onClick = {
+                       viewModel.setDayStatus(viewModel.selectedDate.value,data.status.toString(),viewModel.selectedColor.value)
                         viewModel.openColorPickerState.value = false
                         Log.d("AlertDialog", "Confirm")
                         //viewModel.addNewQuestEntity(title,description, author)//viewModel.selectedQuest =

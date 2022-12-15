@@ -84,6 +84,7 @@ class UserViewModel @Inject constructor(
     var selectedDisplayData = mutableStateOf(DayDisplayData())
     var selectedDayData = mutableStateOf(DayData())
     var selectedDate = mutableStateOf(LocalDate.now())
+    var selectedColor = mutableStateOf(Color(0,0,0))
     //var mfsid:String = "-2"
 //    val handyString: MutableLiveData<String> by lazy {
 //        MutableLiveData<String>()
@@ -625,7 +626,7 @@ return "me @ userViewModel"
     }
 
     fun getCalendarStuff(): Map<LocalDate, DayData> {
-        return generalRepository.computeForCalendar()
+        return generalRepository.getCalendarStuff()
     }
 
     fun setDayStatus(date: LocalDate, option: String, color:Color) {
@@ -634,9 +635,9 @@ return "me @ userViewModel"
             it.color=color
             //generalRepository.updateDayData(it)
         }
-        Log.d(TAG, "setDayStatus: $date $option $color")
+        //Log.d(TAG, "setDayStatus: $date $option $color")
         Log.d(TAG, "setDayStatus: ${selectedDayData.value}")
-        return generalRepository.setDayStatus(date, option, color)
+        return generalRepository.setDayStatus(selectedDayData.value, date=date)
     }
 
     fun getDayStatus(date: LocalDate?): Pair<String, String> {
