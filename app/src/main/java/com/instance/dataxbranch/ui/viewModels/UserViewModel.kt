@@ -8,9 +8,7 @@ import com.instance.dataxbranch.data.repository.GeneralRepository
 
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,12 +22,11 @@ import com.instance.dataxbranch.data.entities.*
 
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.data.local.UserWithAbilities
-import com.instance.dataxbranch.data.repository.plus
 //import com.instance.dataxbranch.di.AppModule_ProvideDbFactory.provideDb
 import com.instance.dataxbranch.domain.use_case.UseCases
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.ui.calendar.custom.DayData
-import com.instance.dataxbranch.ui.calendar.custom.DayDisplayData
+import com.instance.dataxbranch.ui.calendar.custom.Event
 
 
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,7 +35,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.random.Random
 //@Singleton
@@ -81,7 +77,7 @@ class UserViewModel @Inject constructor(
     var characterDialogState = mutableStateOf(false)
     var allabilities = mutableStateOf(false)
     var inventoryModeState = mutableStateOf(false)
-    var selectedDisplayData = mutableStateOf(DayDisplayData())
+    var selectedEvent = mutableStateOf(Event())
     var selectedDayData = mutableStateOf(DayData())
     var selectedDate = mutableStateOf(LocalDate.now())
     var selectedColor = mutableStateOf(Color(0,0,0))
@@ -111,7 +107,7 @@ class UserViewModel @Inject constructor(
         //setSelectI()
     }
     fun refresh(andQuests:Boolean = false,andItems:Boolean = false) : String {
-        //Log.d("USERVIEWMODEL","REFRESH CALLED")
+        Log.d("USERVIEWMODEL","REFRESH CALLED")
         generalRepository.sync(andItems, andQuests)
         viewModelScope.launch {// Coroutine that will be canceled when the ViewModel is cleared.
             meWithAbilities=generalRepository.getMe()
@@ -350,16 +346,10 @@ class UserViewModel @Inject constructor(
         //meWithAbilities.abilities.forEach { update(it) }
         update(meWithAbilities.user.apply{attuned=a})
         setSelect()
-        generalRepository.sync(andItems = true)
-        refresh()
+        //generalRepository.sync(andItems = true) this gets called in the next function anyways
+        refresh(andItems = true)
     }
-    fun syncI(){
-        //setSelectI()
-        //this bypasses generalRepo.sync() because unnecessary
-        //unecess_array
-        generalRepository.itemRepository.sync()
-        refresh()
-    }
+
     fun syncAttunement(){
         meWithAbilities.user.attuned=attuned.value
     }

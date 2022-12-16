@@ -1,15 +1,12 @@
 package com.instance.dataxbranch.ui
 
 import android.util.Log
-import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -21,7 +18,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -30,12 +26,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.data.DayStatus
 import com.instance.dataxbranch.data.EntityType
 import com.instance.dataxbranch.data.entities.NoteEntity
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.ui.calendar.custom.DayData
-import com.instance.dataxbranch.ui.calendar.custom.DayDisplayData
+import com.instance.dataxbranch.ui.calendar.custom.Event
 
 
 import com.instance.dataxbranch.ui.calendar.custom.StaticCalendarForBottomSheet12
@@ -46,7 +41,6 @@ import com.instance.dataxbranch.ui.theme.notepad
 import com.instance.dataxbranch.ui.theme.purple400
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.smarttoolfactory.colorpicker.picker.ColorPickerRingDiamondHEX
-import com.smarttoolfactory.colorpicker.picker.ColorPickerRingRectHSL
 
 import kotlinx.coroutines.*
 import java.time.LocalDate
@@ -137,7 +131,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
         bottomSheetState = sheetState
     )
     val selectedDate = remember { mutableStateOf(viewModel.selectedDate.value) }
-    var selectedDateStuff by remember { mutableStateOf(listOf(DayDisplayData())) }
+    var selectedDateStuff by remember { mutableStateOf(listOf(Event())) }
     var noteText by remember { mutableStateOf("Hello from sheet") }
     val scope = rememberCoroutineScope()
     val tabHeight = 36.dp
@@ -145,6 +139,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
     if (sheetState.isAnimationRunning) {
         Log.d(Constants.TAG, "BottomSheetContainer: isAnimationRunning")
         context.getActivity()?.let { it1 -> hideKeyboard(it1) }
+        viewModel.selectedColor.value = Color.Yellow
     }
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -156,7 +151,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                 Box(
                     modifier = modifier
                         .zIndex(4f)
-                        .clip(RoundedCornerShape(tabHeight / 2, tabHeight / 2, 0.dp, 0.dp))
+                        .clip(RoundedCornerShape((tabHeight / 2) ?: 0.dp, (tabHeight / 2) ?: 0.dp, 0.dp, 0.dp))
                         .width(100.dp)
                         .height(tabHeight)
                         .align(Alignment.Center)
@@ -176,8 +171,8 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                 Row(modifier = modifier
                     .clip(
                         RoundedCornerShape(
-                            tabHeight / 2,
-                            tabHeight / 2,
+                            (tabHeight / 2) ?: 0.dp,
+                            (tabHeight / 2) ?: 0.dp,
                             tabHeight / 2,
                             tabHeight / 2
                         )
@@ -191,8 +186,8 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                             .size(tabHeight)
                             .clip(
                                 RoundedCornerShape(
-                                    tabHeight / 2,
-                                    tabHeight / 2,
+                                    (tabHeight / 2) ?: 0.dp,
+                                    (tabHeight / 2) ?: 0.dp,
                                     tabHeight / 2,
                                     tabHeight / 2
                                 )
@@ -202,7 +197,8 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                     Box(
                         modifier = modifier
                             .zIndex(4f)
-                            .clip(RoundedCornerShape(tabHeight / 2, tabHeight / 2, 0.dp, 0.dp))
+                            .clip(RoundedCornerShape((tabHeight / 2) ?: 0.dp,
+                                (tabHeight / 2) ?: 0.dp, 0.dp, 0.dp))
                             .width(100.dp)
                             .height(tabHeight)
                             .align(Alignment.CenterVertically)
@@ -218,8 +214,8 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                             .size(tabHeight)
                             .clip(
                                 RoundedCornerShape(
-                                    tabHeight / 2,
-                                    tabHeight / 2,
+                                    (tabHeight / 2) ?: 0.dp,
+                                    (tabHeight / 2) ?: 0.dp,
                                     tabHeight / 2,
                                     tabHeight / 2,
                                 )
@@ -276,7 +272,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                             Text(ix.toString())
 
                             EventCardForBottomSheet(event = item, onClick = {
-                                viewModel.selectedDisplayData.value = item
+                                viewModel.selectedEvent.value = item
                                viewModel.characterDialogState.value = true
                             })//viewModel.selectedEvent.value)
                             //Text(text = it.toString())
@@ -312,9 +308,9 @@ Column {
     StaticCalendarForBottomSheet12(modifier = Modifier, data = stuff, repo = viewModel.generalRepository,
         onClick={date,data->
             selectedDate.value=date
-            selectedDateStuff = data.displayData
+            selectedDateStuff = data.events
             viewModel.selectedDate.value = date
-            viewModel.selectedDisplayData.value = data.displayData.firstOrNull()?: DayDisplayData()
+            viewModel.selectedEvent.value = data.events.firstOrNull()?: Event()
             viewModel.selectedDayData.value = data
 
             noteText = data.toString()
@@ -367,9 +363,9 @@ fun setDayStatus(value: LocalDate?, option: String, viewModel:UserViewModel,colo
 }
 
 
-//has 1 event DayDisplayData(val uuid:String="", val type:Enum<EntityType> = EntityType.NONE, val text:String="")
+//has 1 event Event(val uuid:String="", val type:Enum<EntityType> = EntityType.NONE, val text:String="")
 @Composable
-fun EventDisplayAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :DayDisplayData = viewModel.selectedDisplayData.value
+fun EventDisplayAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :Event = viewModel.selectedEvent.value
 ) {
     //var title by remember { mutableStateOf(data.text) }
     //val focusRequester = FocusRequester()
@@ -411,6 +407,11 @@ fun EventDisplayAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :Da
                             //throw UnsupportedOperationException()
                     }
                     Text("VVVVVVVVV")
+                    Button(onClick = {
+                        data.generateAndDownloadIcsFile(fileName = "event_${data.text}.ics")
+                    }) {
+                        Text(text = "Close")
+                    }
                 }
             },
             confirmButton = {
@@ -561,7 +562,7 @@ fun NoteEventCard(note: NoteEntity, viewModel: UserViewModel){
 
 }
 @Composable
-fun DefaultEventCard(event: DayDisplayData, viewModel: UserViewModel){
+fun DefaultEventCard(event: Event, viewModel: UserViewModel){
     Column {
         Text("X: "+event.text)
         Text(event.type.toString())
@@ -572,7 +573,7 @@ fun DefaultEventCard(event: DayDisplayData, viewModel: UserViewModel){
 }
 
 @Composable
-fun EventCardForBottomSheet(event:DayDisplayData, onClick: (DayDisplayData) -> Unit ={}){
+fun EventCardForBottomSheet(event:Event, onClick: (Event) -> Unit ={}){
     Card(
         modifier = Modifier
             .fillMaxWidth()

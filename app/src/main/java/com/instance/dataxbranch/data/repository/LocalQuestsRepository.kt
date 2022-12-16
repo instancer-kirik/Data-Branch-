@@ -126,7 +126,7 @@ class LocalQuestsRepository @Inject constructor(application: Application, db: Ap
 
     }
     fun loadQuestById(id: String): QuestWithObjectives = questDao.getQuestWithObjectives(id)
-    fun getQuestById(id: String): QuestWithObjectives = mquests.first{it.quest.uuid==id}
+    fun getQuestById(id: String): QuestWithObjectives = mquests.firstOrNull{it.quest.uuid==id}?:QuestWithObjectives(QuestEntity(title = "MISSING ON $id"), listOf())
     /*fun objForOId(oid: Long): Flow<ObjectiveEntity> { Let's avoid flow+liveData for now, too much headache
         return _objectives.map { it.first { it.oid == oid } }
     }*/

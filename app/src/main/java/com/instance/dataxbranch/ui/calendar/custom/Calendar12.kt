@@ -2,29 +2,29 @@ package com.instance.dataxbranch.ui.calendar.custom
 
 
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.DayStatus
 import com.instance.dataxbranch.data.EntityType
 import com.instance.dataxbranch.data.repository.GeneralRepository
+import com.instance.dataxbranch.domain.getNow
+import com.instance.dataxbranch.domain.parse
+import com.instance.dataxbranch.quests.QuestWithObjectives
 
 import com.instance.dataxbranch.ui.calendar.*
+import java.io.File
+import java.io.FileOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
+import java.time.*
+import java.time.format.DateTimeFormatter
 
 
-import java.time.LocalDate
-
-
-import java.time.YearMonth
 import java.time.temporal.WeekFields
 import java.util.Locale
 
@@ -319,8 +319,169 @@ fun StaticCalendarForBottomSheet12(
         repo = repo
     )
 }
-data class DayDisplayData(val uuid:String="", val type:Enum<EntityType> = EntityType.NONE, val text:String="")
-data class DayData( var color: Color = Color.Transparent, var status:Enum<DayStatus> = DayStatus.NONE, var displayData:List<DayDisplayData> =listOf())//var date:LocalDate = LocalDate.now(),)
 
-/*enum class for data type*/
 
+class Event(
+    var start: LocalDateTime?=null,
+    var end: LocalDateTime?=null,
+    var text: String="",//title
+    var description: String="",
+    var location: String="",
+    var timeZone: ZoneId=ZoneId.systemDefault(),
+    //val title: String = "",
+    /*val startDate: String = "",
+    val endDate: String = "",*/
+    //val id: String = "",
+    var timestamp: String = "",
+    /*data class Event()*/
+    val uuid:String="", var type:Enum<EntityType> = EntityType.NONE, //val text:String=""
+
+) {
+    constructor(questWithObjectives: QuestWithObjectives) : this(
+        start = parse(questWithObjectives.quest.targetDateTime),
+        end = parse(questWithObjectives.quest.targetDateTime),
+        text = "Q ${questWithObjectives.quest.title}",
+        description = questWithObjectives.quest.describe(),
+        uuid = questWithObjectives.quest.uuid,
+        type = EntityType.QUEST
+    )
+    private fun stampTime(){
+        val now = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val formatted = now.format(formatter)
+        timestamp=formatted
+    }
+    private fun updateDates(){
+        if (start==null) start=LocalDateTime.now()
+        if (end==null) end= LocalDateTime.now().plusDays(10)
+    }
+    private fun toIcsString(): String {
+        updateDates()
+        stampTime()
+        val startZoned = ZonedDateTime.of(start, timeZone)
+        val endZoned = ZonedDateTime.of(end, timeZone)
+
+        // Use the ICalendar format to create the string representation of the event
+        // See https://en.wikipedia.org/wiki/ICalendar for more information
+        return """
+            BEGIN:VCALENDAR
+            BEGIN:VEVENT
+            UID:${uuid}
+            DTSTAMP:${timestamp}
+            DTSTART;TZID=${timeZone.getId()}:${startZoned.format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"))}
+            DTEND;TZID=${timeZone.getId()}:${endZoned.format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"))}
+            SUMMARY:$text
+            DESCRIPTION:$description
+            LOCATION:$location
+            END:VEVENT
+            END:VCALENDAR
+        """.trimIndent()
+    }
+    fun downloadFile(url: String, fileName: String) {
+        val url = URL(url)
+        val con = url.openConnection() as HttpURLConnection
+        val inputStream = con.inputStream
+        val fileOutputStream = FileOutputStream(fileName)
+        inputStream.use { input ->
+            fileOutputStream.use { fileOut ->
+                input.copyTo(fileOut)
+            }
+        }
+    }
+    fun generateAndDownloadIcsFile(event: Event=this, fileName: String) {
+        // Generate the .ics file as a string
+        val icsFile = event.toIcsString()
+        // Create a temporary file with the specified file name
+        val tempFile = File.createTempFile(fileName, ".ics")
+        // Write the .ics file contents to the temporary file
+        tempFile.writeText(icsFile)
+        // Download the temporary file
+        downloadFile(tempFile.toURI().toURL().toString(), fileName)
+//         Delete the temporary file
+        tempFile.delete()
+    }
+
+    fun test(){
+        val event = Event(
+            text = "Custom Quest",
+            location = "The Adventurer's Guild",
+            start = LocalDateTime.of(2022, 12, 15, 10, 0),
+            end = LocalDateTime.of(2022, 12, 15, 12, 0),
+            description = "Join us for an exciting custom quest at the Adventurer's Guild!"
+        )
+
+        val icsString = event.toIcsString()
+
+        generateAndDownloadIcsFile (event, "event.ics")
+    }
+    /*fun generateIcsFile(event: Event): String {
+        val builder = StringBuilder()
+
+        // Add the file header
+        builder.append("BEGIN:VCALENDAR\n")
+        builder.append("VERSION:2.0\n")
+        builder.append("PRODID:-//Your Company//Your Product//EN\n")
+        builder.append("CALSCALE:GREGORIAN\n")          // Add the event details
+        builder.append("BEGIN:VEVENT\n")
+        builder.append("UID:${event.id}\n")
+        builder.append("DTSTAMP:${event.timestamp}\n")
+        builder.append("DTSTART:${event.startDate}\n")
+        builder.append("DTEND:${event.endDate}\n")
+        builder.append("SUMMARY:${event.summary}\n")
+        builder.append("LOCATION:${event.location}\n")
+        builder.append("DESCRIPTION:${event.description}\n")
+        builder.append("END:VEVENT\n")
+        // Add the file footer
+        builder.append("END:VCALENDAR\n")
+        return builder.toString()
+    }*/
+}
+fun parseEvent(icsFile: String): Event {//Untested
+    val event = Event()
+    val lines = icsFile.split("\n")
+
+    var inEvent = false
+    for (line in lines) {
+        if (line.startsWith("BEGIN:VEVENT")) {
+            inEvent = true
+        } else if (line.startsWith("END:VEVENT")) {
+            inEvent = false
+        } else if (inEvent) {
+            if (line.startsWith("SUMMARY:")) {
+                event.text = line.substring(8)
+            } else if (line.startsWith("LOCATION:")) {
+                event.location = line.substring(9)
+            } else if (line.startsWith("DTSTART:")) {
+                event.start = parse(line.substring(8))
+            } else if (line.startsWith("DTEND:")) {
+                event.end = parse(line.substring(6))
+            }
+        }
+    }
+    Log.d(TAG, "Event: $event")
+    return event
+}
+class DayData( var color: Color = Color.Transparent, var status:Enum<DayStatus> = DayStatus.NONE, var events:List<Event> =listOf()) {//var date:LocalDate = LocalDate.now(),)
+fun addEvent(event:Event){
+    events=events.plus(event)
+}
+fun eventsOnDay():String{
+    var str=""
+    events.forEach {
+        str+=it.text
+    }
+    return str
+}
+    //defaults newStatus to old status, gets overwrote
+    fun copy(newStatus:Enum<DayStatus> = status, newColor: Color = color, eventList:List<Event> =events): DayData {//status = DayStatus.fromStringOrDefault(it.value.first)) ?: DayData(color = Color.White,  DayStatus.fromStringOrDefault(it.value.first), listOf())
+        val newDayData = DayData()
+        newDayData.color = newColor
+        newDayData.status = newStatus
+        newDayData.events = eventList
+        return newDayData
+    }
+    /*fun copy(status: DayStatus): DayData? {
+        return DayData(color, status, events)
+    }*/
+
+}

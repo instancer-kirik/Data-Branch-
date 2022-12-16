@@ -46,3 +46,6 @@ try {
     Log.d("DATETIME4", "result: $result")
     return result
 }
+fun parseJustDate(tbd:String): LocalDate? {
+    return parse(tbd).toLocalDate()
+}
