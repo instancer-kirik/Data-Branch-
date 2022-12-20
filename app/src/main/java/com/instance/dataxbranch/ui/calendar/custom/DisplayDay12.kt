@@ -1,6 +1,7 @@
 package com.instance.dataxbranch.ui.calendar.custom
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.unit.dp
 import com.instance.dataxbranch.ui.calendar.DayState
 import com.instance.dataxbranch.ui.calendar.SelectionState
@@ -27,8 +29,12 @@ fun <T : SelectionState> DisplayDay(
     modifier: Modifier = Modifier,
     selectionColor: Color = MaterialTheme.colors.secondary,
     currentDayColor: Color = MaterialTheme.colors.primary,
+
     onClick: (LocalDate,DayData) -> Unit = { _, _ -> },
+    onLongClick: (LocalDate,DayData) -> Unit = { _, _ -> },
+    onColorChange: (LocalDate,DayData) -> Unit = { _, _ -> },
     displayData: DayData = DayData(),
+    dayColor:   Color = displayData.color
 ) {
     val date = state.date
     val selectionState = state.selectionState
@@ -42,20 +48,20 @@ fun <T : SelectionState> DisplayDay(
         elevation = if (state.isFromCurrentMonth) 1.dp else 0.dp,
         border = if (state.isCurrentDay) BorderStroke(1.dp, currentDayColor) else null,
         contentColor = if (isSelected) selectionColor else contentColorFor(
-            backgroundColor = displayData.color//MaterialTheme.colors.surface
+            backgroundColor = MaterialTheme.colors.surface
         )
     ) {
         Box(
             modifier = Modifier.clickable {
                 onClick(date,displayData)
                 selectionState.onDateSelected(date)
-            },
+            }.background(dayColor),
             contentAlignment = Alignment.Center,
         ) {
             Column {
 
 
-                Text(text = date.dayOfMonth.toString())
+                Text(text = date.dayOfMonth.toString(), )//color = dayColor)
                 Text(displayData.eventsOnDay())
             }
         }    }

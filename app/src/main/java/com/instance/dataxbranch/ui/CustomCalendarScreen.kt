@@ -26,6 +26,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
+import com.instance.dataxbranch.core.Constants.TAG
+import com.instance.dataxbranch.data.DayStatus
 import com.instance.dataxbranch.data.EntityType
 import com.instance.dataxbranch.data.entities.NoteEntity
 import com.instance.dataxbranch.quests.QuestWithObjectives
@@ -35,9 +37,10 @@ import com.instance.dataxbranch.ui.calendar.custom.Event
 
 import com.instance.dataxbranch.ui.calendar.custom.StaticCalendarForBottomSheet12
 import com.instance.dataxbranch.ui.components.*
+import com.instance.dataxbranch.ui.theme.darkGrey
 
 import com.instance.dataxbranch.ui.theme.grey200
-import com.instance.dataxbranch.ui.theme.notepad
+
 import com.instance.dataxbranch.ui.theme.purple400
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.smarttoolfactory.colorpicker.picker.ColorPickerRingDiamondHEX
@@ -139,7 +142,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
     if (sheetState.isAnimationRunning) {
         Log.d(Constants.TAG, "BottomSheetContainer: isAnimationRunning")
         context.getActivity()?.let { it1 -> hideKeyboard(it1) }
-        viewModel.selectedColor.value = Color.Yellow
+        viewModel.selectedColor.value = Color(0xFF55555E)
     }
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -151,16 +154,23 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                 Box(
                     modifier = modifier
                         .zIndex(4f)
-                        .clip(RoundedCornerShape((tabHeight / 2) ?: 0.dp, (tabHeight / 2) ?: 0.dp, 0.dp, 0.dp))
+                        .clip(
+                            RoundedCornerShape(
+                                (tabHeight / 2) ?: 0.dp,
+                                (tabHeight / 2) ?: 0.dp,
+                                0.dp,
+                                0.dp
+                            )
+                        )
                         .width(100.dp)
                         .height(tabHeight)
                         .align(Alignment.Center)
-                        .background(color = notepad)
+                        .background(color = darkGrey)
 
                     ,
                     contentAlignment = Alignment.Center
                 ){
-                    Text("^^^",color = Color.Black)
+                    Text("^^^",color = Color.Cyan)
                 }
                 Box(modifier = modifier
                     .align(Alignment.TopCenter)
@@ -179,7 +189,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                     )
                     .height(tabHeight)
                     .align(alignment = Alignment.Center)
-                    .background(notepad)) {
+                    .background(darkGrey)) {
 
                     Box(
                         modifier = modifier
@@ -197,8 +207,12 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                     Box(
                         modifier = modifier
                             .zIndex(4f)
-                            .clip(RoundedCornerShape((tabHeight / 2) ?: 0.dp,
-                                (tabHeight / 2) ?: 0.dp, 0.dp, 0.dp))
+                            .clip(
+                                RoundedCornerShape(
+                                    (tabHeight / 2) ?: 0.dp,
+                                    (tabHeight / 2) ?: 0.dp, 0.dp, 0.dp
+                                )
+                            )
                             .width(100.dp)
                             .height(tabHeight)
                             .align(Alignment.CenterVertically)
@@ -207,7 +221,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                         ,
                         contentAlignment = Alignment.Center
                     ){
-                        Text("^^^",color = Color.Black)
+                        Text("xxx",color = Color.Blue)
                     }
                     Box(
                         modifier = Modifier
@@ -227,11 +241,16 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(500.dp)
-                    .background(color = Color.Black),
+                    .background(color = viewModel.selectedColor.value),
                 contentAlignment = Alignment.Center
             ) {/////////////////////////////////////BOTTOM SHEET////////////////////////////////////////
+
+                var expanded = remember { mutableStateOf(false) }
+
+
+
                 var selectedOption1 by remember {
-                    mutableStateOf(viewModel.getDayStatus(selectedDate.value))//THIS IS A STRING, NOT A DAYSTATUS
+                    mutableStateOf(viewModel.getDayStatus(selectedDate.value).first)//THIS IS A STRING, NOT A DAYSTATUS
                 }//I wonder if this updates when the selectedDate changes
                 Column {
                     Text(
@@ -240,7 +259,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                         fontSize = 20.sp,
                         modifier=Modifier.align(Alignment.CenterHorizontally)
                     )
-                    Text(text = "Selected date: ${selectedDate.value}")
+                    Text(text = "Selected date: ${selectedDate.value} Current status: $selectedOption1")
                     //displays status selector
 
                     /*MultiSelector(
@@ -257,14 +276,33 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                             .fillMaxWidth()
                             .height(56.dp)
                     )*/
-                    Button(onClick = {
+                    Row{Button(onClick = {
                         viewModel.openColorPickerState.value = true
                         /*scope.launch {
                             sheetState.collapse()
                         }*/
                     }) {
-                        Text(text = "ColorPicker")
-                    }
+                        Text(text = "ColorPicker")}
+
+                        OutlinedButton(
+                            onClick = {
+
+                                expanded.value = !expanded.value
+                            }
+                        ) {
+
+                            if (expanded.value) {
+
+                                selectedOption1 = DayStatusSpinner(DayStatus.getList(), selectedOption1,expanded)?:selectedOption1
+                                 Log.d(TAG, "SpinnerResult: $selectedOption1")
+                                /*Button(
+                                    onClick = { viewModel.openDialogState2.value = true },
+                                    modifier = Modifier.padding(2.dp)
+                                ) { Text("Custom Status") }*/
+                            }else{
+                                Text("Select Status")
+                            }
+                        }}
                     LazyColumn( modifier.fillMaxWidth()){
 
                     itemsIndexed(selectedDateStuff) { ix, item ->

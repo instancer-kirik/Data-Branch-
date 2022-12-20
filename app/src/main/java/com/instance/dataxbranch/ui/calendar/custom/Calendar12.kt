@@ -283,6 +283,7 @@ fun StaticCalendarForBottomSheet12(
 
     modifier: Modifier,
     onClick: (LocalDate,DayData) -> Unit= { _, _ -> },
+    onColorChange: (LocalDate, DayData) -> Unit = { _, _ -> },
     data:Map<LocalDate, DayData>,
     firstDayOfWeek: DayOf12dWeek = getFirstDayOfWeek(),
     today: LocalDate = LocalDate.now(),

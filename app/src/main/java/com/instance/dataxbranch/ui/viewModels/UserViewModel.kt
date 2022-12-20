@@ -27,6 +27,7 @@ import com.instance.dataxbranch.domain.use_case.UseCases
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.ui.calendar.custom.DayData
 import com.instance.dataxbranch.ui.calendar.custom.Event
+import com.instance.dataxbranch.ui.recomposeState
 
 
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -620,13 +621,15 @@ return "me @ userViewModel"
     }
 
     fun setDayStatus(date: LocalDate, option: String, color:Color) {
-        selectedDayData.value?.let {
+        Log.d(TAG, "oldDayStatus: ${selectedDayData.value.status} , oldDayStatus: ${selectedDayData.value.status}")
+        selectedDayData.value.let {
             it.status=DayStatus.fromStringOrDefault(option)
             it.color=color
             //generalRepository.updateDayData(it)
         }
         //Log.d(TAG, "setDayStatus: $date $option $color")
-        Log.d(TAG, "setDayStatus: ${selectedDayData.value}")
+        Log.d(TAG, "setDayStatus: ${selectedDayData.value.status} , oldDayStatus: ${selectedDayData.value.status}")
+        recomposeState.value=true
         return generalRepository.setDayStatus(selectedDayData.value, date=date)
     }
 

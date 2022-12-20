@@ -1,15 +1,11 @@
 package com.instance.dataxbranch.ui.components
 
 import android.content.Context
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
@@ -43,13 +39,34 @@ fun GOTOButton(navigator:DestinationsNavigator, expanded: MutableState<Boolean>,
 }
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Spinner(
-    options: List<String> = listOf("Food", "Bill Payment", "Recharges", "Outing", "Other"),
-   // expanded : MutableState<Boolean>//
-){
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf(options[0]) }
+fun DayStatusSpinner(
+    options: List<String> = listOf("Food", "Bill Payment", "Recharges", "Outing",),
+    selectedOption1: String = "DEFAULT",
+    onDone:(String) -> Unit = {},
+):String?{
 
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(selectedOption1) }
+    var customOptionText by remember { mutableStateOf("") }
+    var enterCustomState by remember { mutableStateOf(false) }
+    var done by remember { mutableStateOf(false) }
+    fun onDone():String?{ done = true; return selectedOptionText }
+if (enterCustomState){
+    Column {
+
+        TextField(
+            value = customOptionText,
+            onValueChange = { customOptionText = it },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+        Button(onClick = {
+            enterCustomState = false
+            done = true
+            expanded1.value = false
+        }) { Text("Done") }
+    }
+}else{
+    Column{
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = {
@@ -59,7 +76,7 @@ fun Spinner(
             readOnly = true,
             value = selectedOptionText,
             onValueChange = { },
-            label = { Text("Categories") },
+            label = { Text("Status") },
             trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)},
             colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
@@ -70,13 +87,28 @@ fun Spinner(
                 expanded = false
             }
         ) {
-            options.forEach { selectionOption ->
+
+            options.plus(selectedOption1).plus("OTHER").forEach { selectionOption ->
                 DropdownMenuItem(onClick = {
+                    if (selectionOption == "OTHER") {
+                        enterCustomState = true
+                    }
                     selectedOptionText = selectionOption
                     expanded = false
+
                 }) {
                     Text(text = selectionOption)
                 }}}}
+    Button(onClick ={done = true
+    expanded1.value = false}) { Text("Done") }
+
+    }}
+    return if (done){
+        done = false//reset
+        if(selectedOptionText=="OTHER") customOptionText else selectedOptionText
+    }else null
+
+
 }
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
