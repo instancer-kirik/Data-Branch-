@@ -10,9 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.DayStatus
-import com.instance.dataxbranch.data.EntityType
+import com.instance.dataxbranch.data.EventType
 import com.instance.dataxbranch.data.repository.GeneralRepository
-import com.instance.dataxbranch.domain.getNow
 import com.instance.dataxbranch.domain.parse
 import com.instance.dataxbranch.quests.QuestWithObjectives
 
@@ -335,7 +334,7 @@ class Event(
     //val id: String = "",
     var timestamp: String = "",
     /*data class Event()*/
-    val uuid:String="", var type:Enum<EntityType> = EntityType.NONE, //val text:String=""
+    val uuid:String="", var type:Enum<EventType> = EventType.NONE, //val text:String=""
 
 ) {
     constructor(questWithObjectives: QuestWithObjectives) : this(
@@ -344,7 +343,7 @@ class Event(
         text = "Q ${questWithObjectives.quest.title}",
         description = questWithObjectives.quest.describe(),
         uuid = questWithObjectives.quest.uuid,
-        type = EntityType.QUEST
+        type = EventType.QUEST
     )
     private fun stampTime(){
         val now = LocalDateTime.now()
@@ -462,7 +461,7 @@ fun parseEvent(icsFile: String): Event {//Untested
     Log.d(TAG, "Event: $event")
     return event
 }
-class DayData( var color: Color = Color.Transparent, var status:Enum<DayStatus> = DayStatus.NONE, var events:List<Event> =listOf()) {//var date:LocalDate = LocalDate.now(),)
+class DayData( var color: Color = Color.Transparent, var status:String = DayStatus.NONE.toString(), var events:List<Event> =listOf()) {//var date:LocalDate = LocalDate.now(),)
 fun addEvent(event:Event){
     events=events.plus(event)
 }
@@ -474,7 +473,7 @@ fun eventsOnDay():String{
     return str
 }
     //defaults newStatus to old status, gets overwrote
-    fun copy(newStatus:Enum<DayStatus> = status, newColor: Color = color, eventList:List<Event> =events): DayData {//status = DayStatus.fromStringOrDefault(it.value.first)) ?: DayData(color = Color.White,  DayStatus.fromStringOrDefault(it.value.first), listOf())
+    fun copy(newStatus:String= status, newColor: Color = color, eventList:List<Event> =events): DayData {//status = DayStatus.fromStringOrDefault(it.value.first)) ?: DayData(color = Color.White,  DayStatus.fromStringOrDefault(it.value.first), listOf())
         val newDayData = DayData()
         newDayData.color = newColor
         newDayData.status = newStatus

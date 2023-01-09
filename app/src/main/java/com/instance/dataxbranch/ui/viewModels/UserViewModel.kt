@@ -70,6 +70,7 @@ class UserViewModel @Inject constructor(
     var openDialogState = mutableStateOf(false)
     var openDialogState2 = mutableStateOf(false)
     var openDialogState3 = mutableStateOf(false)
+    var newEventDialogState = mutableStateOf(false)
     var openColorPickerState= mutableStateOf(false)
     var termsDialogState = mutableStateOf(false)
     var refreshWebview = mutableStateOf(false)
@@ -253,7 +254,7 @@ class UserViewModel @Inject constructor(
     fun addNewObjectiveEntity(quest: QuestWithObjectives){ CoroutineScope(Dispatchers.IO).launch { useCases.addNewObjectiveEntityToQuestEntity(quest)} }
     fun addObjectiveEntity(quest: QuestWithObjectives,oe: ObjectiveEntity=ObjectiveEntity()){ CoroutineScope(Dispatchers.IO).launch { useCases.addObjectiveEntityToQuestEntity(quest,oe)} }
     fun getQuestsFromRepo():Array<QuestWithObjectives>{ return generalRepository.questsRepository.getQuests() }
-    fun addNewQuestEntity(title: String, description:String,author: String){
+    fun addNewQuestEntity(title: String, description:String,author: String = generalRepository.getMe().user.uname){
         var char = getSelectedCharacter()
         viewModelScope.launch {
             val result = generalRepository.putQuestOnCharacter(
@@ -620,23 +621,34 @@ return "me @ userViewModel"
         return generalRepository.getCalendarStuff()
     }
 
-    fun setDayStatus(date: LocalDate, option: String, color:Color) {
+    fun setDayStatus(date: LocalDate, option: String) :DayData{//this just uses selectedDayData, but have date, could fetch
         Log.d(TAG, "oldDayStatus: ${selectedDayData.value.status} , oldDayStatus: ${selectedDayData.value.status}")
         selectedDayData.value.let {
-            it.status=DayStatus.fromStringOrDefault(option)
-            it.color=color
+            it.status=option//DayStatus.fromStringOrDefault(option)
+            //it.color=color
             //generalRepository.updateDayData(it)
         }
         //Log.d(TAG, "setDayStatus: $date $option $color")
         Log.d(TAG, "setDayStatus: ${selectedDayData.value.status} , oldDayStatus: ${selectedDayData.value.status}")
         recomposeState.value=true
-        return generalRepository.setDayStatus(selectedDayData.value, date=date)
+        return generalRepository.setDayData(selectedDayData.value, date=date)
     }
-
+    fun setDayColor(date: LocalDate, color:Color): DayData{
+//        Log.d(TAG, "oldDayStatus: ${selectedDayData.value.status} , oldDayStatus: ${selectedDayData.value.status}")
+        selectedDayData.value.color = color
+        //Log.d(TAG, "setDayStatus: $date $option $color")
+//        Log.d(TAG, "setDayStatus: ${selectedDayData.value.status} , oldDayStatus: ${selectedDayData.value.status}")
+        recomposeState.value=true
+        return generalRepository.setDayData(selectedDayData.value, date=date)
+    }
     fun getDayStatus(date: LocalDate?): Pair<String, String> {
         return generalRepository.getDayStatus(date)
     }
+    fun setDayData(date: LocalDate, status: String, value: Color):DayData {//idk much
+        setDayStatus(date, status)
 
+        return setDayColor(date, value)
+    }
 
 }
 

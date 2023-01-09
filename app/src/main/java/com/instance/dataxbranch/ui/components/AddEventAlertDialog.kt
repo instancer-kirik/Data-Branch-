@@ -3,10 +3,7 @@ package com.instance.dataxbranch.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -14,36 +11,42 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
+import com.instance.dataxbranch.data.EventType
 import com.instance.dataxbranch.ui.viewModels.QuestsViewModel
+import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import kotlinx.coroutines.job
 
 @Composable
-fun AddNoteEntityAlertDialog(
-    viewModel: QuestsViewModel = hiltViewModel(),
-    primertitle: String = "",
+fun AddEventAlertDialog(
+    qViewModel: QuestsViewModel = hiltViewModel(),
+    primermain: String = "",
     primerdesc: String = "",
-    openState: MutableState<Boolean> = viewModel.openDialogState
-
+    viewModel: UserViewModel = hiltViewModel(),
+    onDone: (String, String, EventType) -> Unit
 ) {
-    var title by remember { mutableStateOf(primertitle) }
+
+    var maintext by remember { mutableStateOf(primermain) }
     var description by remember { mutableStateOf(primerdesc) }
     val focusRequester = FocusRequester()
+    var type by remember { mutableStateOf(EventType.DEFAULT) }
+    var openTypePicker by remember { mutableStateOf(false) }
 
-    if (openState.value) {
+    if (viewModel.newEventDialogState.value) {
         AlertDialog(
             onDismissRequest = {
-                openState.value = false
+                viewModel.newEventDialogState.value = false
             },
             title = {
                 Text(
-                    text = Constants.ADD_QUEST
+                    text = Constants.ADD_EVENT
                 )
             },
             text = {
+
                 Column {
                     TextField(
-                        value = title,
-                        onValueChange = { title = it },
+                        value = maintext,
+                        onValueChange = { maintext = it },
                         placeholder = {
                             Text(
                                 text = Constants.QUEST_TITLE
@@ -58,7 +61,7 @@ fun AddNoteEntityAlertDialog(
                     }
 
                     Spacer(
-                        modifier = Modifier.height(16.dp)
+                        modifier = Modifier.height(8.dp)
                     )
                     TextField(
                         value = description,
@@ -69,13 +72,33 @@ fun AddNoteEntityAlertDialog(
                             )
                         }
                     )
-                }
+                    Spacer(
+                        modifier = Modifier.height(8.dp)
+                    )
+
+                    OutlinedButton(
+                        onClick = {
+                            openTypePicker=!openTypePicker
+                        }
+                    ) {
+
+                    if(openTypePicker){
+                    EntityTypeSpinner(EventType.getList(), selectedOption1 = type.toString(), onDone = {
+                        type = EventType.fromStringOrDefault(it)
+                        openTypePicker = false
+                    })
+
+
+                }else {
+                        Text(text = "Type: ${type.name}")
+                    }}}
+
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        openState.value = false
-                        viewModel.addQuest(title, description,"author")
+                        viewModel.newEventDialogState.value = false
+                        qViewModel.addQuest(maintext, description,"author")
                     }
                 ) {
                     Text(
@@ -86,7 +109,7 @@ fun AddNoteEntityAlertDialog(
             dismissButton = {
                 TextButton(
                     onClick = {
-                        openState.value = false
+                        viewModel.newEventDialogState.value = false
                     }
                 ) {
                     Text(
@@ -97,3 +120,4 @@ fun AddNoteEntityAlertDialog(
         )
     }
 }
+

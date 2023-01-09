@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,7 +29,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.DayStatus
-import com.instance.dataxbranch.data.EntityType
+import com.instance.dataxbranch.data.EventType
 import com.instance.dataxbranch.data.entities.NoteEntity
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.ui.calendar.custom.DayData
@@ -67,14 +68,38 @@ fun CustomCalendarScreen(
         topBar = { QuestToolbar(navigator) },
         floatingActionButton = {
             AddFloatingActionButtonCustomCalendar()
-        }
+        },
+            bottomBar = {
+                BottomBarCustomCalendar(navigator)
+            }
     ) { padding ->
             val stuff: Map<LocalDate, DayData> =uViewModel.getCalendarStuff()
             if (uViewModel.characterDialogState.value) {
                EventDisplayAlertDialog()
             }
-            if(uViewModel.openDialogState.value) {
-                AddNoteEntityAlertDialog()
+            if(uViewModel.newEventDialogState.value) {
+                AddEventAlertDialog(viewModel=uViewModel,
+                    onDone = {main, desc, type ->
+                        when(type) {
+                            EventType.NOTE -> {
+                                Log.d(TAG, "CustomCalendarScreen: NOTE $main $desc")
+                            }
+                            EventType.HABIT-> {
+                                Log.d(TAG, "CustomCalendarScreen: HABIT $main $desc")
+                            }
+                            EventType.QUEST -> {
+                                uViewModel.addNewQuestEntity(main, desc)
+                            }
+                            EventType.DEFAULT -> {
+                                Log.d(TAG, "CustomCalendarScreen: DEFAULT $main $desc")
+                            }
+                            else -> {
+                                Log.d(TAG, "CustomCalendarScreen: type is null")
+                            }
+                        }
+
+
+                    })
             }
             if(uViewModel.openColorPickerState.value) {
                 ColorPickerAlertDialog()
@@ -95,6 +120,8 @@ fun CustomCalendarScreen(
         }
     }
     }
+
+
 /*
 fun RegularToCustom(uViewModel:UserViewModel
 
@@ -111,7 +138,7 @@ fun AddFloatingActionButtonCustomCalendar(uViewModel: UserViewModel = hiltViewMo
 ) {
     FloatingActionButton(
         onClick = {
-        uViewModel.openDialogState.value = true
+            uViewModel.newEventDialogState.value = true
         },
         backgroundColor = MaterialTheme.colors.primary
     ) {
@@ -138,6 +165,11 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
     var noteText by remember { mutableStateOf("Hello from sheet") }
     val scope = rememberCoroutineScope()
     val tabHeight = 36.dp
+    var selectedOption1 by remember {
+        mutableStateOf(viewModel.getDayStatus(selectedDate.value).first)//THIS IS A STRING, NOT A DAYSTATUS
+    }
+    var resetStatusSelector = remember { mutableStateOf(true) }
+    var expandedStatus = remember { mutableStateOf(false) }
     val modifier = Modifier
     if (sheetState.isAnimationRunning) {
         Log.d(Constants.TAG, "BottomSheetContainer: isAnimationRunning")
@@ -245,13 +277,11 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                 contentAlignment = Alignment.Center
             ) {/////////////////////////////////////BOTTOM SHEET////////////////////////////////////////
 
-                var expanded = remember { mutableStateOf(false) }
 
 
 
-                var selectedOption1 by remember {
-                    mutableStateOf(viewModel.getDayStatus(selectedDate.value).first)//THIS IS A STRING, NOT A DAYSTATUS
-                }//I wonder if this updates when the selectedDate changes
+
+                //I wonder if this updates when the selectedDate changes
                 Column {
                     Text(
 
@@ -287,13 +317,24 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
                         OutlinedButton(
                             onClick = {
 
-                                expanded.value = !expanded.value
+                                expandedStatus.value = !expandedStatus.value
                             }
                         ) {
 
-                            if (expanded.value) {
+                            if (expandedStatus.value) {
 
-                                selectedOption1 = DayStatusSpinner(DayStatus.getList(), selectedOption1,expanded)?:selectedOption1
+                                DayStatusSpinner(
+                                    options = DayStatus.getList(),
+                                    selectedOption1 = selectedOption1,
+                                    onDone = {
+                                        selectedOption1 = it
+                                        setDayStatus(selectedDate.value, it, viewModel,)
+                                        expandedStatus.value = false
+                                        //resetStatusSelector.value = true
+                                    },
+                                reset = resetStatusSelector.value,
+                                //onReset = {expanded -> expanded.value = false
+                                )
                                  Log.d(TAG, "SpinnerResult: $selectedOption1")
                                 /*Button(
                                     onClick = { viewModel.openDialogState2.value = true },
@@ -332,7 +373,7 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
 
         },
         sheetBackgroundColor = Color.Transparent,
-        sheetPeekHeight = 30.dp
+        sheetPeekHeight = 90.dp
     ) {
         //the bottom half of the screen, covered by sheet
         Box(
@@ -344,14 +385,16 @@ fun CalendarContainerWithBottomSheet(viewModel: UserViewModel, stuff:Map<LocalDa
 Column {
     Text("Calendar")
     StaticCalendarForBottomSheet12(modifier = Modifier, data = stuff, repo = viewModel.generalRepository,
-        onClick={date,data->
+        onClick={date,data->//onDateChange
             selectedDate.value=date
             selectedDateStuff = data.events
             viewModel.selectedDate.value = date
             viewModel.selectedEvent.value = data.events.firstOrNull()?: Event()
             viewModel.selectedDayData.value = data
-
+            selectedOption1 = data.status
             noteText = data.toString()
+            resetStatusSelector.value = true
+            expandedStatus.value = false
             //viewModel.setCalendarStuff(date,strList)
             scope.launch {
                 sheetState.expand()
@@ -391,17 +434,24 @@ Column {
     }
 }
 
-fun setDayStatus(value: LocalDate?, option: String, viewModel:UserViewModel,color: Color) {
+fun setDayStatus(value: LocalDate?, option: String, viewModel:UserViewModel) {
     if (value != null) {
 
-        viewModel.setDayStatus(value,option,color)
+        viewModel.setDayStatus(value,option )
+        //needs a list to store day statuses
+        //iewModel.setCalendarStuff(value,option)
+    }
+}
+fun setDayColor(value: LocalDate?, viewModel:UserViewModel,color: Color) {
+    if (value != null) {
+
+        viewModel.setDayColor(value,color)
         //needs a list to store day statuses
         //iewModel.setCalendarStuff(value,option)
     }
 }
 
-
-//has 1 event Event(val uuid:String="", val type:Enum<EntityType> = EntityType.NONE, val text:String="")
+//has 1 event Event(val uuid:String="", val type:Enum<EventType> = EventType.NONE, val text:String="")
 @Composable
 fun EventDisplayAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :Event = viewModel.selectedEvent.value
 ) {
@@ -429,15 +479,15 @@ fun EventDisplayAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :Ev
                         }
                     }
                     Spacer(modifier = Modifier.height(2.dp))
-                    /*enum class EntityType{
+                    /*enum class EventType{
     QUEST, OBJECTIVE, HABIT, NOTE, DEFAULT, NONE
 }*/                 Text("DDDDDDDD "+data.type.toString())
                     when(data.type) {
-                        EntityType.QUEST ->
+                        EventType.QUEST ->
                             QuestEventCard(quest = viewModel.generalRepository.questsRepository.getQuestById(data.uuid), viewModel = viewModel )
-                        EntityType.NOTE ->
+                        EventType.NOTE ->
                             NoteEventCard(note = viewModel.generalRepository.notes.getNoteById(data.uuid), viewModel = viewModel )
-                        EntityType.HABIT ->
+                        EventType.HABIT ->
                             HabitEventCard(habit = viewModel.generalRepository.questsRepository.getQuestById(data.uuid), viewModel = viewModel )
 
                         else ->
@@ -518,7 +568,7 @@ fun ColorPickerAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :Day
                         selectionRadius= 8.dp,
                         onColorChange = { color,hex->
                             Log.d(Constants.TAG, "CalendarContainerWithBottomSheet: onColorChange: $color \n HEX: $hex")
-                            viewModel.setDayStatus(viewModel.selectedDate.value,data.status.toString(),color)
+                            viewModel.setDayStatus(viewModel.selectedDate.value,data.status.toString())
                             viewModel.selectedDayData.value.color=color
                             viewModel.selectedColor.value = color
                         },
@@ -529,7 +579,7 @@ fun ColorPickerAlertDialog(viewModel: UserViewModel = hiltViewModel(), data :Day
             confirmButton = {
                 TextButton(
                     onClick = {
-                       viewModel.setDayStatus(viewModel.selectedDate.value,data.status.toString(),viewModel.selectedColor.value)
+                       viewModel.setDayColor(viewModel.selectedDate.value,/*data.status.toString()*/viewModel.selectedColor.value)
                         viewModel.openColorPickerState.value = false
                         Log.d("AlertDialog", "Confirm")
                         //viewModel.addNewQuestEntity(title,description, author)//viewModel.selectedQuest =
@@ -637,3 +687,32 @@ fun EventCardForBottomSheet(event:Event, onClick: (Event) -> Unit ={}){
 
     }
 }
+
+@Composable
+fun BottomBarCustomCalendar(navi: DestinationsNavigator){
+    BottomAppBar(
+        backgroundColor = MaterialTheme.colors.primary,
+        contentColor = Color.White,
+        cutoutShape = RoundedCornerShape(0.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = { navi.popBackStack() }) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add"
+                )
+            }
+            IconButton(onClick = { navi.popBackStack() }) {
+                Icon(
+                    imageVector = Icons.Default.AccountBox,
+                    contentDescription = "Box"
+                )
+            }
+        }}
+    }

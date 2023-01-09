@@ -44,11 +44,11 @@ fun <T : SelectionState> DisplayDay(
         )
 
     /* when(data.type) {
-                        EntityType.QUEST ->
+                        EventType.QUEST ->
                             QuestEventCard(quest = viewModel.generalRepository.questsRepository.getQuestById(data.uuid), viewModel = viewModel )
-                        EntityType.NOTE ->
+                        EventType.NOTE ->
                             NoteEventCard(note = viewModel.generalRepository.notes.getNoteById(data.uuid), viewModel = viewModel )
-                        EntityType.HABIT ->
+                        EventType.HABIT ->
                             HabitEventCard(habit = viewModel.generalRepository.questsRepository.getQuestById(data.uuid), viewModel = viewModel )
 
                         else ->

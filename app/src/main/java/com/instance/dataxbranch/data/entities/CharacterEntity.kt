@@ -151,11 +151,12 @@ data class CharacterEntity @JvmOverloads constructor(
     //build a calendar. see marks for quest completed. and marks for each habit. Lets get that library
     @ColumnInfo(name = "habitTracker") var habitTracker: Map<String,Pair<List<String>,String>> =mapOf(),//by id:List<DateTime>
 
+    @ColumnInfo(name = "events") var events: Map<String,Pair<String,String>> =mapOf(),
 
+//Map<ID,Pair<date,slug>>
+    @ColumnInfo(name = "notes") var notes: Map<String,Pair<String,String>> =mapOf(),
 
-
-
-
+//CRUD+ATTACH FOR NOTES AND EVENTS
 
     ) {
 

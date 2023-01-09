@@ -2,7 +2,7 @@ package com.instance.dataxbranch.quests
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.instance.dataxbranch.data.EntityType
+import com.instance.dataxbranch.data.EventType
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
 import com.instance.dataxbranch.ui.calendar.custom.Event
@@ -24,7 +24,7 @@ data class QuestWithObjectives @Inject constructor(
 fun toDayDisplayData(): Event{
     return Event(
        uuid = quest.uuid,
-       type = EntityType.QUEST,
+       type = EventType.QUEST,
         text = quest.title?:"Q",
     )
 }

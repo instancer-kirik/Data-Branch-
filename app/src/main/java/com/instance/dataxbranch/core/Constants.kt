@@ -1,6 +1,7 @@
 package com.instance.dataxbranch.core
 
 object Constants {
+    const val ADD_EVENT= "Create an event"
     const val CLOSE = "close"
     const val SAVE= "Save"
     const val EDIT="Edit"

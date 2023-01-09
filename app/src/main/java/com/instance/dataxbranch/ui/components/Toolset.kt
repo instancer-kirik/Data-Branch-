@@ -1,11 +1,13 @@
 package com.instance.dataxbranch.ui.components
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
@@ -42,28 +44,31 @@ fun GOTOButton(navigator:DestinationsNavigator, expanded: MutableState<Boolean>,
 fun DayStatusSpinner(
     options: List<String> = listOf("Food", "Bill Payment", "Recharges", "Outing",),
     selectedOption1: String = "DEFAULT",
-    onDone:(String) -> Unit = {},
-):String?{
-
+    onDone: (String) -> Unit = {},
+   // onReset: (Boolean) -> Unit = {},
+    reset: Boolean =false,
+){
+    //var resetS by remember { mutableStateOf(reset) }
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(selectedOption1) }
     var customOptionText by remember { mutableStateOf("") }
     var enterCustomState by remember { mutableStateOf(false) }
     var done by remember { mutableStateOf(false) }
-    fun onDone():String?{ done = true; return selectedOptionText }
-if (enterCustomState){
+   if (enterCustomState){
     Column {
 
         TextField(
             value = customOptionText,
+            label = { Text("Enter Custom Status") },
             onValueChange = { customOptionText = it },
             colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
-        Button(onClick = {
+        Row{Button(onClick = {
             enterCustomState = false
             done = true
-            expanded1.value = false
+            onDone.invoke(customOptionText)
         }) { Text("Done") }
+        Text("*Scrollable*")}
     }
 }else{
     Column{
@@ -100,14 +105,76 @@ if (enterCustomState){
                     Text(text = selectionOption)
                 }}}}
     Button(onClick ={done = true
-    expanded1.value = false}) { Text("Done") }
+    onDone.invoke(selectedOptionText)}) { Text("Done") }
 
     }}
-    return if (done){
-        done = false//reset
-        if(selectedOptionText=="OTHER") customOptionText else selectedOptionText
-    }else null
 
+
+
+}
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun EntityTypeSpinner(
+    options: List<String> = listOf("A", "B", "C", "D",),
+    selectedOption1: String = options.last(),
+    onDone: (String) -> Unit = {},
+    // onReset: (Boolean) -> Unit = {},
+    reset: Boolean = false,
+){
+
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(selectedOption1) }
+    //var customOptionText by remember { mutableStateOf("") }
+    //var enterCustomState by remember { mutableStateOf(false) }
+    var done by remember { mutableStateOf(false) }
+
+
+    Log.d(TAG, options.toString())
+
+            Column {
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = {
+                        expanded = !expanded
+                    }) {
+                    TextField(
+                        readOnly = true,
+                        value = selectedOptionText,
+                        onValueChange = { },
+                        label = { Text("Status") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = {
+                            expanded = false
+                        }
+                    ) {
+
+                        options/*.plus(selectedOption1).plus("OTHER")*/.forEach { selectionOption ->
+                            DropdownMenuItem(onClick = {
+                                /*if (selectionOption == "OTHER") {
+                                    enterCustomState = true
+                                }*/
+                                selectedOptionText = selectionOption
+                                expanded = false
+
+                            }) {
+                                Text(text = selectionOption)
+                            }
+                        }
+                    }
+                }
+                Button(onClick = {
+                    done = true
+                    onDone.invoke(selectedOptionText)
+                }) { Text("Done") }
+
+
+
+        }
 
 }
 @OptIn(ExperimentalMaterialApi::class)

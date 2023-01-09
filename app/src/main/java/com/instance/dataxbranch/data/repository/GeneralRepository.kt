@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.AppDatabase
 import com.instance.dataxbranch.data.DayStatus
-import com.instance.dataxbranch.data.EntityType
+import com.instance.dataxbranch.data.EventType
 import com.instance.dataxbranch.data.daos.AbilityDao
 import com.instance.dataxbranch.data.daos.ItemDao
 import com.instance.dataxbranch.data.daos.QuestDao
@@ -582,7 +582,7 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         valid.forEach {
             val displayData = Event(
                 uuid = it.key,
-                type = EntityType.QUEST,
+                type = EventType.QUEST,
                 title = it.value.second,
                 description = it.value.second
             )
@@ -602,6 +602,9 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         getActiveQuests(startDate, endDate)
         getCompletedHabits(startDate, endDate)
         getDayStatuses(startDate, endDate)
+        getEventsFromCharacter(startDate, endDate)
+        getNotesForCalendarFromCharacter(startDate, endDate)
+        //events from User?
     }catch (e:Exception){
         Log.d("REPO_computeForCalendar", "ERROR: $e")
         return false
@@ -609,6 +612,50 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         return true
     }
 
+    private fun getEventsFromCharacter(startDate: LocalDate, endDate: LocalDate) {
+
+
+            val valid =  selectedCharacterWithStuff.character.events.filter{
+                //Map<ID,Pair<date,slug>>
+                val q = parse(it.value.first)
+                //Log.d("SPAM1","$q ${q.isAfter(startDate.atStartOfDay())} ${q.isBefore(endDate.atTime(23,59))}")
+                q.isAfter(startDate.atStartOfDay()) && q.isBefore(endDate.atTime(23,59))
+
+
+            }
+            Log.d(TAG,"Events are ${selectedCharacterWithStuff.character.completedQuests} ,valid = $valid" )
+
+            valid.forEach{
+                //Map<ID,Pair<date,slug>>
+                val atDate= parse(it.value.first).toLocalDate()
+                mcalendarAddEvent( Event( uuid=it.key,type =EventType.DEFAULT,text = it.value.second),
+                    atDate)
+            }
+            return //result
+
+    }
+    private fun getNotesForCalendarFromCharacter(startDate: LocalDate, endDate: LocalDate) {
+
+
+        val valid =  selectedCharacterWithStuff.character.notes.filter{
+            //Map<ID,Pair<date,slug>>
+            val q = parse(it.value.first)
+            //Log.d("SPAM1","$q ${q.isAfter(startDate.atStartOfDay())} ${q.isBefore(endDate.atTime(23,59))}")
+            q.isAfter(startDate.atStartOfDay()) && q.isBefore(endDate.atTime(23,59))
+
+
+        }
+        Log.d(TAG,"Events are ${selectedCharacterWithStuff.character.completedQuests} ,valid = $valid" )
+
+        valid.forEach{
+            //Map<ID,Pair<date,slug>>
+            val atDate= parse(it.value.first).toLocalDate()
+            mcalendarAddEvent( Event( uuid=it.key,type =EventType.NOTE,text = it.value.second),
+                atDate)
+        }
+        return //result
+
+    }
     fun getCalendarStuff(): Map<LocalDate,DayData> = mcalendar
 
 
@@ -637,7 +684,7 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         return// mcalendar
     }
 
-    fun getCompletedQuests(startDate: LocalDate, endDate:LocalDate,/*result:MutableMap<LocalDate,DayData>): MutableMap<LocalDate,DayData> */){
+    private fun getCompletedQuests(startDate: LocalDate, endDate:LocalDate,/*result:MutableMap<LocalDate,DayData>): MutableMap<LocalDate,DayData> */){
 
         val valid =  selectedCharacterWithStuff.character.completedQuests.filter{
             //Map<ID,Pair<date,slug>>
@@ -656,7 +703,7 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         valid.forEach{
             //Map<ID,Pair<date,slug>>
             val atDate= parse(it.value.first).toLocalDate()
-            mcalendarAddEvent( Event( uuid=it.key,type =EntityType.QUEST,text = it.value.second),
+            mcalendarAddEvent( Event( uuid=it.key,type =EventType.QUEST,text = it.value.second),
                 atDate)
 
 
@@ -665,13 +712,13 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         return //result
     }
 
-    fun getCompletedHabits(startDate: LocalDate, endDate:LocalDate,/* m: MutableMap<LocalDate,DayData>): MutableMap<LocalDate,DayData>*/) {
+    private fun getCompletedHabits(startDate: LocalDate, endDate:LocalDate,/* m: MutableMap<LocalDate,DayData>): MutableMap<LocalDate,DayData>*/) {
 
         selectedCharacterWithStuff.character.habitTracker.forEach{
             var q:LocalDate
             it.value.first.forEach{it2->
                 q=parse(it2).toLocalDate()
-                mcalendarAddEvent(Event( uuid=it.key,type = EntityType.HABIT,text = it.value.second)
+                mcalendarAddEvent(Event( uuid=it.key,type = EventType.HABIT,text = it.value.second)
                     ,q)
                 Log.d("SPAM2","$q ${q.isAfter(startDate)} ${q.isBefore(endDate)}")
             }
@@ -685,7 +732,7 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         me_container.user.dayStatuses.forEach{
 
             val q:LocalDate = parse(it.key).toLocalDate()
-                //val displayData = Event( it.key,EntityType.HABIT,it.value.second)
+                //val displayData = Event( it.key,EventType.HABIT,it.value.second)
             if(mcalendar[q]!=null){//if DayData mapping exists
                 //modifies daystatus, keeps displayData
                 mcalendar[q]= mcalendar[q]?.copy(newStatus =DayStatus.fromStringOrDefault(it.value.first))?: DayData(color = Color.Black, DayStatus.fromStringOrDefault(it.value.first), listOf())
@@ -700,7 +747,7 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
         Log.d(TAG, "Status result is now $mcalendar ")
         return //mcalendar
     }*/
-    fun getDayStatuses(startDate: LocalDate, endDate: LocalDate) {
+    private fun getDayStatuses(startDate: LocalDate, endDate: LocalDate) {
         me_container.user.dayStatuses
             .filter {
                 val q: LocalDate = parse(it.key).toLocalDate()
@@ -709,14 +756,14 @@ fun insertItem(name:String="ITEM_DEFAULT", item: ItemEntity=ItemEntity(name = na
             .forEach {
                 val q: LocalDate = parse(it.key).toLocalDate()
                 mcalendar[q] =
-                    mcalendar[q]?.copy(newStatus = DayStatus.fromStringOrDefault(it.value.first))
-                    ?: DayData(status = DayStatus.fromStringOrDefault(it.value.first))
+                    mcalendar[q]?.copy(newStatus = it.value.first)
+                    ?: DayData(status = it.value.first) //DayStatus.fromStringOrDefault(it.value.first)
             }
     }
     /* val numbersMaps = (0 until valid.size).map { i ->
                 i+1 to numbers[it]
             }*/
-    fun updateByCharacterList(selectedCharacter: CharacterWithStuff=selectedCharacterWithStuff) {
+    private fun updateByCharacterList(selectedCharacter: CharacterWithStuff=selectedCharacterWithStuff) {
 //takes in selected character.  If it's not the same as the current one, it updates the current one
 try{
         //switches to mutable list? and updates selected character.
@@ -760,7 +807,7 @@ try{
             // Create a new DayData object and add the event to its events list
             mcalendar[atDate] = DayData(
                 color = Color.Black,
-                status = DayStatus.DEFAULT,
+                status = DayStatus.DEFAULT.toString(),
                 events = listOf(value)
             )
         }
@@ -780,8 +827,7 @@ try{
         return
     }
 
-    fun setDayStatus(dayData:  DayData, date: LocalDate) {
-
+    fun setDayData(dayData:  DayData, date: LocalDate):DayData {
 
         //val dayStatus = DayStatus.fromStringOrDefault(option)
         //val dayData = DayData(color,dayStatus, listOf())
@@ -792,7 +838,7 @@ try{
         //dayData?.status = DayStatus.valueOf(option)
         //mCalendarData[date] = dayData!!
         //Log.d("REPO", "mCalendarData updated $date with $option")
-        //return
+        return dayData
     }
 
     fun getDayStatus(date: LocalDate?): Pair<String, String> {

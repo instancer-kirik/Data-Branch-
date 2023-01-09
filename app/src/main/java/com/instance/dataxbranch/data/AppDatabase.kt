@@ -10,7 +10,7 @@ import com.instance.dataxbranch.utils.Converters
 //also has relevant enums below
 @Database(entities = [QuestEntity::class, ObjectiveEntity::class, AbilityEntity::class,
     User::class, CharacterEntity::class, ItemEntity::class,NoteEntity::class],
-    version = 66, exportSchema = false)
+    version = 67, exportSchema = false)
 @TypeConverters(Converters::class)
  abstract class AppDatabase() : RoomDatabase(){
     //abstract fun addQuestEntity(title: String, author: String): Any
@@ -86,22 +86,37 @@ enum class QuestType{
 enum class QuestStatus{
     ACTIVE, COMPLETED, FAILED, CANCELLED
 }
-enum class EntityType{
-    QUEST, OBJECTIVE, HABIT, NOTE, DEFAULT, NONE
+enum class EventType{//doesn't have OBJECTIVE, ABILITY, ITEM, EVENT, CHARACTER, USER... for use with calendar
+
+    //could have objective
+    QUEST,  HABIT, NOTE, DEFAULT, NONE;
+    companion object{
+
+        fun getList(): List<String> {
+            return values().map {
+                it.toString()
+            }
+        }
+        fun fromStringOrDefault(string: String): EventType {
+            return values().firstOrNull { it.toString() == string } ?: DEFAULT
+        }
+
+    }
 }
-enum class CalendarDataType{//made by github copilot
+/*enum class CalendarDataType{//made by github copilot
     QUEST, OBJECTIVE, ABILITY, ITEM, NOTE, EVENT, TASK, REMINDER, APPOINTMENT, MEETING, DEADLINE, BIRTHDAY, ANNIVERSARY, HOLIDAY, VACATION, OTHER, DEFAULT
-}
+}*/
 enum class DayStatus{
-    FANTASTIC, GOOD, OKAY, BAD, TRAUMATIC, NONE,DEFAULT;
+    FANTASTIC, GOOD, OKAY, BAD, TIRED, NONE,DEFAULT;
     companion object{
         fun getDayStatusFromInt(i: Int): DayStatus{
             return when(i){
-                0 -> FANTASTIC
+                0 -> DEFAULT
                 1 -> GOOD
                 2 -> OKAY
                 3 -> BAD
-                4 -> TRAUMATIC
+                4 -> TIRED
+                5 -> FANTASTIC
                 else -> NONE
             }
         }
