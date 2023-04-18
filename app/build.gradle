@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    //id 'kotlin-kapt'
+    id 'kotlin-kapt'
     id 'com.google.gms.google-services'
     id 'dagger.hilt.android.plugin'
     id 'kotlinx-serialization'
@@ -124,7 +124,9 @@ android {
     }
     buildToolsVersion '32.1.0 rc1'
     namespace 'com.instance.dataxbranch'
-    //kapt {correctErrorTypes true}
+
+    kapt {correctErrorTypes true}
+
     applicationVariants.all {
         kotlin.sourceSets {
             getByName(name) {
@@ -172,7 +174,7 @@ dependencies {
     //hilt
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
     implementation 'com.google.dagger:hilt-android:2.45'
-    annotationProcessor 'com.google.dagger:hilt-compiler:2.45'
+    kapt 'com.google.dagger:hilt-compiler:2.45'
 
     implementation 'androidx.fragment:fragment-ktx:1.5.6'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
