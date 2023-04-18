@@ -41,3 +41,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "DataXBranch"
 include ':app'
+include ':ksp'

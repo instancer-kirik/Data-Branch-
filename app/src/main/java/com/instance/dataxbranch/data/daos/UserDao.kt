@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.entities.*
-import com.instance.dataxbranch.data.local.CharacterWithStuff
+
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +16,7 @@ import java.util.*
 @Dao
 abstract class UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insert(vararg user: User?)
+    abstract fun insert(vararg user: User)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     abstract fun prime(user: User)
@@ -25,18 +25,18 @@ abstract class UserDao {
     abstract fun prime(characterEntity: CharacterEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    abstract fun prime(vararg characterEntity: CharacterEntity?)
+    abstract fun prime(vararg characterEntity: CharacterEntity)
     @Update
-    abstract fun update(vararg user: User?)
+    abstract fun update(vararg user: User)
 
     @Update
-    abstract fun update(user: User?)
+    abstract fun update(user: User)
         //Log.d(TAG,"updating with $user")}
     @Delete
-    abstract fun delete(vararg user: User?)
+    abstract fun delete(vararg user: User)
 
     @Query("SELECT * FROM my_resources_attributes_stats")
-    abstract fun observeMe(): Flow<User?>
+    abstract fun observeMe(): Flow<User>
 
     @Transaction
     @Query("SELECT * FROM my_resources_attributes_stats")
@@ -65,7 +65,7 @@ abstract class UserDao {
 
 
     @Upsert
-    fun save(char: CharacterEntity){Log.d(TAG,"BISH, IN SAVE")}
+    fun save(character: CharacterEntity){Log.d(TAG,"BISH, IN SAVE")}
 
     @Transaction
     @Query("SELECT * FROM abilities")
@@ -80,16 +80,16 @@ abstract class UserDao {
     abstract fun getCharacterEntity(uuid: UUID): CharacterEntity
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    abstract fun insertCharacter(vararg char: CharacterEntity?)
+    abstract fun insertCharacter(vararg character: CharacterEntity)
 
     @Delete
-    abstract fun delete(vararg char: CharacterEntity?)
+    abstract fun delete(vararg character: CharacterEntity)
 
     @Query("DELETE FROM characters")
     abstract fun wipeCharacters()
 
     @Update
-    fun update(char: CharacterEntity?){
+    fun update(character: CharacterEntity){
         //Log.d(TAG,"updating with $char")
     }
 

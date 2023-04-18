@@ -29,7 +29,7 @@ abstract class QuestDao {
     abstract fun insertQuestEntity(quest: QuestEntity?):Long
 */
     @Upsert
-    abstract fun insertObjectiveEntityList(objectives: List<ObjectiveEntity>?)
+    abstract fun insertObjectiveEntityList(objectives: List<ObjectiveEntity>)
 
     @Query("SELECT * FROM quests WHERE uuid =:id")
     abstract fun getQuestEntity(id: String): QuestEntity
@@ -88,14 +88,14 @@ abstract class QuestDao {
     }
 
     @Upsert
-    abstract fun insertAll(objectives: Iterable<ObjectiveEntity>?)
+    abstract fun insertAll(objectives: Iterable<ObjectiveEntity>)
     @Upsert
-    abstract fun updateAll(objectives: List<ObjectiveEntity?>?)
+    abstract fun updateAll(objectives: List<ObjectiveEntity>)
     //
     //abstract fun insertQuestEntity(recipe: QuestEntity?): Long //return type is the key here.
     @Transaction
     @Delete
-    abstract fun delete(quest: QuestEntity?, objectives: List<ObjectiveEntity?>?)
+    abstract fun delete(quest: QuestEntity, objectives: List<ObjectiveEntity>)
     @Transaction
     @Query("SELECT * FROM quests")
     abstract fun loadAll(): Array<QuestWithObjectives>

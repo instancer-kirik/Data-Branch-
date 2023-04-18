@@ -338,6 +338,7 @@ fun ScrollableSample() {
 @Composable
 fun BottomSheetContainer() {
     val context = LocalContext.current
+
     val sheetState = rememberBottomSheetState(
         initialValue = BottomSheetValue.Collapsed
     )

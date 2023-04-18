@@ -7,14 +7,14 @@ import com.instance.dataxbranch.data.entities.ItemEntity
 @Dao
 abstract class ItemDao() {//:EntityDao<ItemEntity>
     @Insert(onConflict=OnConflictStrategy.REPLACE)
-    abstract fun insert(vararg item: ItemEntity?):List<Long>
+    abstract fun insert(vararg item: ItemEntity):List<Long>
 
     @Update
-    abstract fun update(vararg item: ItemEntity?)
+    abstract fun update(vararg item: ItemEntity)
     @Upsert
-    abstract fun upsert(vararg item: ItemEntity?)
+    abstract fun upsert(vararg item: ItemEntity)
     @Delete
-    abstract fun delete(vararg item: ItemEntity?)
+    abstract fun delete(vararg item: ItemEntity)
 
     @Transaction
     @Insert(onConflict=OnConflictStrategy.REPLACE)
@@ -41,5 +41,34 @@ abstract class ItemDao() {//:EntityDao<ItemEntity>
     val a = AllAbilitiesOnHand()
     return a*/
 }
+/*FROM ChatGPT
+@Dao
+abstract class ItemDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insert(vararg item: ItemEntity): List<Long>
 
+    @Update
+    abstract fun update(vararg item: ItemEntity)
+
+    @Upsert
+    abstract fun upsert(vararg item: ItemEntity)
+
+    @Delete
+    abstract fun delete(vararg item: ItemEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun save(item: ItemEntity): Long
+
+    @Query("DELETE FROM quests")
+    abstract fun deleteAllRows()
+
+    @Insert
+    abstract fun insertAll(items: List<ItemEntity>)
+
+    @Query("SELECT * FROM items")
+    abstract fun getItems(): List<ItemEntity>
+
+    @Query("SELECT * FROM items WHERE iid = :iid")
+    abstract fun getItemByIid(iid: Long): ItemEntity
+}*/
 

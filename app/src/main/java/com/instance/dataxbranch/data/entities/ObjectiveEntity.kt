@@ -8,7 +8,8 @@ import java.util.*
 @Entity(
     tableName = "objectives",
     indices = [
-        Index(value = ["uuid"], unique = true)
+        Index(value = ["uuid"], unique = true),
+        Index(value = ["qid"])
         //Index(value = ["trakt_id"], unique = true),
         //Index(value = ["tmdb_id"])
     ],

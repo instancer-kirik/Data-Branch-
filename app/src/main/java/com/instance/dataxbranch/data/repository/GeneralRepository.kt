@@ -152,7 +152,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
                     selectedCharacterWithStuff =mcharacters[selectedCharacterIndex]
                 }
 
-                mabilities = aDao.getAbilites()
+                mabilities = aDao.getAbilities()
 
                 getMeWithAbilities()
                 getAllCharacters()
@@ -228,7 +228,7 @@ class GeneralRepository(application: Application, db: AppDatabase,
     fun refresh(): Job =
 
         CoroutineScope(Dispatchers.IO).launch {
-            mabilities =aDao.getAbilites()
+            mabilities =aDao.getAbilities()
             me=uDao.getMe()
         }
     fun save(me: User): Job =

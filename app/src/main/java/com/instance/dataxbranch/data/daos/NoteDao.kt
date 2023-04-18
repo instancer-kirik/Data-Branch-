@@ -7,13 +7,13 @@ import com.instance.dataxbranch.data.entities.NoteEntity
 @Dao
 abstract class NoteDao {
     @Insert(onConflict= OnConflictStrategy.REPLACE)
-    abstract fun insert(vararg Note: NoteEntity?)
+    abstract fun insert(vararg Note: NoteEntity)
 
     @Update
-    abstract fun update(vararg Note: NoteEntity?)
+    abstract fun update(vararg Note: NoteEntity)
 
     @Delete
-    abstract fun delete(vararg Note: NoteEntity?)
+    abstract fun delete(vararg Note: NoteEntity)
 
 
     @Upsert

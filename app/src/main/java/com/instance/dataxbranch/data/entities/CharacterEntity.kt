@@ -43,8 +43,8 @@ class Category(@field:PrimaryKey val id: String, val title: String?, val parentI
 @Entity(
     tableName = "characters",//my_resources_attributes_stats
     indices = [
-        Index(value = ["uuid"], unique = true)//character_
-
+        Index(value = ["uuid"], unique = true),//character_
+        Index(value = ["user_id"]) // Add index on user_id column
     ],
     foreignKeys = [
         ForeignKey(
