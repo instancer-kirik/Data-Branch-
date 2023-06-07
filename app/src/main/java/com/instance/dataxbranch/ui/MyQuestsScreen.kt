@@ -31,7 +31,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.instance.dataxbranch.R
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 //import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
-import com.instance.dataxbranch.ui.destinations.*
+import com.instance.dataxbranch.destinations.*
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants

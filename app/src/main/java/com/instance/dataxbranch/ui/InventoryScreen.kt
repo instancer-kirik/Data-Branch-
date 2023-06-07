@@ -36,7 +36,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.entities.ItemEntity
 import com.instance.dataxbranch.data.repository.plus
-import com.instance.dataxbranch.ui.destinations.*
+import com.instance.dataxbranch.destinations.*
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AddItemEntityAlertDialog
 import com.instance.dataxbranch.ui.components.DevToolbar

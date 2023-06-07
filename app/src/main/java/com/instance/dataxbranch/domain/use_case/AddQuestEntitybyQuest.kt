@@ -34,7 +34,7 @@ class AddQuestEntitybyQuest(
             country = value.country,
             active = 0,
             description=value.description + "",
-            publisher = value.publisher + "",
+            questGiver = value.questGiver + "",
             author= value.author + "",
             featuredImage = value.featuredImage + "",
             rating = value.rating,

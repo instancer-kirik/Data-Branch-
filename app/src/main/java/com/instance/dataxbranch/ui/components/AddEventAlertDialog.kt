@@ -10,11 +10,13 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.EventType
 import com.instance.dataxbranch.ui.viewModels.QuestsViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddEventAlertDialog(
@@ -98,7 +100,8 @@ fun AddEventAlertDialog(
                 TextButton(
                     onClick = {
                         viewModel.newEventDialogState.value = false
-                        qViewModel.addQuest(maintext, description,"author")
+                        qViewModel.viewModelScope.launch { qViewModel.addQuest(maintext, description,"author") }
+
                     }
                 ) {
                     Text(

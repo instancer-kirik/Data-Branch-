@@ -7,12 +7,13 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.instance.dataxbranch.NavGraphs
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.*
-import com.instance.dataxbranch.ui.destinations.*
+import com.instance.dataxbranch.destinations.*
 import com.instance.dataxbranch.ui.viewModels.RoomQuestViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.instance.dataxbranch.utils.navigate
@@ -181,7 +182,7 @@ fun EntityTypeSpinner(
 @Composable
 fun NavSpinner(
     navi: DestinationsNavigator,
-    options: List<TypedDestination<*>> =NavGraphs.root.destinations,
+    options: List<TypedDestination<*>> = NavGraphs.root.destinations,
     // expanded : MutableState<Boolean>//
 ){
     var expanded by remember { mutableStateOf(false) }

@@ -22,7 +22,7 @@ import com.instance.dataxbranch.core.Constants.TAG
 //import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
 
-import com.instance.dataxbranch.ui.destinations.*
+import com.instance.dataxbranch.destinations.*
 //import com.instance.dataxbranch.social.StreamChat.ChatHelper.connectUser
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel

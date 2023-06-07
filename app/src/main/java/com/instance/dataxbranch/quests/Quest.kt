@@ -82,17 +82,19 @@ class Quest(val qid: String= "-1",
             var id: Int = 1,
             var active: Boolean = true,
             var description: String = "default description",
-            val publisher: String = "Kirik",
+            val questGiver: String = "Kirik",
             var author: String = "Kirik",
             val featuredImage: String="",
             val rating: Int = 0,
+            val rating_denominator: Int = 5,
             val country: String? = "",
             val sourceUrl: String="",
             val ingredients: String= "",
             var objectives: ArrayList<QuestObjective> = arrayListOf(
                 QuestObjective(), QuestObjective()
             ),
-            val region: String = "state or region here. goal: sort by region"
+            val region: String = "state or region here. goal: sort by region",
+            val tagline: String = "a short description of the quest",
 ){
     suspend fun toRoom(dao: QuestDao) {
 
@@ -102,7 +104,8 @@ class Quest(val qid: String= "-1",
                 description = this.description,
                 country = this.country,
                 rating = this.rating,
-                publisher = this.publisher,
+                rating_denominator = this.rating_denominator,
+            questGiver = this.questGiver,
                 featuredImage = this.featuredImage,
                 sourceUrl = this.sourceUrl,
                 ingredients = this.ingredients,
@@ -117,26 +120,7 @@ class Quest(val qid: String= "-1",
         objectives.forEach { dao.save(it.convert(id))
 
     }}
-    //objectivesjson = Json.encodeToString(this.objectives),
-    // Given
-   /* val qid: Int = 0
-    var title: String = "Create Quest"
-    var description: String = "default description"
-    var active: Boolean = true
-    val publisher: String = "Kirik"
-    var author: String = "Kirik"
-    val featuredImage: String? = null
-    val rating: Int = 0
-    val sourceUrl: String = ""
-    val ingredients: List<Any> = listOf()
-    val categories: List<Quest> = TODO()
 
-             val allSubCats: Array<List<GoalType>> =
-                 categories.map { it. subCategories }.toTypedArray()
-    */
-
-
-    //var _objectives: MutableList<QuestObjective> = mutableListOf()
 
 
 
@@ -146,8 +130,7 @@ class Quest(val qid: String= "-1",
     open class QuestObjective(obj: String, beginDateAndTime: String, desc: String?, objectiveType: ObjectiveType, requiredAmount: Int?) {
         constructor() : this("", "",
             "", ObjectiveType.Default, -1
-            //"", hashMapOf<Any, Any>(),
-            //-1, LinkedTreeMap<Any, Any>()
+
         )
         fun convert(id:String):ObjectiveEntity{
             return ObjectiveEntity(
@@ -171,27 +154,6 @@ class Quest(val qid: String= "-1",
         }
 
 
-        //override fun notifyPropertyChanged(fieldId: Int){}
-        //@Bindablevar currentAmount: Int = 0;
-        //
-        //
-        //        fun IsReached(): Boolean {
-        //            return (currentAmount >= requiredAmount!!)
-        //        }
-        //        fun getObjective(): String {
-        //            return obj.toString()
-        //        }//@Bindable
-        //        fun getDescription(): String? {
-        //            return this.desc
-        //        }//@Bindable
-        //        fun getAmount(): String? {
-        //            return desc
-        //        }
-    //        fun ItemCollected() {
-        //            if (objectiveType == ObjectiveType.Gathering) {
-        //                currentAmount++;
-        //            }
-        //        }
     }
     lateinit var dateAdded: String
     lateinit var dateUpdated: String
@@ -302,7 +264,7 @@ class Quest(val qid: String= "-1",
         result = 31 * result + title.hashCode()
         result = 31 * result + active.hashCode()
         result = 31 * result + description.hashCode()
-        result = 31 * result + publisher.hashCode()
+        result = 31 * result + questGiver.hashCode()
         result = 31 * result + author.hashCode()
         result = 31 * result + featuredImage.hashCode()
         result = 31 * result + rating
@@ -348,3 +310,45 @@ var currentAmount: Int = 0;
 */
 
 
+
+//override fun notifyPropertyChanged(fieldId: Int){}
+//@Bindablevar currentAmount: Int = 0;
+//
+//
+//        fun IsReached(): Boolean {
+//            return (currentAmount >= requiredAmount!!)
+//        }
+//        fun getObjective(): String {
+//            return obj.toString()
+//        }//@Bindable
+//        fun getDescription(): String? {
+//            return this.desc
+//        }//@Bindable
+//        fun getAmount(): String? {
+//            return desc
+//        }
+//        fun ItemCollected() {
+//            if (objectiveType == ObjectiveType.Gathering) {
+//                currentAmount++;
+//            }
+//        }
+//objectivesjson = Json.encodeToString(this.objectives),
+// Given
+/* val qid: Int = 0
+ var title: String = "Create Quest"
+ var description: String = "default description"
+ var active: Boolean = true
+ val publisher: String = "Kirik"
+ var author: String = "Kirik"
+ val featuredImage: String? = null
+ val rating: Int = 0
+ val sourceUrl: String = ""
+ val ingredients: List<Any> = listOf()
+ val categories: List<Quest> = TODO()
+
+          val allSubCats: Array<List<GoalType>> =
+              categories.map { it. subCategories }.toTypedArray()
+ */
+
+
+//var _objectives: MutableList<QuestObjective> = mutableListOf()

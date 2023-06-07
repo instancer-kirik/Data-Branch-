@@ -19,4 +19,7 @@ data class UseCases (
     val getResponses: GetResponses,
     val getChatRooms:  GetChatRooms,
     val addChatRoom:  AddChatRoom,
+
+    val getUserInfoUseCase: GetUserInfoUseCase,
+    val saveGithubTokenUseCase: SaveGithubTokenUseCase
 )

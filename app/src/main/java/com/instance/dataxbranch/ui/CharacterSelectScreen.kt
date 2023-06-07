@@ -19,7 +19,7 @@ import com.instance.dataxbranch.core.Constants
 import com.instance.dataxbranch.data.local.CharacterWithStuff
 import com.instance.dataxbranch.ui.components.DevToolbar
 import com.instance.dataxbranch.ui.components.GOTOButton
-import com.instance.dataxbranch.ui.destinations.*
+import com.instance.dataxbranch.destinations.*
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.instance.dataxbranch.utils.navigate
 import com.ramcosta.composedestinations.annotation.Destination

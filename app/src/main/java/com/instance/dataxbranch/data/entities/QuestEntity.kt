@@ -50,11 +50,12 @@ INSERT INTO "main"."quests" VALUES('2','0','','','','0','','','','','','','','',
     @ColumnInfo(name = "active") var active: Int? = null,//change in MyQuestsScreen on lazyselection
     @ColumnInfo(name = "completed") var completed: Boolean=false,
     @ColumnInfo(name = "description") var description: String? = null,
-    @ColumnInfo(name = "publisher") var publisher: String? = null,
+    @ColumnInfo(name = "questGiver") var questGiver: String? = null,
     @ColumnInfo(name = "AuthorUid") var authoruid: String? = null,
     @ColumnInfo(name = "author") var author: String? = null,
     @ColumnInfo(name = "featuredImage") var featuredImage: String="",
     @ColumnInfo(name = "rating") var rating: Int = 0,
+    @ColumnInfo(name = "rating_denominator") var rating_denominator: Int = 5,
     @ColumnInfo(name = "sourceUrl") var sourceUrl: String="",
     @ColumnInfo(name = "ingredients") var ingredients: String = "",
     //@ColumnInfo(name = "objectivesjson") var objectivesjson: List<String> = listOf(""),//this to be json

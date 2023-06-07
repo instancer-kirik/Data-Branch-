@@ -7,7 +7,7 @@ import androidx.navigation.NavOptionsBuilder
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.instance.dataxbranch.core.Constants.TAG
-import com.instance.dataxbranch.ui.NavGraphs
+import com.instance.dataxbranch.NavGraphs
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.Direction
 import kotlinx.coroutines.ExperimentalCoroutinesApi

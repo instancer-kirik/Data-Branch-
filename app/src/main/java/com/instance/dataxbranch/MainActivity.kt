@@ -5,13 +5,17 @@ package com.instance.dataxbranch
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 //import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -47,10 +51,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.instance.dataxbranch.github.GithubActivity
 
 //import com.instance.dataxbranch.data.PredefinedUserCredentials
 import com.instance.dataxbranch.quests.Quest
-import com.instance.dataxbranch.ui.NavGraphs
+//import com.instance.dataxbranch.ui.NavGraphs
 //import com.instance.dataxbranch.social.StreamChat.ChannelsActivityScreen
 
 //import com.instance.dataxbranch.social.StreamChat.ChatHelper
@@ -75,11 +80,21 @@ import com.instance.dataxbranch.ui.NavGraphs
 //import com.instance.dataxbranch.ui.destinations.QuestsScreenDestination
 import kotlin.also
 import com.instance.dataxbranch.ui.theme.DataXBranchTheme
-import com.instance.dataxbranch.utils.constants.FIRESTORE_COLLECTION
+import com.instance.dataxbranch.ui.viewModels.AuthViewmodel
+
+import com.instance.dataxbranch.utils.constants.GITHUB_CLIENT_ID
+import com.instance.dataxbranch.utils.constants.GITHUB_CLIENT_SECRET
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.AndroidEntryPoint
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationRequest
+import net.openid.appauth.AuthorizationResponse
+import net.openid.appauth.AuthorizationService
+import net.openid.appauth.AuthorizationServiceConfiguration
+import net.openid.appauth.ClientSecretBasic
+import net.openid.appauth.ResponseTypeValues
 
 
 /*
@@ -97,7 +112,8 @@ class MainActivity : AppCompatActivity() {
 @ExperimentalFoundationApi
 
 class MainActivity:AppCompatActivity() {
-
+    private val viewmodel: AuthViewmodel by viewModels()
+    private lateinit var service: AuthorizationService
     @OptIn(ExperimentalPagerApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,7 +148,7 @@ class MainActivity:AppCompatActivity() {
 
         // 4 - Set up the Channels Screen UI
 */
-
+        service = AuthorizationService(this)
       //  FirebaseAuth.getInstance().createUserWithEmailAndPassword(email)
         setContent {
             DataXBranchTheme(darkTheme = true) {
@@ -144,7 +160,11 @@ class MainActivity:AppCompatActivity() {
                         Column(
                             modifier = Modifier
                                 .padding(padding)
-                        ){Text("top text")
+                        ){
+
+                            Button(onClick = { githubAuth() }) {
+                            Text(text = "Login with Github")
+                        }
                             //val consentBox: CheckBox =findViewById(R.id.checkBox)
                             //val button: Button =findViewById(R.id.checkBox)
                             DestinationsNavHost(navGraph = NavGraphs.root)
@@ -176,7 +196,53 @@ class MainActivity:AppCompatActivity() {
             }
         }
     }*/
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode == RESULT_OK) {
+            val ex = AuthorizationException.fromIntent(it.data!!)
+            val result = AuthorizationResponse.fromIntent(it.data!!)
+
+            if (ex != null){
+                Log.e("Github Auth", "launcher: $ex")
+            } else {
+                val secret = ClientSecretBasic(GITHUB_CLIENT_SECRET)
+                val tokenRequest = result?.createTokenExchangeRequest()
+
+                service.performTokenRequest(tokenRequest!!, secret) {res, exception ->
+                    if (exception != null){
+                        Log.e("Github Auth", "e_launcher: ${exception.error}" )
+                    } else {
+                        val token = res?.accessToken
+                        viewmodel.setToken(token!!)
+
+                        // Move to Github screen
+                        val intent = Intent(this, GithubActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+            }
+        }
+    }
+    private fun githubAuth() {
+        val redirectUri = Uri.parse("dataxbranch://instance.ac")
+        val authorizeUri = Uri.parse("https://github.com/login/oauth/authorize")
+        val tokenUri = Uri.parse("https://github.com/login/oauth/access_token")
+
+        val config = AuthorizationServiceConfiguration(authorizeUri, tokenUri)
+        val request = AuthorizationRequest
+            .Builder(config, GITHUB_CLIENT_ID, ResponseTypeValues.CODE, redirectUri)
+            .setScopes("user repo admin")
+            .build()
+
+        val intent = service.getAuthorizationRequestIntent(request)
+        launcher.launch(intent)
+    }
+    override fun onDestroy(){
+        super.onDestroy()
+        service.dispose()
+    }
 }
+
 //@Destination
 //@Composable
 //fun ChatApp(navigator: DestinationsNavigator) {//I DONT UNDERSTAND ALL THE COMPLICATED NAVCONTROLLER STUFF

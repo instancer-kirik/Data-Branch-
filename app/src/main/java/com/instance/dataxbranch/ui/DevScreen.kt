@@ -20,7 +20,7 @@ import com.instance.dataxbranch.data.cloud.CloudResponse
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.*
-import com.instance.dataxbranch.ui.destinations.*
+import com.instance.dataxbranch.destinations.*
 import com.instance.dataxbranch.ui.viewModels.DevViewModel
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination

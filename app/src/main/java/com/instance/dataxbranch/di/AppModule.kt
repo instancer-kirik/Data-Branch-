@@ -16,6 +16,7 @@ import com.instance.dataxbranch.data.AppDatabase
 
 import com.instance.dataxbranch.data.cloud.*
 import com.instance.dataxbranch.data.daos.*
+import com.instance.dataxbranch.data.local.Preferences
 
 import com.instance.dataxbranch.data.local.UserWithAbilities
 import com.instance.dataxbranch.data.repository.GeneralRepository
@@ -24,11 +25,15 @@ import com.instance.dataxbranch.data.repository.LocalQuestsRepository
 import com.instance.dataxbranch.data.repository.NoteRepository
 
 import com.instance.dataxbranch.domain.use_case.*
+import com.instance.dataxbranch.github.GithubRepository
+import com.instance.dataxbranch.github.GithubRepositoryImpl
+import com.instance.dataxbranch.github.GithubService
 import com.instance.dataxbranch.utils.constants.FIRESTORE_COLLECTION
 import com.instance.dataxbranch.utils.constants.NAME_PROPERTY
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Named
 import javax.inject.Singleton
@@ -138,7 +143,24 @@ object AppModule {
             GeneralRepository {
         return GeneralRepository(app,db,questsRepository, itemRepository,noteRepository)
     }
+    @Provides
+    fun provideGithubService(preferences: Preferences): GithubService {
+        return GithubService(preferences)
+    }
+    @Singleton
+    @Provides
+    fun provideGithubRepository(
+        preferences: Preferences,
+        githubService: GithubService
+    ): GithubRepository {
+        return GithubRepositoryImpl(preferences, githubService)
+    }
+    @Provides
+    @Singleton
+    fun providePreferences(@ApplicationContext context: Context): Preferences {
+        return Preferences(context)
 
+    }
     /*@Singleton THIS IS FOR ROOM
     @Provides
     fun provideResponseRepository(app:Application,db: AppDatabase):
@@ -152,6 +174,7 @@ object AppModule {
         responseRepo: ResponseRepository,
         localrepo: LocalQuestsRepository,
         socialRepo: SocialRepository,
+        githubRepository: GithubRepository,
         dao: QuestDao
     ) = UseCases(
         getQuests = GetQuests(repo),
@@ -167,7 +190,9 @@ object AppModule {
         addResponse = AddResponse(responseRepo),
         getResponses = GetResponses(responseRepo),
     addChatRoom= AddChatRoom(socialRepo),
-    getChatRooms = GetChatRooms(socialRepo)
+    getChatRooms = GetChatRooms(socialRepo),
+      getUserInfoUseCase = GetUserInfoUseCase(githubRepository),
+        saveGithubTokenUseCase = SaveGithubTokenUseCase(githubRepository),
     )
 
 
