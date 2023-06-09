@@ -16,17 +16,18 @@ import kotlinx.coroutines.flow.Flow
 interface CloudGeneralRepository{
    // var questsRef: CollectionReference
     fun getSignedInUser(): String
+
+    //QUESTS
     fun getQuestById(qid: String):Flow<Response<Quest>>
     fun getQuestsFromCloud(): Flow<Response<List<Quest>>>
 
-   //ORIGINALLY HAD SUSPEND FUN
-   fun addQuestToCloud(title: String, description: String, author:String): Flow<Response<CloudQuest>>
-    fun addQuestToCloud(quest: CloudQuest): Flow<Response<Void?>>
+   fun addQuestToCloud(title: String, description: String, author:String): Flow<Response<CloudQuest>> //ORIGINALLY HAD SUSPEND FUN
+   fun addQuestToCloud(quest: CloudQuest): Flow<Response<Void?>>
    fun addQuestToCloud(quest: Quest): Flow<Response<Void?>>
    fun deleteQuestFromCloud(qid: String): Flow<Response<Void?>>
 //   fun connect()
  //  fun mintNFTQuest(cloudQuest: CloudQuest) :Boolean
-
+    fun updateQuest(quest: Quest): Flow<Response<MutableList<CloudQuest>>>
     fun deleteQuestFromCloud(quest: CloudQuest): Flow<Response<Void?>>
     fun connect(): Flow<Response<SurrealWebSocketConnection>>
 }

@@ -55,30 +55,35 @@ fun CloudQuestsScreen(
             AddQuestAlertDialog()
         }
         when (val questsResponse = viewModel.questsState.value) {
-            is Response.Loading -> ProgressBar()
+            is Response.Loading -> ProgressBar()// Display loading indicator while quests are being fetched
             is Response.Success -> LazyColumn1(viewModel, questsResponse.data, modifier = Modifier
                 .fillMaxSize()
                 .padding(padding))
             is Response.Error -> OnlyText("Error",questsResponse.message)
 
         }//printError(questsResponse.message)
+        // Display status for  quest addition
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            when (val additionResponse = viewModel.isQuestAddedState.value) {
+            Text(text = "BOX IN CLOUDQUESTSCREEN ADD")
+            when (val additionResponse = viewModel.addedQuestState.value) {
                 is Response.Loading -> CircularProgressIndicator()
-                is Response.Success -> Unit
+                is Response.Success -> Unit// Quest addition was successful, no action needed
                 is Response.Error -> printError(additionResponse.message)
+                else -> Unit
             }
         }
+        // Display loading indicator, success message, or error message for quest deletion
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
+            Text(text = "BOX IN CLOUDQUESTSCREEN DELETE")
             when (val deletionResponse = viewModel.isQuestDeletedState.value) {
                 is Response.Loading -> CircularProgressIndicator()
-                is Response.Success -> Unit
+                is Response.Success -> Unit// Quest deletion was successful, no action needed
                 is Response.Error -> printError(deletionResponse.message)
 
             }

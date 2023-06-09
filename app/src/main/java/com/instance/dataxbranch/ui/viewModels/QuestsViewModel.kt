@@ -4,6 +4,8 @@ package com.instance.dataxbranch.ui.viewModels
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.instance.dataxbranch.data.cloud.CloudGeneralRepository
@@ -28,9 +30,12 @@ class QuestsViewModel @Inject constructor(
     private val _questsState = mutableStateOf<Response<List<Quest>>>(Response.Loading)
     val questsState: State<Response<List<Quest>>> = _questsState
     val selectedQuest = mutableStateOf(Quest())
-    private val _isQuestAddedState = mutableStateOf<Response<Void?>>(Response.Success(null))
-    val isQuestAddedState: State<Response<Void?>> = _isQuestAddedState
 
+
+
+    //new one
+    private val _addedQuestState = MutableLiveData<Response<Quest>>()
+    val addedQuestState: LiveData<Response<Quest>> = _addedQuestState
     private val _isQuestDeletedState = mutableStateOf<Response<Void?>>(Response.Success(null))
     val isQuestDeletedState: State<Response<Void?>> = _isQuestDeletedState
 
@@ -40,7 +45,17 @@ class QuestsViewModel @Inject constructor(
         getQuests()
     }
 
-
+    fun onQuestSelected(quest: Quest) {
+        selectedQuest.value = quest
+    }
+    fun getFirstQuestFromList(): Quest {
+        val response = questsState.value
+        return if (response is Response.Success && response.data.isNotEmpty()) {
+            response.data[0] // Return the first quest in the list
+        } else {
+            Quest() // Return a default quest if the list is empty or the response is not success
+        }
+    }
     private fun getQuests() {
         viewModelScope.launch {
             cloudRepository.getQuestsFromCloud().collect { response ->
@@ -48,16 +63,45 @@ class QuestsViewModel @Inject constructor(
             }
         }
     }
-    private fun mapCloudResponseToQuestResponse(cloudResponse: Response<CloudQuest>): Response<Quest> {
-        return when (cloudResponse) {
-            is Response.Loading -> Response.Loading
-            is Response.Success -> Response.Success(cloudResponse.data.toQuest())
-            is Response.Error -> Response.Error(cloudResponse.message)
-        }
+
+
+        fun addQuest(title: String, description: String, author: String) {
+            Log.d("QuestsViewModel", "in addQuest: $title $author")
+            viewModelScope.launch {
+                try {
+                    cloudRepository.addQuestToCloud(title, description, author)
+                        .collect { response ->
+                            when (response) {
+                                is Response.Loading -> {
+                                    // Handle loading state if needed
+                                    Log.d("QuestsViewModel", "Loading state")
+                                }
+
+                                is Response.Success -> {
+                                    val quest = response.data
+                                    Log.d("QuestsViewModel", "success addQuest: $quest")
+                                    _addedQuestState.value = Response.Success(quest.toQuest())
+                                    selectedQuest.value = quest.toQuest()
+                                }
+
+                                is Response.Error -> {
+                                    val error = response.message
+                                    Log.e("QuestsViewModel", "ERROR addQuest: $error")
+                                    _addedQuestState.value = Response.Error(error)
+                                }
+                            }
+                        }
+                } catch (e: Exception) {
+                    // Handle the exception
+                    _addedQuestState.value = Response.Error(e.toString())
+                }
+
+            }
     }
-    suspend fun addQuest(title: String, description: String, author: String): Quest {
+/*
         Log.d("QuestsViewModel", "in addQuest: $title $author")
-        return try {
+        return  try {
+
             Log.d("QuestsViewModel", "334")
             cloudRepository.addQuestToCloud(title, description, author).collect { response ->
                 Log.d("QuestsViewModel", "555")
@@ -68,7 +112,7 @@ class QuestsViewModel @Inject constructor(
                     }
                     is Response.Success -> {
                         val quest = response.data
-                        Log.d("QuestsViewModel", "addQuest: $quest")
+                        Log.d("QuestsViewModel", "success addQuest: $quest")
                         selectedQuest.value = quest.toQuest()
                     }
                     is Response.Error -> {
@@ -82,7 +126,7 @@ class QuestsViewModel @Inject constructor(
         } catch (e: Exception) {
             throw e
         }
-    }
+    }*/
         /*return try {
             val cloudResponse = cloudRepository.addQuestToCloud(title, description, author).first()
             val questResponse = mapCloudResponseToQuestResponse(cloudResponse)
@@ -103,44 +147,66 @@ class QuestsViewModel @Inject constructor(
             throw e
         }
     }*/
-    fun addQuest(quest: Quest) {
-        viewModelScope.launch {
-         try {
-            val cloudResponse = cloudRepository.addQuestToCloud(quest).first()
-            //val questResponse = mapCloudResponseToQuestResponse(cloudResponse)
-            selectedQuest.value = quest
-            unpackResponse(cloudResponse,
-                { Rquest ->
-                    Log.d("QuestsViewModel", "addQuest: $quest")
-                    //selectedQuest.value = quest
-                },
-                { error ->
-                    throw Exception(error)
-                })
-            selectedQuest.value//optimal return case
+        fun addQuest(inQuest: Quest) {
+            Log.d("QuestsViewModel", "in addQuest with quest: ${inQuest.title} $inQuest ")
+    viewModelScope.launch {try {
+                Log.d("QuestsViewModel", "334")
+                cloudRepository.addQuestToCloud(inQuest).collect { response ->
+                    Log.d("QuestsViewModel", "555")
+                    when (response) {
+                        is Response.Loading -> {
+                            // Handle loading state if needed
+                            Log.d("QuestsViewModel", "Loading state")
+                        }
+                        is Response.Success -> {
+                            val quest = response.data
+                            Log.d("QuestsViewModel", "success addQuest: ${inQuest.title} $inQuest")
+                            _addedQuestState.value = Response.Success(inQuest)
+                            selectedQuest.value = inQuest
 
+                        }
+                        is Response.Error -> {
+                            val error = response.message
+                            Log.e("QuestsViewModel", "ERROR addQuest: $error")
+                            throw Exception(error)
+                        }
+                    }
+                }
+                selectedQuest.value // Return the selectedQuest value if needed
+            } catch (e: Exception) {
+                throw e
+            }
+    }}
+
+    fun deleteQuest(inQuest: Quest) {
+        Log.d("QuestsViewModel", "in deleteQuest with quest: ${inQuest.title} $inQuest ")
+        viewModelScope.launch {try {
+            //Log.d("QuestsViewModel", "334")
+            cloudRepository.deleteQuestFromCloud(inQuest.qid).collect { response ->
+                Log.d("QuestsViewModel", "555")
+                when (response) {
+                    is Response.Loading -> {
+                        // Handle loading state if needed
+                        Log.d("QuestsViewModel", "Loading state")
+                    }
+                    is Response.Success -> {response
+                        val quest = response.data
+                        Log.d("QuestsViewModel", "success deleteQuest: ${inQuest.title} $inQuest")
+                        selectedQuest.value = getFirstQuestFromList()
+                        _isQuestDeletedState.value = response
+                    }
+                    is Response.Error -> {
+                        val error = response.message
+                        Log.e("QuestsViewModel", "ERROR deleteQuest: $error")
+                        throw Exception(error)
+                    }
+                }
+            }
+            selectedQuest.value // Return the selectedQuest value if needed
         } catch (e: Exception) {
-            // Handle the exception if necessary
             throw e
         }
     }}
-
-    fun deleteQuest(quest: Quest) {
-        viewModelScope.launch {
-            val response = cloudRepository.deleteQuestFromCloud(quest.qid).first()
-            unpackResponse(response,
-                onSuccess = {
-                            Log.d("QuestsViewModel", "deleteQuest: $quest")
-                    // Handle the success case
-                    // Perform any necessary operations after deleting the quest
-                },
-                onError = { errorMessage ->
-                    // Handle the error case
-                    // Display or handle the error message
-                }
-            )
-        }
-    }
 
     fun addQuestToRoom(quest: Quest) {//probably isnt a flow function
         viewModelScope.launch {
