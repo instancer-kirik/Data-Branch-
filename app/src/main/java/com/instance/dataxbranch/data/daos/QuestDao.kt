@@ -1,7 +1,6 @@
 package com.instance.dataxbranch.data.daos
 
 import androidx.room.*
-import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.data.entities.ObjectiveEntity
 
@@ -10,7 +9,7 @@ import com.instance.dataxbranch.data.entities.QuestEntity
 
 @Dao
 abstract class QuestDao {
-    @Transaction
+
     @Query("SELECT * FROM quests")
     abstract fun getItAll(): Array<QuestWithObjectives>//probably includes objectives
 

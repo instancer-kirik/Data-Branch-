@@ -17,7 +17,6 @@ import androidx.lifecycle.viewModelScope
 import com.instance.dataxbranch.core.Constants.TAG
 import com.instance.dataxbranch.data.daos.QuestDao
 import com.instance.dataxbranch.data.AppDatabase
-import com.instance.dataxbranch.data.DayStatus
 import com.instance.dataxbranch.data.entities.*
 
 import com.instance.dataxbranch.data.local.CharacterWithStuff
@@ -47,8 +46,8 @@ class UserViewModel @Inject constructor(
     val generalRepository: GeneralRepository,
 
     val udao: UserDao,
-    val qdao: QuestDao,
     val adao: AbilityDao,
+    val qdao: QuestDao,
     //var
 
     ): ViewModel() {
@@ -76,7 +75,8 @@ class UserViewModel @Inject constructor(
     var refreshWebview = mutableStateOf(false)
     var downloadCloudDialog = mutableStateOf(false)
     var singleConditionsDialog = mutableStateOf(true)
-    var characterDialogState = mutableStateOf(false)
+    var characterDialogState = mutableStateOf(false)//a dialog state used by character-specific screens
+    var diceDialogState = mutableStateOf(false)//to show the dice Roller
     var allabilities = mutableStateOf(false)
     var inventoryModeState = mutableStateOf(false)
     var selectedEvent = mutableStateOf(Event())
@@ -293,7 +293,12 @@ class UserViewModel @Inject constructor(
         }}
     fun update(quest: QuestWithObjectives){
         CoroutineScope(Dispatchers.IO).launch {
-            qdao.update(quest.quest)
+            try {
+
+                qdao.save(quest.quest)
+            }catch (e: Exception){
+                Log.d(TAG,"quest update err $e")
+            }
         }}
 //    fun save(i:ItemEntity) {
 //        generalRepository.itemRepository.updateitemEntity(i)
@@ -507,10 +512,10 @@ return "me @ userViewModel"
         char.character.habitIncrementAddNow(quest)
         quest.quest.onDone()
         generalRepository.questsRepository.update(quest)//notice different save style
-       return if (quest.quest.isHabit){
-            if (quest.quest.habitStreak>3) {
+       return if (quest.quest.isHabit == true){
+            if ((quest.quest.habitStreak ?: 0) > 3) {
                if (Random.nextInt(0, 6) == 5) {//0,1,2,3,4,5. 5 grants reward
-                   char.character.xp += quest.quest.rewardxp
+                   char.character.xp += quest.quest.rewardxp?:1
                    save(char)
                    "Random Persistence Reward :3"//gets random reward
                }else{
@@ -529,11 +534,11 @@ return "me @ userViewModel"
     fun onQuestCompleted(quest: QuestWithObjectives):String {
         val char = getSelectedCharacter()
         //Regular quest, default case
-            meWithAbilities.user.xp += quest.quest.rewardxp
-            char.character.xp += quest.quest.rewardxp
+            meWithAbilities.user.xp += quest.quest.rewardxp?:1
+            char.character.xp += quest.quest.rewardxp?:1
             char.character.addOrUpdateCompletedQuestTimestamp(quest)
             //Plans: to handle other rewards, like tokens and items
-            // s tatus updates
+            // status updates
             //notification to QuestGiver
             save(char)
             return "Quest Complete!"

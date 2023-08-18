@@ -301,13 +301,15 @@ fun LocalQuestCardContent(navi: DestinationsNavigator, viewModel: RoomQuestViewM
                 val context = LocalContext.current
 
                 val checkedState = remember { mutableStateOf(quest.quest.completed) }
-                Checkbox(
-                    checked = checkedState.value,
-                    onCheckedChange = {
-                        checkedState.value = it
-                        quest.quest.apply { completed = it }
-                        viewModel.onCheckboxChecked(quest, it,uViewModel)
-                    })
+                checkedState.value?.let {
+                    Checkbox(
+                        checked = it,
+                        onCheckedChange = {
+                            checkedState.value = it
+                            quest.quest.apply { completed = it }
+                            viewModel.onCheckboxChecked(quest, it,uViewModel)
+                        })
+                }
                 //if(!checkedState.value){ trying to pop up dialog for confirm or cancel
                 /*val time = measureTimeMillis {
                                 runBlocking {
@@ -488,7 +490,7 @@ return MaterialAlertDialogBuilder(context)
 .create()
 .await(positiveText = "Confirm", negativeText = "Cancel")
 }
-@Composable
+/*@Composable
 fun complete(quest: QuestWithObjectives ,viewModel: RoomQuestViewModel) :Boolean{
     if(showDialog2.value){
 
@@ -521,8 +523,8 @@ fun complete(quest: QuestWithObjectives ,viewModel: RoomQuestViewModel) :Boolean
         }
 
     )}
-    return quest.quest.completed
-}
+    return true//quest.quest.completed
+}*/
 //private fun <T> Flow<T>.collectAsLazyPagingItems(): Any {
 
 

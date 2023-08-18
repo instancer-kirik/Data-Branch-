@@ -30,15 +30,15 @@ class AddQuestEntitybyQuest(
             //id = value.id.toLong() doesn't set here. autogens
             uuid = value.qid,
             title=value.title + "",
-            originalTitle = value.originalTitle,
-            country = value.country,
+            //originalTitle = value.originalTitle,
+            //country = value.country,
             active = 0,
             description=value.description + "",
             questGiver = value.questGiver + "",
             author= value.author + "",
             featuredImage = value.featuredImage + "",
-            rating = value.rating,
-            sourceUrl = value.sourceUrl,
+            //rating = value.rating,
+            //sourceUrl = value.sourceUrl,
             ingredients = value.ingredients,
             region = value.region
         )

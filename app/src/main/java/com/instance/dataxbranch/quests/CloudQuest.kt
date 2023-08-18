@@ -1,5 +1,6 @@
 package com.instance.dataxbranch.quests
 
+import android.util.Log
 import com.instance.dataxbranch.quests.Quest
 
 data class CloudQuest (
@@ -69,7 +70,15 @@ data class CloudQuest (
                         var sourceUrl: String="",
                         var region: String = "state or region here. goal: sort by region"
     ) {
-    fun qid(qid: String) = apply { this.qid = qid }
+    fun qid(qid: String) = apply {
+
+    Log.d("CloudQuest", "builder qid: $qid")
+        if (qid=="-1") {
+            this.qid = java.util.UUID.randomUUID().toString()
+        } else {
+            this.qid = qid
+        }
+        }
 
     fun title(title: String) = apply { this.title = title }
     fun imageUrl(imageUrl: String) = apply { this.imageUrl = imageUrl }

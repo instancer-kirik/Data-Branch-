@@ -1,10 +1,8 @@
 package com.instance.dataxbranch.utils
 
 import android.content.Context
-import android.provider.Settings.Secure.getString
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.data.entities.QuestEntity
 import com.instance.dataxbranch.data.entities.User

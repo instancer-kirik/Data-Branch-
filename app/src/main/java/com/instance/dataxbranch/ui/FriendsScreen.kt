@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.data.entities.User
 import com.instance.dataxbranch.ui.components.UserToolbar
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
@@ -36,12 +35,12 @@ fun FriendsScreen (viewModel: UserViewModel = hiltViewModel(),
 
             // EditAbilityEntityFloatingActionButton()
         }
-    ) { _->
+    ) { padding->
 
         if (viewModel.openDialogState3.value) {
             //
         }
-        FriendsLazyColumn(context,viewModel/*, friends=viewModel.getFriends()*/, modifier = Modifier.padding(2.dp))
+        FriendsLazyColumn(context,viewModel/*, friends=viewModel.getFriends()*/, modifier = Modifier.padding(padding))
     }
 }
 @Composable

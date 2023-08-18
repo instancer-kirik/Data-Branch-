@@ -67,7 +67,7 @@ fun CloudQuestsScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "BOX IN CLOUDQUESTSCREEN ADD")
+            //Text(text = "BOX IN CLOUDQUESTSCREEN ADD")
             when (val additionResponse = viewModel.addedQuestState.value) {
                 is Response.Loading -> CircularProgressIndicator()
                 is Response.Success -> Unit// Quest addition was successful, no action needed
@@ -80,7 +80,7 @@ fun CloudQuestsScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "BOX IN CLOUDQUESTSCREEN DELETE")
+            //Text(text = "BOX IN CLOUDQUESTSCREEN DELETE")
             when (val deletionResponse = viewModel.isQuestDeletedState.value) {
                 is Response.Loading -> CircularProgressIndicator()
                 is Response.Success -> Unit// Quest deletion was successful, no action needed

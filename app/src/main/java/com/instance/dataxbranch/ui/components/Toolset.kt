@@ -505,7 +505,7 @@ fun AbilityDetailToolbar(context: Context, viewModel: UserViewModel, navigator: 
 }
 
 @Composable
-fun CharacterQuestDetailToolbar(context: Context, viewModel: UserViewModel, navigator: DestinationsNavigator,them: List<MutableState<out Any>>) {
+fun CharacterQuestDetailToolbar(context: Context, viewModel: UserViewModel, navigator: DestinationsNavigator,questFields: QuestFields) {
     TopAppBar(
         title = { Text(text = "Edit Quest") },
         actions = {
@@ -537,7 +537,7 @@ fun CharacterQuestDetailToolbar(context: Context, viewModel: UserViewModel, navi
                         modifier = Modifier.padding(2.dp)
                     ) { Text("My Quests") }
                     Button(
-                        onClick = { save2(context, navigator, viewModel, them) },
+                        onClick = { save2(context, navigator, viewModel, questFields) },
                         modifier = Modifier.padding(2.dp)
                     ) { Text("save any changes") }
                 } else Text("DEBUG")
@@ -839,7 +839,7 @@ fun LoadoutToolbar( navigator: DestinationsNavigator) {
 }
 
 @Composable
-fun QuestDetailToolbar(context: Context, viewModel: RoomQuestViewModel, navigator: DestinationsNavigator, them: List<MutableState<out Any>>) {
+fun QuestDetailToolbar(context: Context, viewModel: RoomQuestViewModel, navigator: DestinationsNavigator, questFields: QuestFields) {
     TopAppBar(
         title = { Text(text = "Edit Quest") },
         actions = {ConfigChangeExample()
@@ -863,7 +863,7 @@ fun QuestDetailToolbar(context: Context, viewModel: RoomQuestViewModel, navigato
 
                     Button(onClick = {navigator.navigate( DevScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("DevScreen")}
                     Button(onClick = {navigator.navigate(MyQuestsScreenDestination)}, modifier=Modifier.padding(2.dp)){Text("My Quests")}
-                    Button(onClick = { save(context,navigator,viewModel,them) }, modifier=Modifier.padding(2.dp)){Text("save any changes")}
+                    Button(onClick = { save(context,navigator,viewModel,questFields) }, modifier=Modifier.padding(2.dp)){Text("save any changes")}
                 } else Text("DEBUG")
 
             }

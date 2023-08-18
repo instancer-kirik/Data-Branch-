@@ -10,7 +10,7 @@ import com.instance.dataxbranch.utils.Converters
 //also has relevant enums below
 @Database(entities = [QuestEntity::class, ObjectiveEntity::class, AbilityEntity::class,
     User::class, CharacterEntity::class, ItemEntity::class,NoteEntity::class],
-    version = 68, exportSchema = false)
+    version = 69, exportSchema = false)
 @TypeConverters(Converters::class)
  abstract class AppDatabase() : RoomDatabase(){
     //abstract fun addQuestEntity(title: String, author: String): Any

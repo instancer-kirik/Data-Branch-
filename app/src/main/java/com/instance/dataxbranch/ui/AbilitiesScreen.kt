@@ -36,9 +36,6 @@ import com.instance.dataxbranch.ui.components.EditLoadoutAlertDialog
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Destination
 @Composable

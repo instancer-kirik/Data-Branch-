@@ -1,8 +1,6 @@
 package com.instance.dataxbranch.ui.components
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -11,10 +9,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.ui.viewModels.UserViewModel
 
 import kotlinx.coroutines.job

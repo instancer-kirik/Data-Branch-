@@ -25,57 +25,6 @@ should have: primary clear condition
 
  */
 
-/*
-on editing one must solve nulls and defaults
-obj,
-
-//Kotlin code
-interface EventManagementInterface {
-    fun someMethod()
-}
-
-class EventManager {
-
-    companion object FirebaseManager : EventManagementInterface {
-
-        override fun someMethod() {
-
-        }
-    }
-}
-(args: array<String>)
-Note that the compiler only uses the properties defined inside the primary constructor for the automatically generated functions.
- To exclude a property from the generated implementations, declare it inside the class body
- */
-/*
-class User(firstName: String, lastName: String) : BaseObservable() {
-    private var firstName: String
-    private var lastName: String
-    @Bindable
-    fun getFirstName(): String {
-        return firstName
-    }
-
-    fun setFirstName(firstName: String) {
-        this.firstName = firstName
-        notifyPropertyChanged(BR.firstName)
-    }
-
-    @Bindable
-    fun getLastName(): String {
-        return lastName
-    }
-
-    fun setLastName(lastName: String) {
-        this.lastName = lastName
-        notifyPropertyChanged(BR.lastName)
-    }
-
-    init {
-        this.firstName = firstName
-        this.lastName = lastName
-    }
-}*/
 
 class Quest(val qid: String= "-1",
             var title: String = "QuestTitle",
@@ -102,12 +51,12 @@ class Quest(val qid: String= "-1",
                 uuid = this.qid,
                 title = this.title,
                 description = this.description,
-                country = this.country,
-                rating = this.rating,
-                rating_denominator = this.rating_denominator,
+                //country = this.country,
+                //rating = this.rating,
+                //rating_denominator = this.rating_denominator,
             questGiver = this.questGiver,
                 featuredImage = this.featuredImage,
-                sourceUrl = this.sourceUrl,
+                //sourceUrl = this.sourceUrl,
                 ingredients = this.ingredients,
                 author = this.author
             )

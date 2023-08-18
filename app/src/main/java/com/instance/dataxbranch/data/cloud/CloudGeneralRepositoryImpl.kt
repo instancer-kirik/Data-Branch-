@@ -130,7 +130,7 @@ class CloudGeneralRepositoryImpl @Inject constructor(
                 driver.use(namespace_name, quests_database)
                 val built_quest = driver.create(
                     quests_table,
-                    CloudQuest.builder().title(title).description(description).author(author).build()
+                    CloudQuest.builder().qid("-1").title(title).description(description).author(author).build()//qid==-1 prompts the builder to generate a new qid
                 )
                 emit(Response.Success(built_quest))
             } catch (e: Exception) {
@@ -226,10 +226,29 @@ class CloudGeneralRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getUserById(userId: String): Flow<Response<User>> {
+        TODO("Not yet implemented")
+    }
 
+    override fun getUsersFromCloud(): Flow<Response<List<User>>> {
+        TODO("Not yet implemented")
+    }
 
+    override fun addUserToCloud(user: User): Flow<Response<Void?>> {
+        TODO("Not yet implemented")
+    }
 
+    override fun updateUser(user: User): Flow<Response<Void?>> {
+        TODO("Not yet implemented")
+    }
 
+    override fun deleteUserFromCloud(uid: String): Flow<Response<Void?>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteUserFromCloud(user: User): Flow<Response<Void?>> {
+        TODO("Not yet implemented")
+    }
 
 
 }

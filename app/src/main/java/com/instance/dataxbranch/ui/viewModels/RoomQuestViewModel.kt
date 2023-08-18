@@ -114,7 +114,7 @@ class RoomQuestViewModel @Inject constructor(
         }}
     fun update(quest: QuestWithObjectives){
         CoroutineScope(Dispatchers.IO).launch {
-            dao.update(quest.quest)
+            dao.save(quest.quest)
         }}
     fun toRoom(quest: Quest) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -149,7 +149,7 @@ class RoomQuestViewModel @Inject constructor(
     fun onCheckboxChecked(quest: QuestWithObjectives, checked: Boolean,userViewModel: UserViewModel) {
         //Log.d(TAG, "$quest is is $checked   "+quest.quest.completed.toString())
         viewModelScope.launch {
-            localQuestsRepository.update(quest.quest.copy(completed = checked))
+            localQuestsRepository.update(quest.quest.apply{completed = checked})
         }
         if(checked){
             userViewModel.onQuestCompleted(quest)

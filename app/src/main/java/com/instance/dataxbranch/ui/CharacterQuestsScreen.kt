@@ -219,7 +219,7 @@ fun CharacterLocalQuestView(
         Text(
             text = "Index $index",
         )
-        if (quest.quest.isHabit){
+        if (quest.quest.isHabit == true){
             CharacterHabitCardContent(navi,quest,uViewModel)
         }else {
             CharacterLocalQuestCardContent(navi, quest, uViewModel)
@@ -311,14 +311,16 @@ fun CharacterLocalQuestCardContent(navi: DestinationsNavigator, quest: QuestWith
                 val context = LocalContext.current
 
                 val checkedState = remember { mutableStateOf(quest.quest.completed) }
-                Checkbox(
-                    checked = checkedState.value,
-                    onCheckedChange = {
-                        checkedState.value = it
-                        quest.quest.apply { completed = it }
-                        val result =uViewModel.onCheckboxChecked(quest, it)
-                        if (result != null) { showToast(context, result) }
-                    })
+                checkedState.value?.let {
+                    Checkbox(
+                        checked = it,
+                        onCheckedChange = {
+                            checkedState.value = it
+                            quest.quest.apply { completed = it }
+                            val result =uViewModel.onCheckboxChecked(quest, it)
+                            if (result != null) { showToast(context, result) }
+                        })
+                }
                 //if(!checkedState.value){ trying to pop up dialog for confirm or cancel
                 /*val time = measureTimeMillis {
                                 runBlocking {
@@ -686,7 +688,7 @@ return MaterialAlertDialogBuilder(context)
 .await(positiveText = "Confirm", negativeText = "Cancel")
 }
 @Composable
-fun complete2(quest: QuestWithObjectives ,viewModel: RoomQuestViewModel) :Boolean{
+fun complete2(quest: QuestWithObjectives ,viewModel: RoomQuestViewModel) : Boolean? {
     if(showDialogC2.value){
 
 

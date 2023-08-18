@@ -1,7 +1,6 @@
 package com.instance.dataxbranch.data.entities
 
 import androidx.room.*
-import com.instance.dataxbranch.quests.Quest
 import com.instance.dataxbranch.utils.Converters
 import com.squareup.moshi.JsonClass
 import java.util.*
@@ -64,5 +63,23 @@ data class AbilityEntity @JvmOverloads constructor(
     fun OnCasted():Int{
         trainedAmt+=1
         return (trainedAmt)
+    }
+}
+data class Action(
+    val name: String,
+    val description: String,
+    val energyCost: Int,
+    val manaCost: Int=0,
+    val cooldown: Int,
+    val targetType: TargetType
+) {
+    enum class TargetType {
+        SELF, ALLY, ENEMY, AREA
+    }
+
+    fun performAction(user: Character, target: Character) {
+        // Implement the logic to perform the action
+        // This could include modifying character stats, applying effects, calculating damage, etc.
+        // You can customize this method based on the specific actions in your game
     }
 }

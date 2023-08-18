@@ -2,6 +2,8 @@ package com.instance.dataxbranch.ui
 
 
 
+
+
 import android.content.Context
 
 
@@ -31,7 +33,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun CharacterQuestDetailScreen (viewModel: UserViewModel =hiltViewModel(),
+fun ActiveQuestScreen (viewModel: UserViewModel =hiltViewModel(),
                                 navigator: DestinationsNavigator,
 
                                 ){
@@ -68,8 +70,8 @@ fun CharacterQuestDetailScreen (viewModel: UserViewModel =hiltViewModel(),
             // EditQuestEntityFloatingActionButton()
         }
     ) { padding ->
-padding
-       //viewModel.getSelect()
+        padding
+        //viewModel.getSelect()
 
         //var Mcompleted = remember { mutableStateOf(viewModel.selectedQuest.quest.completed) }
 
@@ -126,7 +128,7 @@ padding
                             })
                     }
                 }
-                Button(onClick = {save2(context,navigator,viewModel,questFields)}){
+                Button(onClick = {save3(context,navigator,viewModel,questFields)}){
                     Icon(
                         imageVector = Icons.Default.Done,
                         contentDescription = Constants.SAVE
@@ -139,7 +141,7 @@ padding
 
 
 @Composable
-fun cintBlock(s: String = "", i: MutableState<Int>){
+fun cintBlock2(s: String = "", i: MutableState<Int>){
     var text =remember {
         mutableStateOf(i.value.toString()+"")
     }
@@ -157,9 +159,9 @@ fun cintBlock(s: String = "", i: MutableState<Int>){
         )}
 }
 
-fun save2(context: Context,navigator: DestinationsNavigator,viewModel:UserViewModel,questFields: QuestFields){
+fun save3(context: Context,navigator: DestinationsNavigator,viewModel:UserViewModel,questFields: QuestFields){
 //    val them =listOf(title,desc,checkedState,ingredients,reward,rewardxp,region,sourceUrl, featuredImage)
-  //  val them =listOf(title,desc,checkedState,ingredients,reward,rewardxp,region,sourceUrl, featuredImage,isHabitState)
+    //  val them =listOf(title,desc,checkedState,ingredients,reward,rewardxp,region,sourceUrl, featuredImage,isHabitState)
     viewModel.selectedQuest.quest.title = questFields.title.value
     viewModel.selectedQuest.quest.description = questFields.desc.value
     viewModel.selectedQuest.quest.completed = questFields.checkedState.value
@@ -182,7 +184,7 @@ fun save2(context: Context,navigator: DestinationsNavigator,viewModel:UserViewMo
 }
 
 @Composable
-fun clvlupblock(levels:MutableList<String>?, levelups: MutableList<Int>?){
+fun alvlupblock(levels:MutableList<String>?, levelups: MutableList<Int>?){
 
 
     Surface(modifier = Modifier.width(320.dp)) {
@@ -204,7 +206,7 @@ fun clvlupblock(levels:MutableList<String>?, levelups: MutableList<Int>?){
                         mutableStateOf(levelups!![index])
                     }
                     //text.value
-                    CQuestblock(s = "", i = text2, weight = 1)
+                    AQuestblock(s = "", i = text2, weight = 1)
 
                     /*TextField(
                         value = levelups?.get(index).toString(),
@@ -226,7 +228,7 @@ fun clvlupblock(levels:MutableList<String>?, levelups: MutableList<Int>?){
 
 }
 @Composable
-fun cstringBlock(s: String = "", i: MutableState<String>){
+fun astringBlock(s: String = "", i: MutableState<String>){
     var text = remember {
         mutableStateOf(i.value +"")
     }
@@ -245,7 +247,7 @@ fun cstringBlock(s: String = "", i: MutableState<String>){
         )}
 }
 @Composable
-fun CQuestblock(s:String, i:MutableState<Int>,weight: Int) {
+fun AQuestblock(s:String, i:MutableState<Int>,weight: Int) {
     val context = LocalContext.current
     Row(
         modifier = Modifier

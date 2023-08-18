@@ -1,13 +1,11 @@
 package com.instance.dataxbranch.ui
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,14 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.instance.dataxbranch.core.Constants
-import com.instance.dataxbranch.data.entities.AbilityEntity
 import com.instance.dataxbranch.destinations.AbilitiesScreenDestination
-import com.instance.dataxbranch.quests.QuestWithObjectives
 import com.instance.dataxbranch.showToast
 import com.instance.dataxbranch.ui.components.AbilityDetailToolbar
 //import com.instance.dataxbranch.ui.destinations.*
@@ -78,7 +72,7 @@ Column {
     stringBlock(s = "cooldown", cooldown)
     intBlock(s = "requiredEnergy", requiredEnergy)
 }
-            Column {
+            Column(modifier = Modifier.padding(padding)) {
                 Checkbox(
                     checked = checkedState.value,
                     onCheckedChange = {
